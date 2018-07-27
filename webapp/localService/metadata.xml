@@ -1,0 +1,495 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZTS_MD_SRV" xml:lang="ru" sap:schema-version="1">
+            <EntityType Name="RiskTypeM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="RiskType"/>
+                </Key>
+                <Property Name="Description" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name"/>
+                <Property Name="RiskType" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Risk type" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="IncotermsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Incoterms"/>
+                </Key>
+                <Property Name="Description" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Description"/>
+                <Property Name="Incoterms" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Incoterms" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="CurrencyM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="CurrencyCode"/>
+                </Key>
+                <Property Name="CurrencyName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Long Text"/>
+                <Property Name="CurrencyCode" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="Currency" sap:updatable="false" sap:semantics="currency-code"/>
+            </EntityType>
+            <EntityType Name="UnitsOfMaterialM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="UOMCode"/>
+                </Key>
+                <Property Name="UOMName" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Meas. unit text"/>
+                <Property Name="UOMCode" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:updatable="false" sap:semantics="unit-of-measure"/>
+            </EntityType>
+            <EntityType Name="DictionaryRatingM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Rating"/>
+                </Key>
+                <Property Name="Rating" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Rating" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="RWStationM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Country" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Country"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Description"/>
+                <Property Name="Flag" Type="Edm.Boolean" sap:unicode="false" sap:label="Train station"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Points" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="PortM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Description"/>
+                <Property Name="Country" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Country"/>
+                <Property Name="Station" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Station Code 1"/>
+                <Property Name="Flag" Type="Edm.Boolean" sap:unicode="false" sap:label="Inland port"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Points" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="VesselTypeM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="MaximumSize" Type="Edm.String" MaxLength="6" sap:unicode="false" sap:label="Maximum vessel size"/>
+                <Property Name="MinimumSize" Type="Edm.String" MaxLength="6" sap:unicode="false" sap:label="Minimum vessel size"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Description"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="ClassfGroup" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="CrossBorderM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="DeliveryStation" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Station Code 2"/>
+                <Property Name="LoadingStation" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Station Code 1"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="Description"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Points" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="ProductionUnitM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Partner" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="BusinessPartner"/>
+                <Property Name="Type" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Internal/External"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Production Unit" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryUnitTypeM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="60" sap:unicode="false" sap:label="Short Descript." sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Lower_value" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryBusinessPartnerInternalM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Partner"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Search term 2" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Partner" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="BusinessPartner" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="SalesProgramM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SalesProgram"/>
+                </Key>
+                <Property Name="Active" Type="Edm.Boolean" sap:unicode="false" sap:label="Active"/>
+                <Property Name="NGG" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Calorie unit"/>
+                <Property Name="UoM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:semantics="unit-of-measure"/>
+                <Property Name="CV" Type="Edm.Decimal" Precision="15" Scale="0" sap:unicode="false" sap:unit="UoM" sap:label="CV"/>
+                <Property Name="Incoterms" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Incoterms"/>
+                <Property Name="Description" Type="Edm.String" MaxLength="60" sap:unicode="false" sap:label="Name"/>
+                <Property Name="SalesProgram" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Sales Program" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionarySalesDivisionsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Division" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="MaterialM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="DivisionName" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Description"/>
+                <Property Name="Division" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Division"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:label="Material" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="BenchmarkSuekAgM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SalesMarket"/>
+                    <PropertyRef Name="Product"/>
+                    <PropertyRef Name="DateTo"/>
+                    <PropertyRef Name="DateFrom"/>
+                    <PropertyRef Name="CodeSalesProgram"/>
+                </Key>
+                <Property Name="UOM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:semantics="unit-of-measure"/>
+                <Property Name="CVNAR" Type="Edm.Decimal" Precision="15" Scale="0" sap:unicode="false" sap:unit="UOM" sap:label="CV"/>
+                <Property Name="TransshipmentPoint" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Points"/>
+                <Property Name="Incoterms" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Incoterms"/>
+                <Property Name="Formula" Type="Edm.String" MaxLength="60" sap:unicode="false" sap:label="FormBenchSUEK AG"/>
+                <Property Name="SalesMarket" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Sales district" sap:updatable="false"/>
+                <Property Name="Product" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Division" sap:updatable="false"/>
+                <Property Name="DateTo" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="To Date" sap:updatable="false"/>
+                <Property Name="DateFrom" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="From date" sap:updatable="false"/>
+                <Property Name="CodeSalesProgram" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Sales Program" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="QualityParametersUomM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="UOM"/>
+                    <PropertyRef Name="QPKey"/>
+                </Key>
+                <Property Name="NormalPrecision" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Normal Precision"/>
+                <Property Name="MaxValue" Type="Edm.Decimal" Precision="14" Scale="4" sap:unicode="false" sap:label="Max Value"/>
+                <Property Name="MinValue" Type="Edm.Decimal" Precision="14" Scale="4" sap:unicode="false" sap:label="Min Value"/>
+                <Property Name="UOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:updatable="false" sap:semantics="unit-of-measure"/>
+                <Property Name="QPKey" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="QualParKey" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryPaymentMethodsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Code" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryPaymentTermsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Code" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="LimitsForStandardRatingM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Subitem"/>
+                    <PropertyRef Name="DateTo"/>
+                    <PropertyRef Name="DateFrom"/>
+                    <PropertyRef Name="BusinessPartnerRole"/>
+                    <PropertyRef Name="Rating"/>
+                    <PropertyRef Name="LegalEntity"/>
+                </Key>
+                <Property Name="PeriodPaymentCond" Type="Edm.Decimal" Precision="4" Scale="0" sap:unicode="false" sap:label="PerPayCon"/>
+                <Property Name="PeriodUOM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:semantics="unit-of-measure"/>
+                <Property Name="Period" Type="Edm.Decimal" Precision="4" Scale="0" sap:unicode="false" sap:label="Period"/>
+                <Property Name="PeriodSign" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Period Sign"/>
+                <Property Name="TonnagePaymentCond" Type="Edm.Decimal" Precision="15" Scale="2" sap:unicode="false" sap:label="TonForPaymCond"/>
+                <Property Name="TonnageUOM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:semantics="unit-of-measure"/>
+                <Property Name="Tonnage" Type="Edm.Decimal" Precision="15" Scale="2" sap:unicode="false" sap:label="Tonnage"/>
+                <Property Name="TonnageSign" Type="Edm.String" MaxLength="2" sap:unicode="false" sap:label="Tonnage Sign"/>
+                <Property Name="PaymentTerms" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="Payment Term"/>
+                <Property Name="PaymentMethod" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="Payment Method"/>
+                <Property Name="Subitem" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Subitem" sap:updatable="false"/>
+                <Property Name="DateTo" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="To Date" sap:updatable="false"/>
+                <Property Name="DateFrom" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="From date" sap:updatable="false"/>
+                <Property Name="BusinessPartnerRole" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Partner Functn" sap:updatable="false"/>
+                <Property Name="Rating" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Rating" sap:updatable="false"/>
+                <Property Name="LegalEntity" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Company Code" sap:updatable="false"/>
+                <NavigationProperty Name="LimitsForStandardRating_MasterDetailN" Relationship="ZTS_MD_SRV.LimitsForStandardRating_MasterDetailA" FromRole="FromRole_LimitsForStandardRating_MasterDetailA" ToRole="ToRole_LimitsForStandardRating_MasterDetailA"/>
+            </EntityType>
+            <EntityType Name="DictionaryMaterialGroupsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="9" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryTransportConnectionPointsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="TrainStationID" Type="Edm.Boolean" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SeaHarborIndicator" Type="Edm.Boolean" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CrossBorderIndicator" Type="Edm.Boolean" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="SalesSchemeM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SalesScheme"/>
+                </Key>
+                <Property Name="Description" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SalesScheme" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Sales Scheme" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="SalesDirectionsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SalesDirection"/>
+                </Key>
+                <Property Name="Description" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name"/>
+                <Property Name="SalesDirection" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Sales Region" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="CountryM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Rating" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Rating"/>
+                <Property Name="Sanction" Type="Edm.Boolean" sap:unicode="false" sap:label="Flag of Sanctions"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="15" sap:unicode="false" sap:label="Name" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Country" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="SalesMarketM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="District name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Sales district" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="BaseForMeasuringQualitativeCharacteristM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="100" sap:unicode="false" sap:label="Name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Base QP" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="SetOfBaseForMeasuringQualitativeCharactM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="CodeBase"/>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="NameBase" Type="Edm.String" MaxLength="100" sap:unicode="false" sap:label="Name"/>
+                <Property Name="CodeBase" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Base QP" sap:updatable="false"/>
+                <Property Name="Name" Type="Edm.String" MaxLength="100" sap:unicode="false" sap:label="Description"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:label="Set of Base for QP" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="AddressTypeM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="15" sap:unicode="false" sap:label="Short name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Address Type" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="QualityParametersM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="QPKey"/>
+                </Key>
+                <Property Name="FinenessQP" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Fineness QP"/>
+                <Property Name="SetBasesQP" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:label="Set of Base for QP"/>
+                <Property Name="QPName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name"/>
+                <Property Name="QPCode" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Quality Parameter"/>
+                <Property Name="QPKey" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="QualParKey" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="LimitsExpressRatingM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="CompanyCode"/>
+                    <PropertyRef Name="CountryRating"/>
+                    <PropertyRef Name="FinanceCommercialRating"/>
+                    <PropertyRef Name="PartnersRole"/>
+                    <PropertyRef Name="Subitem"/>
+                    <PropertyRef Name="DateFrom"/>
+                    <PropertyRef Name="DateTo"/>
+                </Key>
+                <Property Name="PaymentTerm" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="Payment Term"/>
+                <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Company Code" sap:updatable="false"/>
+                <Property Name="CountryRating" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Country Rating" sap:updatable="false"/>
+                <Property Name="FinanceCommercialRating" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Fin/Commerc Rating" sap:updatable="false"/>
+                <Property Name="PartnersRole" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Partner Functn" sap:updatable="false"/>
+                <Property Name="Subitem" Type="Edm.Byte" Nullable="false" sap:unicode="false" sap:label="Subitem" sap:updatable="false"/>
+                <Property Name="DateFrom" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="From date" sap:updatable="false"/>
+                <Property Name="DateTo" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="To Date" sap:updatable="false"/>
+                <Property Name="PaymentMethod" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="Code"/>
+            </EntityType>
+            <EntityType Name="ProductRecipeHeaderM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DateTo"/>
+                    <PropertyRef Name="DateFrom"/>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="60" sap:unicode="false" sap:label="Name"/>
+                <Property Name="RecipeNumber" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Header Number"/>
+                <Property Name="DateTo" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="To Date" sap:updatable="false"/>
+                <Property Name="DateFrom" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="From date" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Sales Program" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="ProductRecipeItemM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ItemNumber"/>
+                    <PropertyRef Name="RecipeNumber"/>
+                </Key>
+                <Property Name="UOM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:semantics="unit-of-measure"/>
+                <Property Name="Content" Type="Edm.Decimal" Precision="15" Scale="2" sap:unicode="false" sap:unit="UOM" sap:label="Content in percent"/>
+                <Property Name="Material" Type="Edm.String" MaxLength="18" sap:unicode="false" sap:label="Material"/>
+                <Property Name="ProductionUnit" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Production Unit"/>
+                <Property Name="ItemNumber" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Item Number" sap:updatable="false"/>
+                <Property Name="RecipeNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Header Number" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DefaultQualityParametersM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="BaseQP"/>
+                    <PropertyRef Name="QP"/>
+                    <PropertyRef Name="SalesRegion"/>
+                    <PropertyRef Name="SalesProgram"/>
+                    <PropertyRef Name="TypeProduct"/>
+                </Key>
+                <Property Name="FineUOM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="FC Unit" sap:semantics="unit-of-measure"/>
+                <Property Name="UOM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:semantics="unit-of-measure"/>
+                <Property Name="BaseQP" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Base QP" sap:updatable="false"/>
+                <Property Name="QPName" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Quality Parameter"/>
+                <Property Name="QP" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="QualParKey" sap:updatable="false"/>
+                <Property Name="SalesRegionName" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name"/>
+                <Property Name="SalesRegion" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Sales Region" sap:updatable="false"/>
+                <Property Name="SalesProgram" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Sales Program" sap:updatable="false"/>
+                <Property Name="TypeProductName" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Name"/>
+                <Property Name="TypeProduct" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Division" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="SalesRegionM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="Name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Sales Region" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DefaultResourceQualityM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="UOM"/>
+                    <PropertyRef Name="BaseQP"/>
+                    <PropertyRef Name="QPKey"/>
+                    <PropertyRef Name="Material"/>
+                    <PropertyRef Name="ProductionUnit"/>
+                </Key>
+                <Property Name="DefaultValue" Type="Edm.Decimal" Precision="6" Scale="2" sap:unicode="false" sap:label="Default value"/>
+                <Property Name="UOM" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Int. Meas. Unit" sap:updatable="false" sap:semantics="unit-of-measure"/>
+                <Property Name="BaseQP" Type="Edm.String" Nullable="false" MaxLength="7" sap:unicode="false" sap:label="Base QP" sap:updatable="false"/>
+                <Property Name="QPKey" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="QualParKey" sap:updatable="false"/>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:label="Material" sap:updatable="false"/>
+                <Property Name="ProductionUnit" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Production Unit" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryCompanyCodesM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="25" sap:unicode="false" sap:label="Company Name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Company Code" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryBusinessPartnerFunctionsM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Name"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Partner Functn" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="InflationFactorM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DateTo"/>
+                    <PropertyRef Name="DateFrom"/>
+                    <PropertyRef Name="CostType"/>
+                </Key>
+                <Property Name="UOM" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label="" sap:semantics="unit-of-measure"/>
+                <Property Name="InflationFactor" Type="Edm.Decimal" Precision="4" Scale="2" sap:unicode="false" sap:label=""/>
+                <Property Name="DateTo" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="" sap:updatable="false"/>
+                <Property Name="DateFrom" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="" sap:updatable="false"/>
+                <Property Name="CostType" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="IndexM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DateTo"/>
+                    <PropertyRef Name="DateFrom"/>
+                    <PropertyRef Name="Incoterms"/>
+                    <PropertyRef Name="Currency"/>
+                    <PropertyRef Name="MaterialGroup"/>
+                    <PropertyRef Name="Index"/>
+                </Key>
+                <Property Name="NGG" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label=""/>
+                <Property Name="BaseQP" Type="Edm.String" MaxLength="7" sap:unicode="false" sap:label=""/>
+                <Property Name="BaseCV" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:label=""/>
+                <Property Name="Geolocation" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label=""/>
+                <Property Name="DateTo" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="" sap:updatable="false"/>
+                <Property Name="DateFrom" Type="Edm.DateTime" Nullable="false" Precision="0" sap:unicode="false" sap:label="" sap:updatable="false"/>
+                <Property Name="Incoterms" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="" sap:updatable="false"/>
+                <Property Name="Currency" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:label="" sap:updatable="false" sap:semantics="currency-code"/>
+                <Property Name="MaterialGroup" Type="Edm.String" Nullable="false" MaxLength="9" sap:unicode="false" sap:label="" sap:updatable="false"/>
+                <Property Name="Index" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:label="" sap:updatable="false"/>
+            </EntityType>
+            <EntityType Name="DictionaryCostTypeM" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Code"/>
+                </Key>
+                <Property Name="Name" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="" sap:creatable="false" sap:updatable="false"/>
+            </EntityType>
+            <Association Name="LimitsForStandardRating_MasterDetailA" sap:content-version="1">
+                <End Type="ZTS_MD_SRV.LimitsForStandardRatingM" Multiplicity="1" Role="FromRole_LimitsForStandardRating_MasterDetailA"/>
+                <End Type="ZTS_MD_SRV.LimitsForStandardRatingM" Multiplicity="*" Role="ToRole_LimitsForStandardRating_MasterDetailA"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_LimitsForStandardRating_MasterDetailA">
+                        <PropertyRef Name="Subitem"/>
+                        <PropertyRef Name="DateTo"/>
+                        <PropertyRef Name="DateFrom"/>
+                        <PropertyRef Name="BusinessPartnerRole"/>
+                        <PropertyRef Name="Rating"/>
+                        <PropertyRef Name="LegalEntity"/>
+                    </Principal>
+                    <Dependent Role="ToRole_LimitsForStandardRating_MasterDetailA">
+                        <PropertyRef Name="Subitem"/>
+                        <PropertyRef Name="DateTo"/>
+                        <PropertyRef Name="DateFrom"/>
+                        <PropertyRef Name="BusinessPartnerRole"/>
+                        <PropertyRef Name="Rating"/>
+                        <PropertyRef Name="LegalEntity"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZTS_MD_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="riskTypeSet" EntityType="ZTS_MD_SRV.RiskTypeM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="incotermsSet" EntityType="ZTS_MD_SRV.IncotermsM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="currencySet" EntityType="ZTS_MD_SRV.CurrencyM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="uomSet" EntityType="ZTS_MD_SRV.UnitsOfMaterialM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryRatingSet" EntityType="ZTS_MD_SRV.DictionaryRatingM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="rwStationSet" EntityType="ZTS_MD_SRV.RWStationM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="portSet" EntityType="ZTS_MD_SRV.PortM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="vesselTypeSet" EntityType="ZTS_MD_SRV.VesselTypeM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="crossBorderSet" EntityType="ZTS_MD_SRV.CrossBorderM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="productionUnitSet" EntityType="ZTS_MD_SRV.ProductionUnitM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryUnitTypeSet" EntityType="ZTS_MD_SRV.DictionaryUnitTypeM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryBPIntSet" EntityType="ZTS_MD_SRV.DictionaryBusinessPartnerInternalM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="salesProgramSet" EntityType="ZTS_MD_SRV.SalesProgramM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionarySalesDivisionsSet" EntityType="ZTS_MD_SRV.DictionarySalesDivisionsM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="materialSet" EntityType="ZTS_MD_SRV.MaterialM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="benchmarkSet" EntityType="ZTS_MD_SRV.BenchmarkSuekAgM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="qualityParametersUomSet" EntityType="ZTS_MD_SRV.QualityParametersUomM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryPaymentMethodsSet" EntityType="ZTS_MD_SRV.DictionaryPaymentMethodsM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryPaymentTermsSet" EntityType="ZTS_MD_SRV.DictionaryPaymentTermsM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="limitsStandartSet" EntityType="ZTS_MD_SRV.LimitsForStandardRatingM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryMaterialGroupsSet" EntityType="ZTS_MD_SRV.DictionaryMaterialGroupsM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryTransportConnectionPointsSet" EntityType="ZTS_MD_SRV.DictionaryTransportConnectionPointsM" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="salesSchemeSet" EntityType="ZTS_MD_SRV.SalesSchemeM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="salesDirectionSet" EntityType="ZTS_MD_SRV.SalesDirectionsM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="countrySet" EntityType="ZTS_MD_SRV.CountryM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="salesMarketSet" EntityType="ZTS_MD_SRV.SalesMarketM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="bmqcSet" EntityType="ZTS_MD_SRV.BaseForMeasuringQualitativeCharacteristM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="sbmqcSet" EntityType="ZTS_MD_SRV.SetOfBaseForMeasuringQualitativeCharactM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="addressTypeSet" EntityType="ZTS_MD_SRV.AddressTypeM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="qualityParametersSet" EntityType="ZTS_MD_SRV.QualityParametersM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="limitsExpressSet" EntityType="ZTS_MD_SRV.LimitsExpressRatingM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="productRecipeHeaderSet" EntityType="ZTS_MD_SRV.ProductRecipeHeaderM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="productRecipeItemSet" EntityType="ZTS_MD_SRV.ProductRecipeItemM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dqpSet" EntityType="ZTS_MD_SRV.DefaultQualityParametersM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="salesRegionSet" EntityType="ZTS_MD_SRV.SalesRegionM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="drqSet" EntityType="ZTS_MD_SRV.DefaultResourceQualityM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryCompanyCodesSet" EntityType="ZTS_MD_SRV.DictionaryCompanyCodesM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryBusinessPartnerFunctionsSet" EntityType="ZTS_MD_SRV.DictionaryBusinessPartnerFunctionsM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="inflationFactorSet" EntityType="ZTS_MD_SRV.InflationFactorM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="indexSet" EntityType="ZTS_MD_SRV.IndexM" sap:searchable="true" sap:content-version="1"/>
+                <EntitySet Name="dictionaryCostTypeSet" EntityType="ZTS_MD_SRV.DictionaryCostTypeM" sap:searchable="true" sap:content-version="1"/>
+                <AssociationSet Name="LimitsForStandardRating_MasterDetailASet" Association="ZTS_MD_SRV.LimitsForStandardRating_MasterDetailA" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="limitsStandartSet" Role="FromRole_LimitsForStandardRating_MasterDetailA"/>
+                    <End EntitySet="limitsStandartSet" Role="ToRole_LimitsForStandardRating_MasterDetailA"/>
+                </AssociationSet>
+            </EntityContainer>
+            <atom:link
+                xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="http://ere.corp.suek.ru:8000/sap/opu/odata/sap/ZTS_MD_SRV/$metadata"/>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="http://ere.corp.suek.ru:8000/sap/opu/odata/sap/ZTS_MD_SRV/$metadata"/>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>

@@ -1,0 +1,47 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel expandable="true" expanded="false" width="auto">
+		<headerToolbar>
+			<Toolbar height="3rem">
+				<Title text="FOB - Murmansk" />
+				<ToolbarSpacer />
+				<CheckBox select="onCheckBoxSelect" selected="false" />
+			</Toolbar>
+		</headerToolbar>
+		<content>
+			<VBox>
+				<Label class="topLabel" text="{i18n>incoterms}" />
+				<Select forceSelection="false" selectedKey="{Incoterms}" class="fullWidth" width="100%" items="{ path: '/incotermsSet', sorter: { path: 'Incoterms' } }">
+					<core:Item key="{Incoterms}" text="{Incoterms} - {Description}"/>
+				</Select>
+				<Label class="topLabel" text="{i18n>deliveryPoint}" />
+				<MultiInput
+					custom:id="portPopup"
+					custom:set="port"
+					custom:filters="Country,Code,Name"
+					width="100%" 
+					enableMultiLineMode="true" 
+					showValueHelp="true"
+					valueHelpRequest="handleValueHelp" />
+				<Label class="topLabel" text="{i18n>offerPrice}" />
+				<Input type="Number" value="{OfferPrice}" />
+				<Label class="topLabel" text="{i18n>indexFormula}" />
+				<Input value="{IndexFormula}" />
+			</VBox>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>cv}" />
+					<Input value="{CV}" type="Number" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>cvBase}" />
+					<Select forceSelection="false" selectedKey="{NGG}" width="100%">
+						<core:Item key="" text=""/>
+						<core:Item key="NAR" text="NAR"/>
+						<core:Item key="GAR" text="GAR"/>
+						<core:Item key="GAD" text="GAD"/>
+					</Select>
+				</VBox>
+			</HBox>
+		</content>
+	</Panel>
+</core:FragmentDefinition>

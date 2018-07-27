@@ -1,0 +1,40 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel expandable="true" expanded="false" width="auto">
+		<headerToolbar>
+			<Toolbar height="3rem">
+				<Title text="{i18n>parameters}" />
+				<ToolbarSpacer />
+			</Toolbar>
+		</headerToolbar>
+		<content>
+			<VBox>
+				<Label class="topLabel" text="{i18n>companyBranch}" />
+				<Input value="СУЭК АГ" />
+				<Label class="topLabel" text="{i18n>trader}" />
+				<Input value="DORZHIEVB" />
+				<Label class="topLabel" text="{i18n>createDate}" />
+				<DateTimePicker enabled="false" value="26 июл. 2018 г., 10:43:21" />
+				<Label class="topLabel" text="{i18n>createdBy}" />
+				<Input enabled="false" id="userName" value="DORZHIEVB" />
+			</VBox>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>currency}" />
+					<Select forceSelection="false" selectedKey="USD" width="100%">
+						<core:Item key="" text=""/>
+						<core:Item key="USD" text="USD"/>
+						<core:Item key="EUR" text="EUR"/>
+						<core:Item key="RUB" text="RUB"/>
+					</Select>
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>volumeUom}" />
+					<Select forceSelection="false" selectedKey="TO" width="100%">
+						<core:Item key="" text=""/>
+						<core:Item key="TO" text="TO"/>
+					</Select>
+				</VBox>
+			</HBox>
+		</content>
+	</Panel>
+</core:FragmentDefinition>

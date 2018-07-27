@@ -1,0 +1,58 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog title="{i18n>period}" stretch="true" class="sapUiContentPadding" id="periodDialog">
+		<content>
+			<Label required="true" class="topLabel" text="{i18n>dateFrom}" />
+			<ToolbarSpacer/>
+			<DatePicker custom:key="dateFrom" dateValue="{DateFrom}" />
+			<ToolbarSpacer/>
+			<Label required="true" class="topLabel" text="{i18n>dateTo}" />
+			<ToolbarSpacer/>
+			<DatePicker custom:key="dateTo" dateValue="{DateTo}" />
+			<ToolbarSpacer/>
+			<Label class="topLabel" text="{i18n>numberOfShipments}" />
+			<ToolbarSpacer/>
+			<Input type="Number" value="{NumberOfShipments}" />
+			<ToolbarSpacer/>
+			<Label class="topLabel" text="{i18n>shipmentSize}" />
+			<ToolbarSpacer/>
+			<Input type="Number" value="{ShipmentSize}" />
+			<ToolbarSpacer/>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>shipmentTolerance}" />
+					<Input type="Number" enabled="false" value="{ShipmentTolerance}" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>toleranceUom}" />
+					<Select enabled="false" forceSelection="false" selectedKey="%" width="100%">
+						<core:Item key="" text=""/>
+						<core:Item key="%" text="%"/>
+					</Select>
+				</VBox>
+			</HBox>
+			
+			<ToolbarSpacer/>
+			<Label class="topLabel" text="{i18n>tonnage}" />
+			<ToolbarSpacer/>
+			<Input type="Number" value="{Tonnage}" />
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>tonnageTolerance}" />
+					<Input type="Number" enabled="false" value="10" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>toleranceUom}" />
+					<Select enabled="false" forceSelection="false" selectedKey="%" width="100%">
+						<core:Item key="" text=""/>
+						<core:Item key="%" text="%"/>
+					</Select>
+				</VBox>
+			</HBox>
+		</content>
+		<buttons>
+			<Button text="{i18n>cancel}" custom:id="period" type="Back" press="dialogCancel"/>
+			<Button text="{i18n>add}" custom:id="period" visible="false" type="Accept" press="dialogAdd"/>
+			<Button text="{i18n>save}" custom:id="period" visible="false" type="Accept" press="dialogSave"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

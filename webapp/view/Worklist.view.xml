@@ -1,0 +1,110 @@
+<mvc:View
+	controllerName="Offer.Offer.controller.Worklist"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:l="sap.ui.layout"
+	xmlns:semantic="sap.f.semantic"
+	xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified" 
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	xmlns:footerbar="sap.ushell.ui.footerbar">
+
+	<semantic:SemanticPage
+		id="page"
+		headerPinnable="false"
+		toggleHeaderOnTitleClick="false">
+
+		<semantic:titleHeading >
+			<Title  text="{i18n>worklistTitle}" />
+		</semantic:titleHeading>
+
+		<semantic:content>
+			<NavContainer
+				id="navCon"
+				defaultTransitionName="slide"
+				initialPage="p1"
+				class="navContainerControl"
+				width="100%">
+				<pages>
+					<Page
+						id="p1"
+						title="{i18n>tradingPurpose}" >
+						<VBox class="paddingRem">
+							<Label class="topLabel" text="{i18n>tradingPurpose}" />
+							<Select forceSelection="false" selectedKey="sales" width="100%">
+								<core:Item key="sales" text="{i18n>sales}"/>
+								<core:Item key="internationalTrading" text="{i18n>internationalTrading}"/>
+							</Select>
+							<Label class="topLabel" text="{i18n>type}" />
+							<Select forceSelection="false" selectedKey="spot" width="100%">
+								<core:Item key="spot" text="{i18n>spot}"/>
+								<core:Item key="longterm" text="{i18n>longterm}"/>
+							</Select>
+						</VBox>
+						<footer>
+							<Toolbar>
+								<ToolbarSpacer />
+								<Button id="tradingPurposeNextButton" type="Accept" custom:next="p2" press="nextPage" text="{i18n>next}" />
+							</Toolbar>
+						</footer>
+					</Page>
+					<Page
+						id="p2"
+						title="{i18n>offerSettings}" >
+						<l:BlockLayout>
+							<l:BlockLayoutRow>
+								<l:BlockLayoutCell width="1">
+									<core:Fragment fragmentName="fragment.parameters" type="XML"></core:Fragment>
+								</l:BlockLayoutCell>
+								<l:BlockLayoutCell width="1">
+									<core:Fragment fragmentName="fragment.offer" type="XML"></core:Fragment>
+								</l:BlockLayoutCell>
+								<l:BlockLayoutCell width="1">
+									<core:Fragment fragmentName="fragment.blacklist" type="XML"></core:Fragment>
+								</l:BlockLayoutCell>
+							</l:BlockLayoutRow>
+						</l:BlockLayout>
+						<footer>
+							<Toolbar>
+								<Button id="offerSettingsPrevButton" type="Back" custom:next="p1" press="nextPage" text="{i18n>prev}" />
+								<ToolbarSpacer />
+								<Button id="offerSettingsNextButton" type="Accept" custom:next="p3" press="nextPage" text="{i18n>next}" />
+							</Toolbar>
+						</footer>
+					</Page>
+					<Page
+						id="p3"
+						title="{i18n>volumeSettings}">
+						<List noDataText="{i18n>noData}" selectionChange="onListSelect">
+							<headerToolbar>
+								<Toolbar>
+									<Title text="{i18n>volumes}" titleStyle="H3" />
+									<ToolbarSpacer />
+									<Button type="Accept" custom:id="volume" text="{i18n>add}" press="add" />
+									<Button type="Emphasized" custom:id="volume" text="{i18n>edit}" press="edit" enabled="false" />
+									<Button type="Reject" custom:id="volume" text="{i18n>delete}" press="delete" enabled="false" />
+								</Toolbar>
+							</headerToolbar>
+							<items>
+								<CustomListItem>
+									<core:Fragment fragmentName="fragment.volumes" type="XML"></core:Fragment>
+								</CustomListItem>
+							</items>
+						</List>
+						<footer>
+							<Toolbar>
+								<Button id="volumePrevButton" type="Back" custom:next="p2" press="nextPage" text="{i18n>prev}" />
+								<ToolbarSpacer />
+								<Button id="volumeNextButton" type="Accept" press="approve" text="{i18n>approve}" />
+							</Toolbar>
+						</footer>
+					</Page>
+				</pages>
+			</NavContainer>
+		</semantic:content>
+		<semantic:titleMainAction>
+			<semantic:TitleMainAction custom:id="offerList" press="openDialog" text="{i18n>copyFrom}" />
+		</semantic:titleMainAction>
+	</semantic:SemanticPage>
+
+</mvc:View>

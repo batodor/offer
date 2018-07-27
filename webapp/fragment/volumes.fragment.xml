@@ -1,0 +1,57 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel expandable="true" expanded="true" width="auto">
+		<headerToolbar>
+			<Toolbar height="3rem">
+				<Title text="01" />
+				<ToolbarSpacer />
+				<CheckBox select="onCheckBoxSelect" selected="false" />
+			</Toolbar>
+		</headerToolbar>
+		<content>
+			<VBox>
+				<Switch class="topLabel" state="false" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
+					<layoutData>
+						<FlexItemData growFactor="1" />
+					</layoutData>
+				</Switch>
+				<Label class="topLabel" text="{i18n>owner}" />
+				<Select enabled="false" forceSelection="false" selectedKey="me" width="100%">
+					<core:Item key="me" text="{i18n>myself}"/>
+					<core:Item key="bp" text="{i18n>businessPartner}"/>
+				</Select>
+			</VBox>
+			<List noDataText="{i18n>noData}" selectionChange="onListSelect">
+				<headerToolbar>
+					<Toolbar>
+						<Title text="{i18n>prices}" titleStyle="H3" />
+						<ToolbarSpacer />
+						<Button type="Accept" custom:id="price" text="{i18n>add}" press="add" />
+						<Button type="Emphasized" custom:id="price" text="{i18n>edit}" press="edit" enabled="false" />
+						<Button type="Reject" custom:id="price" text="{i18n>delete}" press="delete" enabled="false" />
+					</Toolbar>
+				</headerToolbar>
+				<items>
+					<CustomListItem>
+						<core:Fragment fragmentName="fragment.prices" type="XML"></core:Fragment>
+					</CustomListItem>
+				</items>
+			</List>
+			<List noDataText="{i18n>noData}" selectionChange="onListSelect">
+				<headerToolbar>
+					<Toolbar>
+						<Title text="{i18n>periods}" titleStyle="H3" />
+						<ToolbarSpacer />
+						<Button type="Accept" custom:id="period" text="{i18n>add}" press="add" />
+						<Button type="Emphasized" custom:id="period" text="{i18n>edit}" press="edit" enabled="false" />
+						<Button type="Reject" custom:id="period" text="{i18n>delete}" press="delete" enabled="false" />
+					</Toolbar>
+				</headerToolbar>
+				<items>
+					<CustomListItem>
+						<core:Fragment fragmentName="fragment.periods" type="XML"></core:Fragment>
+					</CustomListItem>
+				</items>
+			</List>
+		</content>
+	</Panel>
+</core:FragmentDefinition>

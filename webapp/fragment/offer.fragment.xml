@@ -1,0 +1,55 @@
+<core:FragmentDefinition 
+	xmlns:u="sap.ui.unified" 
+	xmlns:l="sap.ui.layout" 
+	xmlns="sap.m" 
+	xmlns:core="sap.ui.core" 
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel expandable="true" expanded="true" width="auto">
+		<headerToolbar>
+			<Toolbar height="3rem">
+				<Title text="{i18n>offer}" />
+				<ToolbarSpacer />
+			</Toolbar>
+		</headerToolbar>
+		<content>
+			<VBox>
+				<Label class="topLabel" text="{i18n>status}" />
+				<Input enabled="false" id="status" value="New" />
+				<Label class="topLabel" text="{i18n>variantNumber}" />
+				<Input type="Number" id="number" value="{VariantNumber}" />
+				<Label class="topLabel" text="{i18n>counterparty}" />
+				<Input 
+					custom:id="dictionaryBPInt"
+					custom:filters="Name,Partner"
+					showValueHelp="true"
+					valueHelpRequest="handleValueHelp"
+					value="{Counterparty}" />
+				<Label class="topLabel" text="{i18n>productType}" />
+				<Select forceSelection="false" selectedKey="{ProductType}" width="100%" items="{ path: '/dictionarySalesDivisionsSet', sorter: { path: 'Code' } }">
+					<core:Item key="{Code}" text="{Code} - {Name}"/>
+				</Select>
+				<Label class="topLabel" text="{i18n>paymentMethod}"/>
+				<Select selectedKey="{PaymentMethod}" width="100%" forceSelection="false" 
+					items="{ path: '/dictionaryPaymentMethodsSet', sorter: { path: 'Name' } }">
+					<core:Item key="{Code}" text="{Code} - {Name}"/>
+				</Select>
+				<Label class="topLabel" text="{i18n>paymentTerms}"/>
+				<Select selectedKey="{PaymentTerms}" width="100%" forceSelection="false" 
+					items="{ path: '/dictionaryPaymentTermsSet', sorter: { path: 'Name' } }">
+					<core:Item key="{Code}" text="{Code} - {Name}"/>
+				</Select>
+				<Label class="topLabel" text="{i18n>attachments}" />
+				<u:FileUploader name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
+					uploadUrl="{upload>/uploadUrl}" tooltip="Upload your file to the local server" change="onFileChange" uploadComplete="onFileUploaded" 
+					style="Emphasized" width="100%">
+					<u:headerParameters>
+						<u:FileUploaderParameter name="slug" value="{upload>/fileName}"/>
+						<u:FileUploaderParameter name="x-csrf-token" value="{upload>/token}"/>
+					</u:headerParameters>
+				</u:FileUploader>
+				<Label class="topLabel" text="{i18n>comments}" />
+				<TextArea value="{Comment}" rows="6" width="100%" />
+			</VBox>
+		</content>
+	</Panel>
+</core:FragmentDefinition>

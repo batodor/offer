@@ -1,0 +1,96 @@
+.sapUiBlockLayoutSizeL:not(.sapUiBlockLayoutKeepFontSize) .sapUiBlockCellContent{
+	padding: 0 1rem 1rem 1rem;
+}
+.topLabel{
+	margin-top: 1rem;
+	font-size: .85rem;
+}
+.fullWidth{
+	width: 100%;
+}
+.margin-top{
+	margin-top: 1rem;
+}
+.leftVBoxStyle {
+  padding-right: .5rem;
+}
+
+.rightVBoxStyle {
+  padding-left: .5rem;
+}
+.sapMPanelContent{
+	padding: 0 1rem 1rem 1rem;
+	background: rgba(200,200,200,.2);
+}
+.sapMPanelContent .sapMPanelContent{
+	background: #fff;
+}
+
+.sapFDynamicPageContent, .sapFDynamicPageContentFitContainer,
+.sapFDynamicPage-Std-Phone .sapFDynamicPageContent, 
+.sapFDynamicPage-Std-Phone .sapFDynamicPageContentFitContainer{
+	padding: 0;
+}
+.sapUiBlockCellContent{
+	padding: 1rem 1rem 0 1rem;
+}
+.sapMDialogSection .sapUiBlockCellContent{
+	padding: 0 0 1rem 0;
+}
+.border-top{
+	border-top: 2px solid #dfdfdf;
+}
+[id*="deliveryPointsListPanel"] .sapMCbMarkChecked,
+[id*="deliveryPointsListPanel"] .sapMCbBg.sapMCbMarkChecked:before{
+    border-color: red !important;
+    color: red !important;
+}
+
+.sapFDynamicPageTitleMain>.sapFDynamicPageTitleMainInner{
+	align-items: center;
+}
+.paddingRem{
+	padding: 1rem;
+}
+.sapUiSizeCompact .sapMInputBase.sapMTextArea{
+	margin: 0;
+}
+.red{
+	color: red;
+}
+.sapMTitleStyleH3{
+	padding: .5rem 0;
+	display: block;
+	margin-top: 1rem;
+}
+.sapUiSizeCompact .sapMTB{
+	height: auto;
+}
+.sapMLIBActive div, .sapMLIBActive .sapMLIBCounter{
+	color: #000;
+}
+.sapMSwt,
+.sapUiSizeCompact .sapMSwt{
+	width: 100px;
+}
+.sapMSwtLabel{
+	width: 85px;
+}
+.sapMSwtOn .sapMSwtHandle{
+	left: 80px;
+}
+.noMargin{
+	margin: 0;
+}
+.marginTop{
+	margin-top: 1rem;
+}
+@media (max-width: 640px) { 
+	.sapMNav{
+		position: absolute;
+	}
+	.sapMSwt,
+	.sapUiSizeCompact .sapMSwt{
+		width: 110px;
+	}
+}
