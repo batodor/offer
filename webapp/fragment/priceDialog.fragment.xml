@@ -40,9 +40,9 @@
 						</layoutData>
 					</Switch>
 				</VBox>
-				<VBox class="rightVBoxStyle" width="50%">
-					<Label class="topLabel" text="{i18n>indexFormula}" />
-					<Input enabled="false" id="indexFormula" value="{IndexFormula}" />
+				<VBox visible="false" class="rightVBoxStyle" id="indexFormula" width="50%">
+					<Label required="true" class="topLabel" text="{i18n>indexFormula}" />
+					<Input value="{IndexFormula}" />
 				</VBox>
 			</HBox>
 			<HBox justifyContent="SpaceBetween">

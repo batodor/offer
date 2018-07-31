@@ -22,13 +22,13 @@
 			<NavContainer
 				id="navCon"
 				defaultTransitionName="slide"
-				initialPage="p1"
+				initialPage="p3"
 				class="navContainerControl"
 				width="100%">
 				<pages>
 					<Page
 						id="p1"
-						title="{i18n>tradingPurpose}" >
+						title="{i18n>offerTemplateSettings}" >
 						<VBox class="paddingRem" id="pageTradingPurpose">
 							<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
 							<Select custom:key="tradingPurpose" selectedKey="{Trading}" forceSelection="false" width="100%">
@@ -54,7 +54,7 @@
 					</Page>
 					<Page
 						id="p2"
-						title="{i18n>offerSettings}" >
+						title="{i18n>offer}" >
 						<l:BlockLayout>
 							<l:BlockLayoutRow>
 								<l:BlockLayoutCell width="1">
@@ -70,7 +70,7 @@
 						</l:BlockLayout>
 						<footer>
 							<Toolbar>
-								<Button id="offerSettingsPrevButton" type="Back" custom:next="p1" press="nextPage" text="{i18n>prev}" />
+								<Button id="offerSettingsPrevButton" type="Back" custom:next="p1" press="nextPage" text="{i18n>back}" />
 								<ToolbarSpacer />
 								<Button id="offerSettingsNextButton" type="Accept" custom:next="p3" press="nextPage" text="{i18n>next}" />
 							</Toolbar>
@@ -84,9 +84,10 @@
 								<Toolbar>
 									<Title text="{i18n>volumes}" titleStyle="H3" />
 									<ToolbarSpacer />
-									<Button type="Emphasized" custom:id="volume" text="{i18n>copy}" press="copy" />
+									
 									<Button type="Accept" custom:id="volume" text="{i18n>add}" press="add" />
 									<Button type="Emphasized" custom:id="volume" text="{i18n>edit}" press="edit" enabled="false" />
+									<Button type="Emphasized" custom:id="volume" text="{i18n>copy}" press="copy" enabled="false" />
 									<Button type="Reject" custom:id="volume" text="{i18n>delete}" press="delete" enabled="false" />
 								</Toolbar>
 							</headerToolbar>
@@ -98,7 +99,7 @@
 						</List>
 						<footer>
 							<Toolbar>
-								<Button id="volumePrevButton" type="Back" custom:next="p2" press="nextPage" text="{i18n>prev}" />
+								<Button id="volumePrevButton" type="Back" custom:next="p2" press="nextPage" text="{i18n>back}" />
 								<ToolbarSpacer />
 								<Button id="volumeNextButton" type="Accept" press="approve" text="{i18n>approve}" />
 							</Toolbar>

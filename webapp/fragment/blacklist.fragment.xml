@@ -7,18 +7,21 @@
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<HBox justifyContent="SpaceBetween">
-				<VBox class="leftVBoxStyle">
-					<Label class="topLabel" text="{i18n>blacklistStatus}" />
-					<VBox id="vboxBlacklist"></VBox>
-				</VBox>
-				<VBox class="rightVBoxStyle" alignItems="End" width="100px">
-					<Button class="marginTop" width="90px" text="{i18n>request}" press="openMail" />
-				</VBox>
-			</HBox>
-			<Label class="topLabel" text="{i18n>sanctions}" />
-			<ToolbarSpacer/>
-			<Text text="{i18n>sanctionsAppliedList}" class="red" />
+			<VBox>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle">
+						<Label class="topLabel" text="{i18n>counterparty}" />
+						<VBox id="vboxBlacklistCounterparty"></VBox>
+					</VBox>
+					<VBox class="rightVBoxStyle" alignItems="End">
+						<Label class="topLabel" text="{i18n>blacklistStatus}" />
+						<VBox id="vboxBlacklistStatus" alignItems="End"></VBox>
+					</VBox>
+				</HBox>
+				<Button width="90px" text="{i18n>request}" press="openMail" />
+				<Label class="topLabel" text="{i18n>sanctions}" />
+				<Text text="{i18n>sanctionsAppliedList}" class="red" />
+			</VBox>
 		</content>
 	</Panel>
 </core:FragmentDefinition>

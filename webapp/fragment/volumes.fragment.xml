@@ -9,15 +9,18 @@
 		</headerToolbar>
 		<content>
 			<VBox>
-				<Switch enabled="false" class="topLabel" state="false" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
-					<layoutData>
-						<FlexItemData growFactor="1" />
-					</layoutData>
-				</Switch>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>type}" />
+						<Text text="{i18n>optional}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>owner}" />
+						<Text text="Myself" />
+					</VBox>
+				</HBox>
 				<Label class="topLabel" text="{i18n>meansOfTransport}" />
 				<Text text="Vessel" />
-				<Label class="topLabel" text="{i18n>owner}" />
-				<Text text="Myself" />
 			</VBox>
 			<List noDataText="{i18n>noData}" selectionChange="onListSelect">
 				<headerToolbar>

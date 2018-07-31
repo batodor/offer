@@ -96,7 +96,7 @@
 .sapMLabel{
 	color: #888;
 }
-.sapMText{
+.sapMText,.sapMLIBActive .sapMText{
 	font-size: .9rem;
 	color: #000;
 }

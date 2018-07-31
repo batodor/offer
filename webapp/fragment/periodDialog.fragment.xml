@@ -30,11 +30,11 @@
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>shipmentTolerance}" />
-					<Input type="Number" enabled="false" value="{ShipmentTolerance}" />
+					<Input type="Number" value="{ShipmentTolerance}" />
 				</VBox>
 				<VBox class="rightVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>toleranceUom}" />
-					<Select enabled="false" forceSelection="false" selectedKey="%" width="100%">
+					<Select forceSelection="false" selectedKey="%" width="100%">
 						<core:Item key="" text=""/>
 						<core:Item key="%" text="%"/>
 					</Select>
@@ -55,11 +55,11 @@
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>tonnageTolerance}" />
-					<Input type="Number" enabled="false" value="10" />
+					<Input type="Number" value="10" />
 				</VBox>
 				<VBox class="rightVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>toleranceUom}" />
-					<Select enabled="false" forceSelection="false" selectedKey="%" width="100%">
+					<Select forceSelection="false" selectedKey="%" width="100%">
 						<core:Item key="" text=""/>
 						<core:Item key="%" text="%"/>
 					</Select>

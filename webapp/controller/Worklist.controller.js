@@ -141,8 +141,10 @@ sap.ui.define([
 				var valueHelp = this.byId(dynamicId) || sap.ui.getCore().byId(dynamicId);
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
 				if(id === "dictionaryBPInt"){
-					var vbox = this.byId("vboxBlacklist");
-					vbox.removeAllItems();
+					var vboxCounterparty = this.byId("vboxBlacklistCounterparty");
+					var vboxStatus = this.byId("vboxBlacklistStatus");
+					vboxCounterparty.removeAllItems();
+					vboxStatus.removeAllItems();
 				}
 				for(var i = 0; i < items.length; i++){
 					var item = items[i];
@@ -159,20 +161,23 @@ sap.ui.define([
 					}
 					if(id === "dictionaryBPInt"){
 						var random_boolean = Math.random() >= 0.5;
-						var counterpartyName = data.Name;
-						counterpartyName.replace(/[^a-zA-Z ]/g, "");
-						var itemText = counterpartyName + "\n" + this.getModel('i18n').getResourceBundle().getText("notBlacklisted");
-						if(random_boolean){
-							itemText = counterpartyName + "\n" + this.getModel('i18n').getResourceBundle().getText("blacklisted");
-						}
-						var text = new sap.m.Text({
-							text: itemText
+						var status = random_boolean ? this.getModel('i18n').getResourceBundle().getText("blacklisted") : this.getModel('i18n').getResourceBundle().getText("notBlacklisted");
+						
+						var counterpartyText = new sap.m.Text({
+							text: data.Name
+						});
+						var statusText = new sap.m.Text({
+							text: status
 						});
 						if(random_boolean){
-							text.addStyleClass("red");
+							counterpartyText.addStyleClass("red");
+							statusText.addStyleClass("red");
 						}
-						text.addStyleClass("smallMarginBottom");
-						vbox.addItem(text);
+						counterpartyText.addStyleClass("smallMarginBottom");
+						vboxCounterparty.addItem(counterpartyText);
+						
+						statusText.addStyleClass("smallMarginBottom");
+						vboxStatus.addItem(statusText);
 					}
 				}
 				this[id + "Dialog"].close();
@@ -255,9 +260,9 @@ sap.ui.define([
 					}
 				}
 				if(item){
-					this.setInput([toolbarContent[3], toolbarContent[4]], true, "Enabled");
+					this.setInput([toolbarContent[3], toolbarContent[4], toolbarContent[5]], true, "Enabled");
 				}else{
-					this.setInput([toolbarContent[3], toolbarContent[4]], false, "Enabled");
+					this.setInput([toolbarContent[3], toolbarContent[4], toolbarContent[5]], false, "Enabled");
 				}
 			},
 			
@@ -428,7 +433,7 @@ sap.ui.define([
 					var id = Switch.data("id");
 					var obj = this.byId(id) || sap.ui.getCore().byId(id);
 					var state = oEvent.getParameter("state");
-					obj.setEnabled(state);
+					obj.setVisible(state);
 				}
 			},
 

@@ -19,11 +19,7 @@
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>price}" />
-					<Switch enabled="false" state="true" customTextOn="{i18n>index}" customTextOff="{i18n>fix}">
-						<layoutData>
-							<FlexItemData growFactor="1" />
-						</layoutData>
-					</Switch>
+					<Text text="{i18n>index}" />
 				</VBox>
 				<VBox class="rightVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>indexFormula}" />
