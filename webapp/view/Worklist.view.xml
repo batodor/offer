@@ -14,7 +14,7 @@
 		headerPinnable="false"
 		toggleHeaderOnTitleClick="false">
 
-		<semantic:titleHeading >
+		<semantic:titleHeading>
 			<Title  text="{i18n>worklistTitle}" />
 		</semantic:titleHeading>
 
@@ -29,22 +29,26 @@
 					<Page
 						id="p1"
 						title="{i18n>tradingPurpose}" >
-						<VBox class="paddingRem">
-							<Label class="topLabel" text="{i18n>tradingPurpose}" />
-							<Select forceSelection="false" selectedKey="sales" width="100%">
+						<VBox class="paddingRem" id="pageTradingPurpose">
+							<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
+							<Select custom:key="tradingPurpose" selectedKey="{Trading}" forceSelection="false" width="100%">
 								<core:Item key="sales" text="{i18n>sales}"/>
-								<core:Item key="internationalTrading" text="{i18n>internationalTrading}"/>
+								<core:Item key="tradingSale" text="{i18n>tradingSale}"/>
+								<core:Item key="tradingPurchase" text="{i18n>tradingPurchase}"/>
 							</Select>
-							<Label class="topLabel" text="{i18n>type}" />
-							<Select forceSelection="false" selectedKey="spot" width="100%">
-								<core:Item key="spot" text="{i18n>spot}"/>
-								<core:Item key="longterm" text="{i18n>longterm}"/>
+							<Label required="true" class="topLabel" text="{i18n>type}" />
+							<Select custom:key="type" selectedKey="{Type}" forceSelection="false" width="100%">
+								<core:Item key="simple" text="{i18n>simple}"/>
+								<core:Item key="structured" text="{i18n>structured}"/>
 							</Select>
 						</VBox>
 						<footer>
 							<Toolbar>
 								<ToolbarSpacer />
-								<Button id="tradingPurposeNextButton" type="Accept" custom:next="p2" press="nextPage" text="{i18n>next}" />
+								<Button id="tradingPurposeNextButton" type="Accept" 
+									custom:next="p2" 
+									custom:check="true" 
+									custom:id="pageTradingPurpose" press="nextPage" text="{i18n>next}" />
 							</Toolbar>
 						</footer>
 					</Page>
@@ -80,6 +84,7 @@
 								<Toolbar>
 									<Title text="{i18n>volumes}" titleStyle="H3" />
 									<ToolbarSpacer />
+									<Button type="Emphasized" custom:id="volume" text="{i18n>copy}" press="copy" />
 									<Button type="Accept" custom:id="volume" text="{i18n>add}" press="add" />
 									<Button type="Emphasized" custom:id="volume" text="{i18n>edit}" press="edit" enabled="false" />
 									<Button type="Reject" custom:id="volume" text="{i18n>delete}" press="delete" enabled="false" />

@@ -1,22 +1,32 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
 	<Dialog title="{i18n>period}" stretch="true" class="sapUiContentPadding" id="periodDialog">
 		<content>
-			<Label required="true" class="topLabel" text="{i18n>dateFrom}" />
-			<ToolbarSpacer/>
-			<DatePicker custom:key="dateFrom" dateValue="{DateFrom}" />
-			<ToolbarSpacer/>
-			<Label required="true" class="topLabel" text="{i18n>dateTo}" />
-			<ToolbarSpacer/>
-			<DatePicker custom:key="dateTo" dateValue="{DateTo}" />
-			<ToolbarSpacer/>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label required="true" class="topLabel" text="{i18n>dateFrom}" />
+					<DatePicker custom:key="dateFrom" dateValue="{DateFrom}" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label required="true" class="topLabel" text="{i18n>dateTo}" />
+					<DatePicker custom:key="dateTo" dateValue="{DateTo}" />
+				</VBox>
+			</HBox>
 			<Label class="topLabel" text="{i18n>numberOfShipments}" />
 			<ToolbarSpacer/>
 			<Input type="Number" value="{NumberOfShipments}" />
 			<ToolbarSpacer/>
-			<Label class="topLabel" text="{i18n>shipmentSize}" />
-			<ToolbarSpacer/>
-			<Input type="Number" value="{ShipmentSize}" />
-			<ToolbarSpacer/>
+			
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>min})" />
+					<Input type="Number" value="{ShipmentSizeMin}" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>max})" />
+					<Input type="Number" value="{ShipmentSizeMax}" />
+				</VBox>
+			</HBox>
+			
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>shipmentTolerance}" />
@@ -31,10 +41,17 @@
 				</VBox>
 			</HBox>
 			
-			<ToolbarSpacer/>
-			<Label class="topLabel" text="{i18n>tonnage}" />
-			<ToolbarSpacer/>
-			<Input type="Number" value="{Tonnage}" />
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>tonnage} ({i18n>min})" />
+					<Input type="Number" value="{TonnageMin}" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>tonnage} ({i18n>max})" />
+					<Input type="Number" value="{TonnageMax}" />
+				</VBox>
+			</HBox>
+			
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>tonnageTolerance}" />

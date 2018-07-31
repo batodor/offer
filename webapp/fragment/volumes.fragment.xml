@@ -9,16 +9,15 @@
 		</headerToolbar>
 		<content>
 			<VBox>
-				<Switch class="topLabel" state="false" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
+				<Switch enabled="false" class="topLabel" state="false" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
 					<layoutData>
 						<FlexItemData growFactor="1" />
 					</layoutData>
 				</Switch>
+				<Label class="topLabel" text="{i18n>meansOfTransport}" />
+				<Text text="Vessel" />
 				<Label class="topLabel" text="{i18n>owner}" />
-				<Select enabled="false" forceSelection="false" selectedKey="me" width="100%">
-					<core:Item key="me" text="{i18n>myself}"/>
-					<core:Item key="bp" text="{i18n>businessPartner}"/>
-				</Select>
+				<Text text="Myself" />
 			</VBox>
 			<List noDataText="{i18n>noData}" selectionChange="onListSelect">
 				<headerToolbar>

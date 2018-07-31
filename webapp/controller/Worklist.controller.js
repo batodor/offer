@@ -140,13 +140,15 @@ sap.ui.define([
 				var dynamicId = button.data("dynamicId");
 				var valueHelp = this.byId(dynamicId) || sap.ui.getCore().byId(dynamicId);
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
+				if(id === "dictionaryBPInt"){
+					var vbox = this.byId("vboxBlacklist");
+					vbox.removeAllItems();
+				}
 				for(var i = 0; i < items.length; i++){
 					var item = items[i];
 					var path = item.getBindingContextPath();
 					var data = item.getModel().getData(path);
-					if(id === "dictionaryBPInt"){
-						valueHelp.setValue(data.Name);
-					}else if(id === "portPopup"){
+					if(id === "portPopup" || id === "dictionaryBPInt"){
 						var token = new sap.m.Token({
 							key: data.Code,
 							text: data.Name
@@ -154,6 +156,23 @@ sap.ui.define([
 						valueHelp.addToken(token);
 					}else{
 						valueHelp.setValue(data[key]);
+					}
+					if(id === "dictionaryBPInt"){
+						var random_boolean = Math.random() >= 0.5;
+						var counterpartyName = data.Name;
+						counterpartyName.replace(/[^a-zA-Z ]/g, "");
+						var itemText = counterpartyName + "\n" + this.getModel('i18n').getResourceBundle().getText("notBlacklisted");
+						if(random_boolean){
+							itemText = counterpartyName + "\n" + this.getModel('i18n').getResourceBundle().getText("blacklisted");
+						}
+						var text = new sap.m.Text({
+							text: itemText
+						});
+						if(random_boolean){
+							text.addStyleClass("red");
+						}
+						text.addStyleClass("smallMarginBottom");
+						vbox.addItem(text);
 					}
 				}
 				this[id + "Dialog"].close();
@@ -191,6 +210,17 @@ sap.ui.define([
 				var button = oEvent.getSource();
 				var navCon = this.byId("navCon");
 				var id = button.data("next");
+				if(button.data("check")){
+					var page = this.byId(button.data("id"));
+					var bCheckAlert = this.checkKeys(page);
+					if(bCheckAlert){
+						var msg = this.getModel('i18n').getResourceBundle().getText("plsEnter") + " " + bCheckAlert.slice(0, -2);
+						MessageBox.alert(msg, {
+							actions: [sap.m.MessageBox.Action.CLOSE]
+						});
+						return true;
+					}
+				}
 				if(id){
 					navCon.to(this.byId(id));
 				}else{
@@ -323,7 +353,7 @@ sap.ui.define([
 			// Checks the key inputs for empty values for dialog Add/Edit
 			checkKeys: function(object){
 				var check = "";
-				var inputs = object.getAggregation("content");
+				var inputs = object.getAggregation("content") || object.getAggregation("items");
 				for(var i = 0; i < inputs.length; i++){
 					var oInput = inputs[i];
 					if(oInput.data("key")){
@@ -382,6 +412,34 @@ sap.ui.define([
 			openMail: function(oEvent){
 				var counterParty = oEvent.getSource().data("key");
 				window.open("mailto:");
+			},
+			
+			checkValue: function(oEvent){
+				var Input = oEvent.getSource();
+				var maxValue = Input.data("max") ? parseInt(input.data("max")) : 100;
+				var value = parseInt(oEvent.getParameter('newValue'));
+				var valueState = isNaN(value) ? "Error" : value > maxValue ? "Error" : "Success";
+				Input.setValueState(valueState);
+			},
+			
+			onSwitch: function(oEvent){
+				var Switch = oEvent.getSource();
+				if(Switch.data("id")){
+					var id = Switch.data("id");
+					var obj = this.byId(id) || sap.ui.getCore().byId(id);
+					var state = oEvent.getParameter("state");
+					obj.setEnabled(state);
+				}
+			},
+
+			handleSuggest: function(oEvent) {
+				var sTerm = oEvent.getParameter("suggestValue");
+				var filterName = oEvent.getSource().data("select") ? oEvent.getSource().data("select") : "Name";
+				var aFilters = [];
+				if (sTerm) {
+					aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.StartsWith, sTerm));
+				}
+				oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
 			}
 		});
 	}

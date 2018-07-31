@@ -12,33 +12,54 @@
 			<MultiInput
 				custom:id="portPopup"
 				custom:set="port"
-				custom:key="deliveryPoint" 
+				custom:key="deliveryPoint"
+				custom:select="Name"
 				custom:filters="Country,Code,Name"
 				width="100%" 
 				enableMultiLineMode="true" 
 				showValueHelp="true"
-				valueHelpRequest="handleValueHelp" />
+				valueHelpRequest="handleValueHelp"
+				showSuggestion="true"
+				suggest="handleSuggest"
+				suggestionItems="{/portSet}" >
+				<suggestionItems>
+					<core:Item text="{Name}" />
+				</suggestionItems>
+			</MultiInput>
 			<ToolbarSpacer/>
 			<Label class="topLabel" text="{i18n>offerPrice}" />
 			<ToolbarSpacer/>
 			<Input type="Number" value="{OfferPrice}" />
 			<ToolbarSpacer/>
-			<Label class="topLabel" text="{i18n>indexFormula}" />
-			<ToolbarSpacer/>
-			<Input value="{IndexFormula}" />
-			<ToolbarSpacer/>
-			<Label class="topLabel" text="{i18n>cv}" />
-			<ToolbarSpacer/>
-			<Input value="{CV}" type="Number" />
-			<ToolbarSpacer/>
-			<Label class="topLabel" text="{i18n>cvBase}" />
-			<ToolbarSpacer/>
-			<Select forceSelection="false" selectedKey="NAR" width="100%">
-				<core:Item key="" text=""/>
-				<core:Item key="NAR" text="NAR"/>
-				<core:Item key="GAR" text="GAR"/>
-				<core:Item key="GAD" text="GAD"/>
-			</Select>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>price}" />
+					<Switch change="onSwitch" custom:id="indexFormula" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}">
+						<layoutData>
+							<FlexItemData growFactor="1" />
+						</layoutData>
+					</Switch>
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>indexFormula}" />
+					<Input enabled="false" id="indexFormula" value="{IndexFormula}" />
+				</VBox>
+			</HBox>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>cv}" />
+					<Input value="{CV}" type="Number" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>cvBase}" />
+					<Select forceSelection="false" selectedKey="NAR" width="100%">
+						<core:Item key="" text=""/>
+						<core:Item key="NAR" text="NAR"/>
+						<core:Item key="GAR" text="GAR"/>
+						<core:Item key="GAD" text="GAD"/>
+					</Select>
+				</VBox>
+			</HBox>
 		</content>
 		<buttons>
 			<Button text="{i18n>cancel}" custom:id="price" type="Back" press="dialogCancel"/>

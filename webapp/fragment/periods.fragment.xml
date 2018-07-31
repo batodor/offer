@@ -2,48 +2,67 @@
 	<Panel expandable="true" expanded="false" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="01.01.2018 - 02.01.2018" />
+				<Title text="01/01/2018 - 02/01/2018" />
 				<ToolbarSpacer />
 				<CheckBox select="onCheckBoxSelect" selected="false" />
 			</Toolbar>
 		</headerToolbar>
 		<content>
 			<VBox>
-				<Label class="topLabel" text="{i18n>dateFrom}" />
-				<DatePicker enabled="false" dateValue="{DateFrom}" />
-				<Label class="topLabel" text="{i18n>dateTo}" />
-				<DatePicker enabled="false" dateValue="{DateTo}" />
-				<Label class="topLabel" text="{i18n>numberOfShipments}" />
-				<Input type="Number" enabled="false" value="{NumberOfShipments}" />
-				<Label class="topLabel" text="{i18n>shipmentSize}" />
-				<Input type="Number" enabled="false" value="{ShipmentSize}" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>shipmentTolerance}" />
-						<Input type="Number" enabled="false" value="{ShipmentTolerance}" />
+						<Label class="topLabel" text="{i18n>dateFrom}" />
+						<Text text="01/01/2018" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>toleranceUom}" />
-						<Select enabled="false" forceSelection="false" selectedKey="%" width="100%">
-							<core:Item key="" text=""/>
-							<core:Item key="%" text="%"/>
-						</Select>
+						<Label class="topLabel" text="{i18n>dateTo}" />
+						<Text text="02/01/2018" />
+					</VBox>
+				</HBox>
+				<Label class="topLabel" text="{i18n>numberOfShipments}" />
+				<Text text="3" />
+				
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>min})" />
+						<Text text="1" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>max})" />
+						<Text text="10" />
 					</VBox>
 				</HBox>
 				
-				<Label class="topLabel" text="{i18n>tonnage}" />
-				<Input type="Number" enabled="false" value="{Tonnage}" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>tonnageTolerance}" />
-						<Input type="Number" enabled="false" value="10" />
+						<Label class="topLabel" text="{i18n>shipmentTolerance}" />
+						<Text text="2" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>toleranceUom}" />
-						<Select enabled="false" forceSelection="false" selectedKey="%" width="100%">
-							<core:Item key="" text=""/>
-							<core:Item key="%" text="%"/>
-						</Select>
+						<Text text="%" />
+					</VBox>
+				</HBox>
+				
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>tonnage} ({i18n>min})" />
+						<Text text="3" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>tonnage} ({i18n>max})" />
+						<Text text="8" />
+					</VBox>
+				</HBox>
+				
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>tonnageTolerance}" />
+						<Text text="1" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>toleranceUom}" />
+						<Text text="%" />
 					</VBox>
 				</HBox>
 			</VBox>

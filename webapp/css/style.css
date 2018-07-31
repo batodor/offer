@@ -56,7 +56,7 @@
 	margin: 0;
 }
 .red{
-	color: red;
+	color: red !important;
 }
 .sapMTitleStyleH3{
 	padding: .5rem 0;
@@ -84,6 +84,21 @@
 }
 .marginTop{
 	margin-top: 1rem;
+}
+.marginBottom,
+.sapMListUl{
+	margin-bottom: 1rem;
+}
+.smallMarginBottom{
+	margin-bottom: 7px;
+}
+
+.sapMLabel{
+	color: #888;
+}
+.sapMText{
+	font-size: .9rem;
+	color: #000;
 }
 @media (max-width: 640px) { 
 	.sapMNav{

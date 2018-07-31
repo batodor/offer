@@ -17,24 +17,26 @@
 				<Input enabled="false" id="status" value="New" />
 				<Label class="topLabel" text="{i18n>variantNumber}" />
 				<Input type="Number" id="number" value="{VariantNumber}" />
-				<Label class="topLabel" text="{i18n>counterparty}" />
-				<Input 
+				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
+				<MultiInput 
 					custom:id="dictionaryBPInt"
 					custom:filters="Name,Partner"
+					custom:key="counterparty"
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
 					value="{Counterparty}" />
-				<Label class="topLabel" text="{i18n>productType}" />
-				<Select forceSelection="false" selectedKey="{ProductType}" width="100%" items="{ path: '/dictionarySalesDivisionsSet', sorter: { path: 'Code' } }">
+				<Label required="true" class="topLabel" text="{i18n>productType}" />
+				<Select custom:key="productType" forceSelection="false" selectedKey="{ProductType}" width="100%" 
+					items="{ path: '/dictionarySalesDivisionsSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
-				<Label class="topLabel" text="{i18n>paymentMethod}"/>
-				<Select selectedKey="{PaymentMethod}" width="100%" forceSelection="false" 
+				<Label required="true" class="topLabel" text="{i18n>paymentMethod}"/>
+				<Select custom:key="paymentMethod" selectedKey="{PaymentMethod}" width="100%" forceSelection="false" 
 					items="{ path: '/dictionaryPaymentMethodsSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
-				<Label class="topLabel" text="{i18n>paymentTerms}"/>
-				<Select selectedKey="{PaymentTerms}" width="100%" forceSelection="false" 
+				<Label required="true" class="topLabel" text="{i18n>paymentTerms}"/>
+				<Select custom:key="paymentTerms" selectedKey="{PaymentTerms}" width="100%" forceSelection="false" 
 					items="{ path: '/dictionaryPaymentTermsSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>

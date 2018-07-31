@@ -13,7 +13,7 @@
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
-			<Table mode="SingleSelectMaster" includeItemInSelection="true" id="dictionaryBPInt" custom:id="dictionaryBPInt" items="{}" select="onTableSelect"
+			<Table mode="MultiSelect" includeItemInSelection="true" id="dictionaryBPInt" custom:id="dictionaryBPInt" items="{}" select="onTableSelect"
 				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false"
 				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
 				<columns>

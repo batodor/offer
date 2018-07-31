@@ -8,12 +8,12 @@
 		</headerToolbar>
 		<content>
 			<HBox justifyContent="SpaceBetween">
-				<VBox class="leftVBoxStyle" width="50%">
+				<VBox class="leftVBoxStyle">
 					<Label class="topLabel" text="{i18n>blacklistStatus}" />
-					<Text text="Yes" class="red" />
+					<VBox id="vboxBlacklist"></VBox>
 				</VBox>
-				<VBox class="rightVBoxStyle" alignItems="End" width="50%">
-					<Button class="marginTop" text="{i18n>request}" press="openMail" />
+				<VBox class="rightVBoxStyle" alignItems="End" width="100px">
+					<Button class="marginTop" width="90px" text="{i18n>request}" press="openMail" />
 				</VBox>
 			</HBox>
 			<Label class="topLabel" text="{i18n>sanctions}" />
