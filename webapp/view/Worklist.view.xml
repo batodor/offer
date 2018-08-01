@@ -22,7 +22,7 @@
 			<NavContainer
 				id="navCon"
 				defaultTransitionName="slide"
-				initialPage="p3"
+				initialPage="p1"
 				class="navContainerControl"
 				width="100%">
 				<pages>

@@ -187,11 +187,11 @@ sap.ui.define([
 				var id = button.data("id");
 				var dialog = button.getParent();
 				var oModel = dialog.getModel();
-				var oData = this.getOdata(dialog);
+				//var oData = this.getOdata(dialog);
 				var bCheckAlert = this.checkKeys(dialog);
 				
 				if(!bCheckAlert){
-					oModel.create("/" + id + "Set", oData);
+					// oModel.create("/" + id + "Set", oData);
 					this[id + "Dialog"].close();
 				}else{
 					var msg = this.getModel('i18n').getResourceBundle().getText("plsEnter") + " " + bCheckAlert.slice(0, -2);
@@ -203,11 +203,11 @@ sap.ui.define([
 			dialogSave: function(oEvent) {
 				var id = oEvent.getSource().data("id");
 				var dialog = sap.ui.getCore().byId(id + "Dialog");
-				var url = dialog.getBindingContext().getPath();
-				var oModel = dialog.getModel();
-				var oData = this.getOdata(dialog);
-				dialog.unbindElement();
-				oModel.update(url, oData);
+				//var url = dialog.getBindingContext().getPath();
+				//var oModel = dialog.getModel();
+				//var oData = this.getOdata(dialog);
+				// dialog.unbindElement();
+				// oModel.update(url, oData);
 				dialog.close();
 			},
 			
@@ -273,7 +273,7 @@ sap.ui.define([
 				var dialog = this[id + "Dialog"];
 				var dialogButtons = dialog.getButtons();
 				this.setEnabledDialog(dialog, true, true);
-				dialog.unbindElement();
+				//dialog.unbindElement();
 				dialogButtons[1].setVisible(true);
 				dialogButtons[2].setVisible(false);
 				dialog.open();
@@ -283,7 +283,7 @@ sap.ui.define([
 				var id = button.data("id");
 				var dialog = this[id + "Dialog"];
 				var dialogButtons = dialog.getButtons();
-				dialog.unbindElement();
+				// dialog.unbindElement();
 				dialogButtons[1].setVisible(false);
 				dialogButtons[2].setVisible(true);
 				dialog.open();
@@ -298,14 +298,14 @@ sap.ui.define([
 					}
 				}
 				if(item){
-					var url = item.getBindingContextPath();
-					var oModel = item.getModel();
+					// var url = item.getBindingContextPath();
+					// var oModel = item.getModel();
 					var that = this;
 					MessageBox.confirm(that.getResourceBundle().getText("askDelete"), {
 						actions: [that.getResourceBundle().getText("delete"), sap.m.MessageBox.Action.CLOSE],
 						onClose: function(sAction) {
 							if (sAction === that.getResourceBundle().getText("delete")) {
-								oModel.remove(url);
+								// oModel.remove(url);
 							} else {
 								MessageToast.show("Delete canceled!");
 							}
@@ -421,7 +421,7 @@ sap.ui.define([
 			
 			checkValue: function(oEvent){
 				var Input = oEvent.getSource();
-				var maxValue = Input.data("max") ? parseInt(input.data("max")) : 100;
+				var maxValue = Input.data("max") ? parseInt(Input.data("max")) : 100;
 				var value = parseInt(oEvent.getParameter('newValue'));
 				var valueState = isNaN(value) ? "Error" : value > maxValue ? "Error" : "Success";
 				Input.setValueState(valueState);
