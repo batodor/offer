@@ -2,7 +2,7 @@
 	<Panel expandable="true" expanded="false" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="01.06.18 - 31.08.18" />
+				<Title text="01.09.18 - 30.09.18" />
 				<ToolbarSpacer />
 				<CheckBox select="onCheckBoxSelect" selected="false" />
 			</Toolbar>
@@ -12,15 +12,15 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>dateFrom}" />
-						<Text text="01.06.18" />
+						<Text text="01.09.18" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>dateTo}" />
-						<Text text="31.08.18" />
+						<Text text="30.09.18" />
 					</VBox>
 				</HBox>
 				<Label class="topLabel" text="{i18n>numberOfShipments}" />
-				<Text text="3" />
+				<Text text="1" />
 				
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">

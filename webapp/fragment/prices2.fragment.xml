@@ -2,7 +2,7 @@
 	<Panel expandable="true" expanded="false" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="CIF - Shanghai" />
+				<Title text="CIF - Gwangyang" />
 				<ToolbarSpacer />
 				<CheckBox select="onCheckBoxSelect" selected="false" />
 			</Toolbar>
@@ -11,7 +11,7 @@
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>fix} {i18n>price}" />
-					<Text text="101.2" />
+					<Text text="104.6" />
 				</VBox>
 				<VBox class="rightVBoxStyle" visible="false" width="50%">
 					<Label class="topLabel" text="{i18n>indexFormula}" />
@@ -25,7 +25,7 @@
 				</VBox>
 				<VBox class="rightVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>deliveryPoint}" />
-				<Text text="Shanghai" />
+				<Text text="Gwangyang" />
 				</VBox>
 			</HBox>
 			<HBox justifyContent="SpaceBetween">

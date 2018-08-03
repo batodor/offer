@@ -93,7 +93,7 @@
 	margin-bottom: 7px;
 }
 
-.sapMLabel{
+.sapMLabel,.sapMLIBActive .sapMLabel{
 	color: #888;
 }
 .sapMText,.sapMLIBActive .sapMText{

@@ -1,18 +1,18 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Dialog title="{i18n>volume}" stretch="true" class="sapUiContentPadding" id="volumeDialog">
+	<Dialog title="{i18n>volume}" stretch="true" class="sapUiContentPadding" id="volume2Dialog">
 		<content>
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label required="true" class="topLabel" text="{i18n>type}" />
-					<Switch custom:id="volumeOwner" change="onSwitch" state="false" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
+					<Switch custom:id="volumeOwner2" change="onSwitch" state="true" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
 						<layoutData>
 							<FlexItemData growFactor="1" />
 						</layoutData>
 					</Switch>
 				</VBox>
-				<VBox class="rightVBoxStyle" width="50%" visible="false" id="volumeOwner">
+				<VBox class="rightVBoxStyle" width="50%" visible="true" id="volumeOwner2">
 					<Label required="true" class="topLabel" text="{i18n>owner}" />
-					<Select forceSelection="false" selectedKey="" width="100%">
+					<Select forceSelection="false" selectedKey="bp" width="100%">
 						<core:Item key="" text=""/>
 						<core:Item key="me" text="{i18n>myself}"/>
 						<core:Item key="bp" text="{i18n>businessPartner}"/>
@@ -23,7 +23,7 @@
 			<ToolbarSpacer/>
 			<Label required="true" class="topLabel" text="{i18n>number} (max: 36)" />
 			<ToolbarSpacer/>
-			<Input custom:key="number" custom:max="36" value="01" liveChange="checkValue" type="Number" width="100%"/>
+			<Input custom:key="number" custom:max="36" value="02" liveChange="checkValue" type="Number" width="100%"/>
 			<ToolbarSpacer/>
 			<Label required="true" class="topLabel" text="{i18n>meansOfTransport}" />
 			<ToolbarSpacer/>
@@ -34,9 +34,9 @@
 			</Select>
 		</content>
 		<buttons>
-			<Button text="{i18n>cancel}" custom:id="volume" type="Back" press="dialogCancel"/>
-			<Button text="{i18n>save}" custom:id="volume" visible="false" type="Accept" press="dialogAdd"/>
-			<Button text="{i18n>save}" custom:id="volume" visible="false" type="Accept" press="dialogSave"/>
+			<Button text="{i18n>cancel}" custom:id="volume2" type="Back" press="dialogCancel"/>
+			<Button text="{i18n>save}" custom:id="volume2" visible="false" type="Accept" press="dialogAdd"/>
+			<Button text="{i18n>save}" custom:id="volume2" visible="false" type="Accept" press="dialogSave"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

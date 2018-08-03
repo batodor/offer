@@ -31,13 +31,13 @@
 						title="{i18n>offerTemplateSettings}" >
 						<VBox class="paddingRem" id="pageTradingPurpose">
 							<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
-							<Select custom:key="tradingPurpose" selectedKey="{Trading}" forceSelection="false" width="100%">
+							<Select enabled="false" id="sales" custom:key="tradingPurpose" selectedKey="sales" forceSelection="false" width="100%">
 								<core:Item key="sales" text="{i18n>sales}"/>
 								<core:Item key="tradingSale" text="{i18n>tradingSale}"/>
 								<core:Item key="tradingPurchase" text="{i18n>tradingPurchase}"/>
 							</Select>
 							<Label required="true" class="topLabel" text="{i18n>type}" />
-							<Select custom:key="type" selectedKey="{Type}" forceSelection="false" width="100%">
+							<Select enabled="false" id="type" custom:key="type" selectedKey="structured" forceSelection="false" width="100%">
 								<core:Item key="simple" text="{i18n>simple}"/>
 								<core:Item key="structured" text="{i18n>structured}"/>
 							</Select>
@@ -85,15 +85,18 @@
 									<Title text="{i18n>volumes}" titleStyle="H3" />
 									<ToolbarSpacer />
 									
-									<Button type="Accept" custom:id="volume" text="{i18n>add}" press="add" />
-									<Button type="Emphasized" custom:id="volume" text="{i18n>edit}" press="edit" enabled="false" />
-									<Button type="Emphasized" custom:id="volume" text="{i18n>copy}" press="copy" enabled="false" />
-									<Button type="Reject" custom:id="volume" text="{i18n>delete}" press="delete" enabled="false" />
+									<Button type="Accept" custom:id="volume" id="volumeButtonAdd" enabled="false" text="{i18n>add}" press="add" />
+									<Button type="Emphasized" custom:id="volume" id="volumeButtonEdit" text="{i18n>edit}" press="edit" enabled="false" />
+									<Button type="Emphasized" custom:id="volume" id="volumeButtonCopy" text="{i18n>copy}" press="copy" enabled="false" />
+									<Button type="Reject" custom:id="volume" id="volumeButtonDelete" text="{i18n>delete}" press="delete" enabled="false" />
 								</Toolbar>
 							</headerToolbar>
 							<items>
 								<CustomListItem>
 									<core:Fragment fragmentName="fragment.volumes" type="XML"></core:Fragment>
+								</CustomListItem>
+								<CustomListItem>
+									<core:Fragment fragmentName="fragment.volumes2" type="XML"></core:Fragment>
 								</CustomListItem>
 							</items>
 						</List>
@@ -109,7 +112,7 @@
 			</NavContainer>
 		</semantic:content>
 		<semantic:titleMainAction>
-			<semantic:TitleMainAction custom:id="offerList" press="openDialog" text="{i18n>copyFrom}" />
+			<semantic:TitleMainAction custom:id="offerList" press="copyFrom" text="{i18n>copyFrom}" />
 		</semantic:titleMainAction>
 	</semantic:SemanticPage>
 

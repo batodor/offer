@@ -33,7 +33,7 @@ sap.ui.define([
 				this.typeArr = ["value", "dateValue", "selectedKey", "selected"];
 				
 				// Add dialogs
-				this.tableArr = [ "dictionaryBPInt", "portPopup", "volume", "period", "price" ];
+				this.tableArr = [ "dictionaryBPInt", "portPopup", "volume", "period", "price", "volume2", "period2", "price2" ];
 				this.addDialogs(this.tableArr);
 			},
 			
@@ -248,6 +248,12 @@ sap.ui.define([
 				}
 				selectedItem.setActive(checkBox.getSelected());
 				list.fireSelectionChange();
+				
+				var id = checkBox.data("id");
+				this.byId("volumeButtonAdd").data("id", id);
+				this.byId("volumeButtonEdit").data("id", id);
+				this.byId("volumeButtonCopy").data("id", id);
+				this.byId("volumeButtonDelete").data("id", id);
 			},
 			onListSelect: function(oEvent){
 				var list = oEvent.getSource();
@@ -445,6 +451,18 @@ sap.ui.define([
 					aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.StartsWith, sTerm));
 				}
 				oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
+			},
+			
+			copyFrom: function(){
+				var enabled = this.byId("number").getEnabled();
+				if(enabled){
+					this.setInput(["sales", "type", "number", "counterparty", "productType", "paymentMethod", "paymentTerms", "upload", "comment", "volumeButtonAdd", "priceAdd", 
+						"periodAdd", "price2Add", "period2Add"], false, "Enabled");
+				}else{
+					this.setInput(["sales", "type", "number", "counterparty", "productType", "paymentMethod", "paymentTerms", "upload", "comment", "volumeButtonAdd", "priceAdd", 
+						"periodAdd", "price2Add", "period2Add"], true, "Enabled");
+				}
+				this.byId("navCon").to(this.byId("p1"));
 			}
 		});
 	}

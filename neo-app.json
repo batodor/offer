@@ -40,10 +40,10 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "ERE",
+        "name": "ER8_500",
         "entryPath": "/sap/opu/odata"
       },
-      "description": "ERE"
+      "description": "ER8"
     }
   ],
   "welcomeFile": "/webapp/test/flpSandbox.html",

@@ -1,19 +1,19 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Dialog title="{i18n>period}" stretch="true" class="sapUiContentPadding" id="periodDialog">
+	<Dialog title="{i18n>period}" stretch="true" class="sapUiContentPadding" id="period2Dialog">
 		<content>
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label required="true" class="topLabel" text="{i18n>dateFrom}" />
-					<DatePicker custom:key="dateFrom" value="01.06.18" />
+					<DatePicker custom:key="dateFrom" value="01.09.18" />
 				</VBox>
 				<VBox class="rightVBoxStyle" width="50%">
 					<Label required="true" class="topLabel" text="{i18n>dateTo}" />
-					<DatePicker custom:key="dateTo" value="31.08.18" />
+					<DatePicker custom:key="dateTo" value="30.09.18" />
 				</VBox>
 			</HBox>
 			<Label class="topLabel" text="{i18n>numberOfShipments}" />
 			<ToolbarSpacer/>
-			<Input type="Number" value="3" />
+			<Input type="Number" value="1" />
 			<ToolbarSpacer/>
 			
 			<HBox justifyContent="SpaceBetween">
@@ -67,9 +67,9 @@
 			</HBox>
 		</content>
 		<buttons>
-			<Button text="{i18n>cancel}" custom:id="period" type="Back" press="dialogCancel"/>
-			<Button text="{i18n>save}" custom:id="period" visible="false" type="Accept" press="dialogAdd"/>
-			<Button text="{i18n>save}" custom:id="period" visible="false" type="Accept" press="dialogSave"/>
+			<Button text="{i18n>cancel}" custom:id="period2" type="Back" press="dialogCancel"/>
+			<Button text="{i18n>save}" custom:id="period2" visible="false" type="Accept" press="dialogAdd"/>
+			<Button text="{i18n>save}" custom:id="period2" visible="false" type="Accept" press="dialogSave"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

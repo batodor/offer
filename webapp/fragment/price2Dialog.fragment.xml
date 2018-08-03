@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Dialog title="{i18n>price}" stretch="true" class="sapUiContentPadding" id="priceDialog">
+	<Dialog title="{i18n>price}" stretch="true" class="sapUiContentPadding" id="price2Dialog">
 		<content>
 			<Label required="true" class="topLabel" text="{i18n>incoterms}" />
 			<ToolbarSpacer/>
@@ -26,24 +26,24 @@
 					<core:Item text="{Name}" />
 				</suggestionItems>
 				<tokens>
-				 	<Token key="" text="Shanghai" />
+				 	<Token key="" text="Gwangyang" />
 				 </tokens>
 			</MultiInput>
 			<ToolbarSpacer/>
 			<Label class="topLabel" text="{i18n>offerPrice}" />
 			<ToolbarSpacer/>
-			<Input type="Number" value="101.2" />
+			<Input type="Number" value="104.6" />
 			<ToolbarSpacer/>
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>price}" />
-					<Switch change="onSwitch" custom:id="indexFormula" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}">
+					<Switch change="onSwitch" custom:id="indexFormula2" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}">
 						<layoutData>
 							<FlexItemData growFactor="1" />
 						</layoutData>
 					</Switch>
 				</VBox>
-				<VBox visible="false" class="rightVBoxStyle" id="indexFormula" width="50%">
+				<VBox visible="false" class="rightVBoxStyle" id="indexFormula2" width="50%">
 					<Label required="true" class="topLabel" text="{i18n>indexFormula}" />
 					<Input value="{IndexFormula}" />
 				</VBox>
@@ -65,9 +65,9 @@
 			</HBox>
 		</content>
 		<buttons>
-			<Button text="{i18n>cancel}" custom:id="price" type="Back" press="dialogCancel"/>
-			<Button text="{i18n>save}" custom:id="price" visible="false" type="Accept" press="dialogAdd"/>
-			<Button text="{i18n>save}" custom:id="price" visible="false" type="Accept" press="dialogSave"/>
+			<Button text="{i18n>cancel}" custom:id="price2" type="Back" press="dialogCancel"/>
+			<Button text="{i18n>save}" custom:id="price2" visible="false" type="Accept" press="dialogAdd"/>
+			<Button text="{i18n>save}" custom:id="price2" visible="false" type="Accept" press="dialogSave"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>
