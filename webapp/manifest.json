@@ -58,13 +58,13 @@
 		"dependencies": {
 			"minUI5Version": "1.42.0",
 			"libs": {
-				"sap.ui.core": {},
-				"sap.m": {},
-				"sap.f": {},
-				"sap.ushell": {},
 				"sap.collaboration": {
 					"lazy": true
-				}
+				},
+				"sap.f": {},
+				"sap.m": {},
+				"sap.ui.core": {},
+				"sap.ushell": {}
 			}
 		},
 		"contentDensities": {
@@ -155,5 +155,9 @@
 		"resourceRoots": {
 			"fragment": "./fragment"
 		}
+	},
+	"sap.platform.abap": {
+		"uri": "/sap/bc/ui5_ui5/sap/zts_offer/webapp",
+		"_version": "1.1.0"
 	}
 }

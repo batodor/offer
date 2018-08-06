@@ -12,7 +12,8 @@
     "excludedFiles": [
       "test.html"
     ],
-    "buildRequired": true
+    "buildRequired": false,
+    "lastBuildDateTime": "Mon, 06 Aug 2018 09:24:59 GMT"
   },
   "dataBinding": {
     "/webapp/view/App.view.xml": {
@@ -68,5 +69,9 @@
       "xml": "fioriXmlAnalysis",
       "js": "fioriJsValidator"
     }
+  },
+  "deploy": {
+    "destination": "ERD_210",
+    "name": "ZTS_OFFER"
   }
 }
