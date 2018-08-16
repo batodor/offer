@@ -1,0 +1,142 @@
+<core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel expandable="true" expanded="true" width="auto">
+		<headerToolbar>
+			<Toolbar height="3rem">
+				<Title text="{ path: 'DateFrom', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }
+					{= ${DateFrom} ? ' - ' : '' } { path: 'DateTo', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }" />
+				<ToolbarSpacer />
+				<CheckBox select="onCheckBoxSelect" selected="false" />
+			</Toolbar>
+		</headerToolbar>
+		<content>
+			<VBox>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label required="true" class="topLabel" text="{i18n>dateFrom}" />
+						<DatePicker change="onDateChange" custom:key="dateFrom" dateValue="{DateFrom}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label required="true" class="topLabel" text="{i18n>dateTo}" />
+						<DatePicker change="onDateChange" custom:key="dateTo" dateValue="{DateTo}" />
+					</VBox>
+				</HBox>
+				<Label class="topLabel" text="{i18n>numberOfShipments}" />
+				<ToolbarSpacer/>
+				<Input type="Number" value="{NumberOfShipments}" />
+				<ToolbarSpacer/>
+				
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>min})" />
+						<Input type="Number" placeholder="0" value="{ShipmentSizeMin}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>max})" />
+						<Input type="Number" placeholder="0" value="{ShipmentSizeMax}" />
+					</VBox>
+				</HBox>
+				
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>shipmentTolerance}" />
+						<Input type="Number" placeholder="0" value="{ShipmentTolerance}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>toleranceUom}" />
+						<Select forceSelection="false" selectedKey="{ShipmentToleranceUOM}" class="fullWidth" width="100%" 
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' } }">
+							<core:Item key="{Code}" text="{Code} - {Name}"/>
+						</Select>
+					</VBox>
+				</HBox>
+				
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>tonnage} ({i18n>min})" />
+						<Input type="Number" placeholder="0" value="{TonnageMin}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>tonnage} ({i18n>max})" />
+						<Input type="Number" placeholder="0" value="{TonnageMax}" />
+					</VBox>
+				</HBox>
+				
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>tonnageTolerance}" />
+						<Input type="Number" placeholder="0" value="{TonnageTolerance}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>toleranceUom}" />
+						<Select forceSelection="false" selectedKey="{TonnageToleranceUOM}" class="fullWidth" width="100%" 
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' } }">
+							<core:Item key="{Code}" text="{Code} - {Name}"/>
+						</Select>
+					</VBox>
+				</HBox>
+				<OverflowToolbar width="100%">
+					<Title text="{i18n>prices}" titleStyle="H3"/>
+				</OverflowToolbar>
+				<Label required="true" class="topLabel" text="{i18n>incoterms}" />
+				<Select forceSelection="false" custom:key="incoterms" selectedKey="{Incoterms}" class="fullWidth" width="100%" 
+					items="{ path: '/dictionaryIncotermsSet', sorter: { path: 'Incoterms' } }">
+					<core:Item key="{Incoterms}" text="{Incoterms} - {Description}"/>
+				</Select>
+				<Label required="true" class="topLabel" text="{i18n>deliveryPoint}" />
+				<MultiInput
+					custom:id="portPopup"
+					custom:set="deliveryPoint"
+					custom:key="deliveryPoint"
+					custom:select="Name"
+					custom:filters="Country,Code,Name"
+					width="100%" 
+					enableMultiLineMode="true" 
+					showValueHelp="true"
+					valueHelpRequest="handleValueHelp"
+					showSuggestion="true"
+					suggest="handleSuggest"
+					suggestionItems="{/deliveryPointSet}"
+					tokens="{ path: 'ToDeliveryPoint' }">
+					<suggestionItems>
+						<core:Item key="{Code}" text="{Code} - {Name}" />
+					</suggestionItems>
+					<tokens>
+					 	<Token key="{Code}" text="{Code} - {Name}" />
+					</tokens>
+				</MultiInput>
+				<Label class="topLabel" text="{i18n>offerPrice}" />
+				<Input type="Number" value="{FixPrice}" placeholder="0" />
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>price}" />
+						<Switch change="onSwitch" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}">
+							<layoutData>
+								<FlexItemData growFactor="1" />
+							</layoutData>
+						</Switch>
+					</VBox>
+					<VBox 
+						visible="{= ${IndexFormula} ? true : false }" 
+						class="rightVBoxStyle"
+						width="50%">
+						<Label required="true" class="topLabel" text="{i18n>indexFormula}" />
+						<Input value="{IndexFormula}" />
+					</VBox>
+				</HBox>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>cv}" />
+						<Input value="{CV}" placeholder="0" type="Number" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>cvBase}" />
+						<Select selectedKey="{CVBase}" width="100%" forceSelection="false" 
+							items="{ path: '/dictionaryCVBaseSet', sorter: { path: 'Code' } }">
+							<core:Item key="{Code}" text="{Code}"/>
+						</Select>
+					</VBox>
+				</HBox>
+			</VBox>
+		</content>
+	</Panel>
+</core:FragmentDefinition>

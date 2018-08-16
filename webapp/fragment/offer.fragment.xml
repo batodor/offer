@@ -12,42 +12,48 @@
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<VBox>
+			<VBox id="pageOfferDetails">
 				<Label class="topLabel" text="{i18n>status}" />
-				<Input enabled="false" id="status" value="New" />
+				<Input enabled="false" id="status" value="{Status}" />
 				<Label class="topLabel" text="{i18n>variantNumber}" />
-				<Input type="Number" enabled="false" id="number" value="{VariantNumber}" />
+				<Input type="Number" id="number" value="{VariantNumber}" />
 				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
 				<MultiInput 
-					enabled="false" 
 					id="counterparty"
-					custom:id="dictionaryBPInt"
-					custom:filters="Name,Partner"
+					custom:id="counterpartyPopup"
+					custom:set="counterpartyDetail"
+					custom:filters="Code,Name"
 					custom:key="counterparty"
+					custom:name="ToCounterpartyDetail"
 					showValueHelp="true"
-					valueHelpRequest="handleValueHelp"
-					value="{Counterparty}">
-					 <tokens>
-					 	<Token key="" text="Datang Overseas (Beijing)" />
-					 </tokens>
+					tokens="{ path: 'ToCounterpartyDetail'	}"
+					valueHelpRequest="handleValueHelp">
+					<tokens>
+						<Token key="{Code}" text="{Name}" />
+					</tokens>
 				</MultiInput>
 				<Label required="true" class="topLabel" text="{i18n>productType}" />
-				<Select enabled="false" id="productType" custom:key="productType" forceSelection="false" selectedKey="40" width="100%" 
+				<Select id="productType" custom:key="productType" forceSelection="false" selectedKey="{ProductType}" width="100%" 
 					items="{ path: '/dictionarySalesDivisionsSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>paymentMethod}"/>
-				<Select enabled="false" id="paymentMethod" custom:key="paymentMethod" selectedKey="ZP01" width="100%" forceSelection="false" 
-					items="{ path: '/dictionaryPaymentMethodsSet', sorter: { path: 'Name' } }">
+				<Select id="paymentMethod" selectedKey="{PaymentMethod}" custom:key="paymentMethod" width="100%" forceSelection="false" 
+					items="{ path: '/dictionaryPaymentMethodSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>paymentTerms}"/>
-				<Select enabled="false" id="paymentTerms" custom:key="paymentTerms" selectedKey="A*" width="100%" forceSelection="false" 
-					items="{ path: '/dictionaryPaymentTermsSet', sorter: { path: 'Name' } }">
+				<Select id="paymentTerms" selectedKey="{PaymentTerm}" custom:key="paymentTerms" width="100%" forceSelection="false" 
+					items="{ path: '/dictionaryPaymentTermSet', sorter: { path: 'Name' }}">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
+				<Label required="true" class="topLabel" text="{i18n>meansOfTransport}" />
+				<Select custom:key="meansOfTransport" selectedKey="{MeansOfTransport}" forceSelection="false" width="100%"
+					items="{ path: '/dictionaryMeansOfTransportSet', sorter: { path: 'Name' } }">
+					<core:Item key="{Code}" text="{Name}"/>
+				</Select>
 				<Label class="topLabel" text="{i18n>attachments}" />
-				<u:FileUploader enabled="false" name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
+				<u:FileUploader name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
 					uploadUrl="{upload>/uploadUrl}" tooltip="Upload your file to the local server" change="onFileChange" uploadComplete="onFileUploaded" 
 					style="Emphasized" width="100%">
 					<u:headerParameters>
@@ -56,7 +62,7 @@
 					</u:headerParameters>
 				</u:FileUploader>
 				<Label class="topLabel" text="{i18n>comments}" />
-				<TextArea enabled="false" id="comment" value="Other conditions as previous cotract" rows="6" width="100%" />
+				<TextArea id="comment" value="{Comments}" rows="6" width="100%" />
 			</VBox>
 		</content>
 	</Panel>

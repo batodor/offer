@@ -15,7 +15,7 @@
 		toggleHeaderOnTitleClick="false">
 
 		<semantic:titleHeading>
-			<Title  text="{i18n>worklistTitle}" />
+			<Title id="offerTitle" text="{i18n>worklistTitle}" />
 		</semantic:titleHeading>
 
 		<semantic:content>
@@ -30,16 +30,16 @@
 						id="p1"
 						title="{i18n>offerTemplateSettings}" >
 						<VBox class="paddingRem" id="pageTradingPurpose">
+							<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" visible="false" />
 							<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
-							<Select enabled="false" id="sales" custom:key="tradingPurpose" selectedKey="sales" forceSelection="false" width="100%">
-								<core:Item key="sales" text="{i18n>sales}"/>
-								<core:Item key="tradingSale" text="{i18n>tradingSale}"/>
-								<core:Item key="tradingPurchase" text="{i18n>tradingPurchase}"/>
+							<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" 
+								items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">
+								<core:Item key="{Code}" text="{Name}"/>
 							</Select>
 							<Label required="true" class="topLabel" text="{i18n>type}" />
-							<Select enabled="false" id="type" custom:key="type" selectedKey="structured" forceSelection="false" width="100%">
-								<core:Item key="simple" text="{i18n>simple}"/>
-								<core:Item key="structured" text="{i18n>structured}"/>
+							<Select id="type" custom:key="type" custom:omit="true" selectedKey="{= ${Type} ? ${Type} : 'OF02'}" forceSelection="false" width="100%"
+								items="{ path: '/dictionaryTypeSet', sorter: { path: 'Name' } }">
+								<core:Item key="{Code}" text="{Name}"/>
 							</Select>
 						</VBox>
 						<footer>
@@ -47,7 +47,7 @@
 								<ToolbarSpacer />
 								<Button id="tradingPurposeNextButton" type="Accept" 
 									custom:next="p2" 
-									custom:check="true" 
+									custom:check="true"
 									custom:id="pageTradingPurpose" press="nextPage" text="{i18n>next}" />
 							</Toolbar>
 						</footer>
@@ -72,31 +72,30 @@
 							<Toolbar>
 								<Button id="offerSettingsPrevButton" type="Back" custom:next="p1" press="nextPage" text="{i18n>back}" />
 								<ToolbarSpacer />
-								<Button id="offerSettingsNextButton" type="Accept" custom:next="p3" press="nextPage" text="{i18n>next}" />
+								<Button 
+									custom:id="pageOfferDetails" 
+									custom:check="true"
+									id="offerSettingsNextButton" 
+									type="Accept" custom:next="p3" press="nextPage" text="{i18n>next}" />
 							</Toolbar>
 						</footer>
 					</Page>
 					<Page
 						id="p3"
 						title="{i18n>volumeSettings}">
-						<List noDataText="{i18n>noData}" selectionChange="onListSelect">
+						<List noDataText="{i18n>noData}" id="volumesList" items="{ path: 'ToOfferVolume' }" selectionChange="onListSelect">
 							<headerToolbar>
 								<Toolbar>
 									<Title text="{i18n>volumes}" titleStyle="H3" />
 									<ToolbarSpacer />
-									
-									<Button type="Accept" custom:id="volume" id="volumeButtonAdd" enabled="false" text="{i18n>add}" press="add" />
-									<Button type="Emphasized" custom:id="volume" id="volumeButtonEdit" text="{i18n>edit}" press="edit" enabled="false" />
-									<Button type="Emphasized" custom:id="volume" id="volumeButtonCopy" text="{i18n>copy}" press="copy" enabled="false" />
-									<Button type="Reject" custom:id="volume" id="volumeButtonDelete" text="{i18n>delete}" press="delete" enabled="false" />
+									<Button type="Accept" custom:id="volumes" text="{i18n>add}" press="add" />
+									<Button type="Emphasized" custom:id="volumes" text="{i18n>copy}" press="copy" enabled="false" />
+									<Button type="Reject" custom:id="volumes" text="{i18n>delete}" press="delete" enabled="false" />
 								</Toolbar>
 							</headerToolbar>
 							<items>
 								<CustomListItem>
 									<core:Fragment fragmentName="fragment.volumes" type="XML"></core:Fragment>
-								</CustomListItem>
-								<CustomListItem>
-									<core:Fragment fragmentName="fragment.volumes2" type="XML"></core:Fragment>
 								</CustomListItem>
 							</items>
 						</List>
@@ -104,7 +103,13 @@
 							<Toolbar>
 								<Button id="volumePrevButton" type="Back" custom:next="p2" press="nextPage" text="{i18n>back}" />
 								<ToolbarSpacer />
-								<Button id="volumeNextButton" type="Accept" press="approve" text="{i18n>approve}" />
+								<Button 
+									id="saveOffer" 
+									custom:blocks="pageTradingPurpose,pageOfferDetails,parameters" 
+									type="Accept" 
+									press="saveOffer" 
+									text="{i18n>save}"/>
+								<Button id="approveOffer" enabled="false" type="Accept" press="approveOffer" text="{i18n>approve}" />
 							</Toolbar>
 						</footer>
 					</Page>

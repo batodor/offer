@@ -11,19 +11,21 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle">
 						<Label class="topLabel" text="{i18n>counterparty}" />
-						<VBox id="vboxBlacklistCounterparty">
-							<Text text="Datang Overseas (Beijing)" />
+						<VBox id="blacklistCounterparty">
+							<Text text="{i18n>none}" />
 						</VBox>
 					</VBox>
 					<VBox class="rightVBoxStyle" alignItems="End">
 						<Label class="topLabel" text="{i18n>blacklistStatus}" />
-						<VBox id="vboxBlacklistStatus" alignItems="End">
-							<Text text="{i18n>notBlacklisted}"  />
+						<VBox id="blacklistStatus" alignItems="End">
+							<Text text="{i18n>none}" />
 						</VBox>
 					</VBox>
 				</HBox>
 				<Label class="topLabel" text="{i18n>sanctions}" />
-				<Text text="Korea" class="red" />
+				<VBox id="blacklistCountry">
+					<Text text="{i18n>none}" />
+				</VBox>
 				<Button width="90px" text="{i18n>request}" class="marginTop" press="openMail" />
 			</VBox>
 		</content>

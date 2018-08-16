@@ -30,11 +30,61 @@ sap.ui.define([
 				
 				// Declare global filter
 			    this.search = {}; // for searchFields
-				this.typeArr = ["value", "dateValue", "selectedKey", "selected"];
+				this.typeArr = ["value", "dateValue", "selectedKey", "selected", "state", "tokens"];
 				
-				// Add dialogs
-				this.tableArr = [ "dictionaryBPInt", "portPopup", "volume", "period", "price", "volume2", "period2", "price2" ];
-				this.addDialogs(this.tableArr);
+				// Add fragments
+				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog" ];
+				this.addFragments(fragmentsArr);
+				
+				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
+				this.getRouter().initialize();
+			},
+			
+			_onOfferMatched: function(oEvent) {
+				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
+				if(this.TCNumber){
+					this.getView().bindElement("/offerHeaderSet('" + this.TCNumber + "')");
+					this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
+					this.byId("approveOffer").setEnabled(true);
+				}
+			},
+			
+			saveOffer: function(oEvent){
+				var button = oEvent.getSource();
+				var objectsArr = button.data("blocks").split(',');
+				var offerData = this.getOdata(objectsArr);
+				var volumeData = this.getVolumeOdata();
+				var model = button.getModel();
+				var allData = Object.assign(offerData,volumeData);
+				console.log(allData);
+				var that = this;
+				if(allData.TCNumber === "$$00000001"){
+					model.create("/offerHeaderSet", allData, {
+						success: function(response){
+							MessageBox.alert("Offer successfully created!", {
+								actions: [sap.m.MessageBox.Action.CLOSE],
+								onClose: function(sAction) {
+									that.getRouter().navTo("worklist", {
+										TCNumber: response.TCNumber
+									});
+								}
+							});
+						}
+					});
+				}else{
+					var url = this.getView().getBindingContext().getPath();
+					model.update(url, allData, {
+						success: function(response){
+							MessageBox.alert("Offer successfully edited!", {
+								actions: [sap.m.MessageBox.Action.CLOSE]
+							});
+						}
+					});
+				}
+			},
+			
+			approveOffer: function(oEvent){
+				
 			},
 			
 			// Search function for all tables
@@ -102,16 +152,16 @@ sap.ui.define([
 				this[id + "Dialog"].open();
 			},
 			
-			// Add all dialog xml fragments to this view as dependent
-			// Arguments: tableArr = array of string ids of tables declared on init
-			addDialogs: function(tableArr){
-				for(var i = 0; i < tableArr.length; i++){
-					// Just in case if any of the dialog fragment has syntax error
+			// Add xml fragments to this view as dependent
+			// objArr = array of string ids of objects declared on init
+			addFragments: function(objArr){
+				for(var i = 0; i < objArr.length; i++){
 					try {
-						this[tableArr[i] + "Dialog"] = sap.ui.xmlfragment("fragment." + tableArr[i] + "Dialog", this);
-						this.getView().addDependent(this[tableArr[i] + "Dialog"]);
+						this[objArr[i]] = sap.ui.xmlfragment("fragment." + objArr[i], this);
+						this.getView().addDependent(this[objArr[i]]);
 					} catch (err) {
-						console.log("Error in dialog with ID: " + this.tableArr[i] + "Dialog");
+						// Just in case if any of the dialog fragment has syntax error
+						console.log("Error in dialog with ID: " + this.objArr[i] + "Dialog " + err);
 					}
 					
 				}
@@ -140,17 +190,19 @@ sap.ui.define([
 				var dynamicId = button.data("dynamicId");
 				var valueHelp = this.byId(dynamicId) || sap.ui.getCore().byId(dynamicId);
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
-				if(id === "dictionaryBPInt"){
-					var vboxCounterparty = this.byId("vboxBlacklistCounterparty");
-					var vboxStatus = this.byId("vboxBlacklistStatus");
-					vboxCounterparty.removeAllItems();
-					vboxStatus.removeAllItems();
+				
+				if(id === "counterpartyPopup"){
+					var objects = ["blacklistCounterparty","blacklistStatus","blacklistCountry"];
+					for(var i = 0; i < objects.length; i++){
+						this.byId(objects[i]).removeAllItems();
+					}
 				}
+				
 				for(var i = 0; i < items.length; i++){
 					var item = items[i];
 					var path = item.getBindingContextPath();
 					var data = item.getModel().getData(path);
-					if(id === "portPopup" || id === "dictionaryBPInt"){
+					if(id === "portPopup" || id === "counterpartyPopup"){
 						var token = new sap.m.Token({
 							key: data.Code,
 							text: data.Name
@@ -159,25 +211,8 @@ sap.ui.define([
 					}else{
 						valueHelp.setValue(data[key]);
 					}
-					if(id === "dictionaryBPInt"){
-						var random_boolean = Math.random() >= 0.5;
-						var status = random_boolean ? this.getModel('i18n').getResourceBundle().getText("blacklisted") : this.getModel('i18n').getResourceBundle().getText("notBlacklisted");
-						
-						var counterpartyText = new sap.m.Text({
-							text: data.Name
-						});
-						var statusText = new sap.m.Text({
-							text: status
-						});
-						if(random_boolean){
-							counterpartyText.addStyleClass("red");
-							statusText.addStyleClass("red");
-						}
-						counterpartyText.addStyleClass("smallMarginBottom");
-						vboxCounterparty.addItem(counterpartyText);
-						
-						statusText.addStyleClass("smallMarginBottom");
-						vboxStatus.addItem(statusText);
+					if(id === "counterpartyPopup"){
+						this.setBlacklist(data, objects);
 					}
 				}
 				this[id + "Dialog"].close();
@@ -200,17 +235,37 @@ sap.ui.define([
 					});
 				}
 			},
-			dialogSave: function(oEvent) {
-				var id = oEvent.getSource().data("id");
-				var dialog = sap.ui.getCore().byId(id + "Dialog");
-				//var url = dialog.getBindingContext().getPath();
-				//var oModel = dialog.getModel();
-				//var oData = this.getOdata(dialog);
-				// dialog.unbindElement();
-				// oModel.update(url, oData);
-				dialog.close();
+			
+			// Sets the texts to show counterparty blacklist
+			setBlacklist: function(data, objects){
+				var blacklisted = data.BlackList;
+				var status = blacklisted ? this.getModel('i18n').getResourceBundle().getText("blacklisted") : 
+					this.getModel('i18n').getResourceBundle().getText("notBlacklisted");
+				
+				var counterpartyText = new sap.m.Text({
+					text: data.Name
+				});
+				var statusText = new sap.m.Text({
+					text: status
+				});
+				var countryText = new sap.m.Text({
+					text: data.Country
+				});
+				var texts = [counterpartyText,statusText,countryText];
+				for(var i = 0; i < texts.length; i++){
+					texts[i].addStyleClass("smallMarginBottom");
+					if(blacklisted){
+						texts[i].addStyleClass("red");
+					}
+				}
+				this.byId(objects[0]).addItem(counterpartyText);
+				this.byId(objects[1]).addItem(statusText);
+				if(data.Country){
+					this.byId(objects[2]).addItem(countryText);
+				}
 			},
 			
+			// Next page function
 			nextPage: function(oEvent){
 				var button = oEvent.getSource();
 				var navCon = this.byId("navCon");
@@ -248,12 +303,6 @@ sap.ui.define([
 				}
 				selectedItem.setActive(checkBox.getSelected());
 				list.fireSelectionChange();
-				
-				var id = checkBox.data("id");
-				this.byId("volumeButtonAdd").data("id", id);
-				this.byId("volumeButtonEdit").data("id", id);
-				this.byId("volumeButtonCopy").data("id", id);
-				this.byId("volumeButtonDelete").data("id", id);
 			},
 			onListSelect: function(oEvent){
 				var list = oEvent.getSource();
@@ -276,47 +325,35 @@ sap.ui.define([
 			add: function(oEvent){
 				var button = oEvent.getSource();
 				var id = button.data("id");
-				var dialog = this[id + "Dialog"];
-				var dialogButtons = dialog.getButtons();
-				this.setEnabledDialog(dialog, true, true);
-				//dialog.unbindElement();
-				dialogButtons[1].setVisible(true);
-				dialogButtons[2].setVisible(false);
-				dialog.open();
-			},
-			edit: function(oEvent){
-				var button = oEvent.getSource();
-				var id = button.data("id");
-				var dialog = this[id + "Dialog"];
-				var dialogButtons = dialog.getButtons();
-				// dialog.unbindElement();
-				dialogButtons[1].setVisible(false);
-				dialogButtons[2].setVisible(true);
-				dialog.open();
+				var list = button.getParent().getParent();
+				
+				// Generate new fragment template as prototype
+				var length = list.getItems().length + 1;
+				this[id + length] = sap.ui.xmlfragment("fragment." + id, this);
+				this.getView().addDependent(this[id + length]);
+				
+				var newItem = new sap.m.CustomListItem();
+				newItem.addContent(this[id + length]);
+				list.addItem(newItem);
 			},
 			delete: function(oEvent){
 				var button = oEvent.getSource();
-				var items = button.getParent().getParent().getItems();
-				var item = null;
+				var list = button.getParent().getParent();
+				var items = list.getItems();
 				for(var i = 0; i < items.length; i++){
 					if(items[i]._active){
-						item = items[i];
-					}
-				}
-				if(item){
-					// var url = item.getBindingContextPath();
-					// var oModel = item.getModel();
-					var that = this;
-					MessageBox.confirm(that.getResourceBundle().getText("askDelete"), {
-						actions: [that.getResourceBundle().getText("delete"), sap.m.MessageBox.Action.CLOSE],
-						onClose: function(sAction) {
-							if (sAction === that.getResourceBundle().getText("delete")) {
-								// oModel.remove(url);
-							} else {
-								MessageToast.show("Delete canceled!");
+						var that = this;
+						MessageBox.confirm(that.getResourceBundle().getText("askDelete"), {
+							actions: [that.getResourceBundle().getText("delete"), sap.m.MessageBox.Action.CLOSE],
+							onClose: function(sAction) {
+								if (sAction === that.getResourceBundle().getText("delete")) {
+									list.removeItem(i - 1);
+								} else {
+									MessageToast.show("Delete canceled!");
+								}
 							}
-						}
-					});
+						});
+					}
 				}
 			},
 			
@@ -364,16 +401,15 @@ sap.ui.define([
 			// Checks the key inputs for empty values for dialog Add/Edit
 			checkKeys: function(object){
 				var check = "";
-				var inputs = object.getAggregation("content") || object.getAggregation("items");
+				var inputs = this.getInputs(object);
 				for(var i = 0; i < inputs.length; i++){
-					var oInput = inputs[i];
-					if(oInput.data("key")){
-						if((oInput["mProperties"].hasOwnProperty("value") && !oInput.getValue()) || 
-						(oInput["mProperties"].hasOwnProperty("selectedKey") && !oInput.getSelectedKey()) ||
-						(oInput["mProperties"].hasOwnProperty("value") && !oInput.getValue()) ||
-						(oInput.hasOwnProperty("_tokenizer") && oInput.getTokens().length === 0) ||
-						(oInput.hasOwnProperty("_oMaxDate") && !oInput.getDateValue())){
-							check = check + " " + this.getModel('i18n').getResourceBundle().getText(oInput.data("key")) + ", ";
+					var input = inputs[i];
+					if(input.data("key")){
+						if((input["mProperties"].hasOwnProperty("value") && !input.getValue()) || 
+						(input["mProperties"].hasOwnProperty("selectedKey") && !input.getSelectedKey()) ||
+						(input.hasOwnProperty("_tokenizer") && input.getTokens().length === 0) ||
+						(input.hasOwnProperty("_oMaxDate") && !input.getDateValue())){
+							check = check + " " + this.getModel('i18n').getResourceBundle().getText(input.data("key")) + ", ";
 						}
 					}
 				}
@@ -383,38 +419,63 @@ sap.ui.define([
 			// Set odata from any dialog, argument object = any object / return object inputs Data
 			getOdata: function(object){
 				var oData = {};
-				var inputs = object.getAggregation("content");
+				var inputs = this.getInputs(object);
 				for(var i = 0; i < inputs.length; i++){
 					var input = inputs[i];
-					for(var j = 0; j < this.typeArr.length; j++){
-						var type = this.typeArr[j];
-						if(input.getBindingInfo(type)){
-							var value = input.getProperty(type);
-							var name = input.getBindingInfo(type).binding.sPath;
-							
-							// Set default value(placeholder) if value is not defined
-							if(!value && input["mProperties"].hasOwnProperty("placeholder")){
-								value = input["mProperties"].placeholder;
-							}
-							// if type of input is number then convert from string to number
-							if(input["mProperties"].hasOwnProperty("type") && input.getType() === "Number"){
-								value = parseInt(value);
-							}
-							// If inputs name is not defined
-							if(input.data("name")){
-								name = input.data("name");
-							}
-							// Remove offset for dates
-							if(input.hasOwnProperty("_oMaxDate")){
-								value = input.getDateValue();
-								if(value) {
-									value.setMinutes(-value.getTimezoneOffset());
-								} else { 
-									value = null;
-								}
-							}
-							oData[name] = value;
+					if(input["sId"].indexOf('hbox') > -1){
+						var vboxes = input.getItems();
+						for(var j = 0; j < vboxes.length; j++){
+							oData = Object.assign(oData, this.getInputData(vboxes[j].getItems()[1]));
 						}
+					}else{
+						oData = Object.assign(oData, this.getInputData(input));
+					}
+				}
+				return oData;
+			},
+			
+			getInputData: function(input){
+				var oData = {};
+				for(var j = 0; j < this.typeArr.length; j++){
+					var type = this.typeArr[j];
+					if(input.getBindingInfo(type) && !input.data("omit")){
+						var value;
+						if(type === "tokens"){
+							var tokens = input.getTokens();
+							value = [];
+							for(var l = 0; l < tokens.length; l++){
+								var token = {};
+								token.Name = tokens[l].getText();
+								token.Code = tokens[l].getKey();
+								//token.BlackList = false;
+								//token.Country = "";
+								value.push(token);
+							}
+						}else{
+							value = input.getProperty(type)
+						}
+						var name = input.getBindingInfo(type).binding.sPath;
+						
+						// Set default value(placeholder) if value is not defined
+						if(!value && input["mProperties"].hasOwnProperty("placeholder")){
+							value = input["mProperties"].placeholder;
+						}
+						
+						// If inputs name is not defined
+						if(input.data("name")){
+							name = input.data("name");
+						}
+						
+						// Remove offset for dates
+						if(input.hasOwnProperty("_oMaxDate")){
+							value = input.getDateValue();
+							if(value) {
+								value.setMinutes(-value.getTimezoneOffset());
+							} else { 
+								value = null;
+							}
+						}
+						oData[name] = value;
 					}
 				}
 				return oData;
@@ -435,12 +496,8 @@ sap.ui.define([
 			
 			onSwitch: function(oEvent){
 				var Switch = oEvent.getSource();
-				if(Switch.data("id")){
-					var id = Switch.data("id");
-					var obj = this.byId(id) || sap.ui.getCore().byId(id);
-					var state = oEvent.getParameter("state");
-					obj.setVisible(state);
-				}
+				var state = oEvent.getParameter("state");
+				Switch.getParent().getParent().getItems()[1].setVisible(state);
 			},
 
 			handleSuggest: function(oEvent) {
@@ -454,15 +511,64 @@ sap.ui.define([
 			},
 			
 			copyFrom: function(){
-				var enabled = this.byId("number").getEnabled();
-				if(enabled){
-					this.setInput(["sales", "type", "number", "counterparty", "productType", "paymentMethod", "paymentTerms", "upload", "comment", "volumeButtonAdd", "priceAdd", 
-						"periodAdd", "price2Add", "period2Add"], false, "Enabled");
+			},
+			
+			// Gete inputs from array of ids or directly from object
+			getInputs: function(object){
+				var inputs = [];
+				if(Array.isArray(object)){
+					for(var i = 0; i < object.length; i++){
+						var obj = this.byId(object[i]) || sap.ui.getCore().byId(object[i]);
+						var objInputs = obj.getAggregation("content") || obj.getAggregation("items");
+						inputs = inputs.concat(objInputs);
+					}
 				}else{
-					this.setInput(["sales", "type", "number", "counterparty", "productType", "paymentMethod", "paymentTerms", "upload", "comment", "volumeButtonAdd", "priceAdd", 
-						"periodAdd", "price2Add", "period2Add"], true, "Enabled");
+					inputs = object.getAggregation("content") || object.getAggregation("items");
 				}
-				this.byId("navCon").to(this.byId("p1"));
+				return inputs;
+			},
+			
+			getVolumeOdata: function(){
+				var oData = {};
+				var list = this.byId("volumesList");
+				var volumes = list.getItems();
+				oData.ToOfferVolume = [];
+				for(var i = 0; i < volumes.length; i++){
+					var volumeName = this.getOdata(volumes[i].getContent()[0].getHeaderToolbar());
+					var volumeData = this.getOdata(volumes[i].getContent()[0]);
+					var allVolumeData = Object.assign(volumeName, volumeData);
+					oData.ToOfferVolume.push(allVolumeData);
+					
+					var periodsList = volumes[i].getContent()[0].getContent()[1];
+					var periods = periodsList.getItems();
+					
+					allVolumeData.ToOfferPeriodAndPrice = [];
+					
+					for(var j = 0; j < periods.length; j++){
+						var period = periods[j].getContent()[0].getContent()[0];
+						var periodOdata = this.getOdata(period);
+						allVolumeData.ToOfferPeriodAndPrice.push(periodOdata);
+					}
+				}
+				return oData;
+			},
+			
+			onDateChange: function(oEvent){
+				var dp = oEvent.getSource();
+				var type = dp.data("key");
+				var title = dp.getParent().getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
+				var date = dp.getDateValue() ? dp.getDateValue().toLocaleDateString() : '';
+				var dp2,date2;
+				if(type === "dateFrom"){
+					dp2 = dp.getParent().getParent().getItems()[1].getItems()[1];
+					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
+					title.setText(date + " - " + date2);
+				}else{
+					dp2 = dp.getParent().getParent().getItems()[0].getItems()[1];
+					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
+					title.setText(date2 + " - " + date);
+				}
+				
 			}
 		});
 	}

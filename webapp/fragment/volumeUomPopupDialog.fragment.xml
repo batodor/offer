@@ -1,0 +1,35 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog title="{i18n>volumeUom}" class="sapUiContentPadding" id="volumeUomPopupDialog">
+		<content>
+			<Table mode="SingleSelectLeft" includeItemInSelection="true" id="volumeUomPopup" custom:id="volumeUomPopup" items="{}" select="onTableSelect" width="500px" 
+				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false"
+				busyIndicatorDelay="{detailView>/lineItemTableDelay}" class="sapUiResponsiveMargin">
+				<headerToolbar>
+					<Toolbar class="white">
+						<SearchField placeholder="{i18n>code}" custom:id="volumeUomPopup" custom:key="Code" custom:operator="EQ" showSearchButton="true" 
+							search="triggerSearch" width="100%" id="volumeUomPopupCodeFilter" />
+						<ToolbarSpacer/>
+						<SearchField placeholder="{i18n>name}" custom:id="volumeUomPopup" custom:key="Name" showSearchButton="true" 
+							search="triggerSearch" width="100%" id="volumeUomPopupNameFilter" />
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column><Text class="black" text="{i18n>code}"/></Column>
+					<Column><Text class="black" text="{i18n>name}"/></Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{Code}"/>
+							<Text text="{Name}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+		<buttons>
+			<Button text="{i18n>cancel}" custom:id="volumeUomPopup" type="Back" press="dialogCancel"/>
+			<Button text="{i18n>select}" custom:id="volumeUomPopup" custom:key="Code" type="Accept" id="volumeUomPopupSelect" enabled="false" press="dialogSelect"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

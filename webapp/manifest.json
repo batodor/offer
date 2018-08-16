@@ -11,19 +11,19 @@
 		},
 		"dataSources": {
 			"mainService": {
-				"uri": "/sap/opu/odata/sap/ZTS_MD_SRV/",
+				"uri": "/sap/opu/odata/sap/ZTS_OFFER_SRV/",
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
 					"localUri": "localService/metadata.xml"
 				}
 			},
-			"ZTS_MD_SRV": {
-				"uri": "/sap/opu/odata/sap/ZTS_MD_SRV/",
+			"ZTS_OFFER_SRV": {
+				"uri": "/sap/opu/odata/sap/ZTS_OFFER_SRV/",
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
-					"localUri": "localService/ZTS_MD_SRV/metadata.xml"
+					"localUri": "localService/ZTS_OFFER_SRV/metadata.xml"
 				}
 			}
 		},
@@ -108,17 +108,12 @@
 			},
 			"routes": [
 				{
-					"pattern": "",
+					"pattern": [
+						":TCNumber:"
+					],
 					"name": "worklist",
 					"target": [
 						"worklist"
-					]
-				},
-				{
-					"pattern": "deliveryPoints",
-					"name": "object",
-					"target": [
-						"object"
 					]
 				}
 			],
@@ -128,16 +123,6 @@
 					"viewId": "worklist",
 					"viewLevel": 1,
 					"title": "{i18n>worklistViewTitle}"
-				},
-				"object": {
-					"viewName": "Object",
-					"viewId": "object",
-					"viewLevel": 2,
-					"title": "{i18n>objectViewTitle}"
-				},
-				"objectNotFound": {
-					"viewName": "ObjectNotFound",
-					"viewId": "objectNotFound"
 				},
 				"notFound": {
 					"viewName": "NotFound",

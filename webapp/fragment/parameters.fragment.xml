@@ -7,34 +7,39 @@
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<VBox>
+			<VBox id="parameters">
 				<Label class="topLabel" text="{i18n>companyBranch}" />
-				<Input value="СУЭК АГ" />
+				<Select custom:name="CompanyBranch" forceSelection="true" selectedKey="{= ${CompanyBranch} ? ${CompanyBranch} : '7100' }" width="100%" 
+					items="{ path: '/dictionaryCompanyBranchSet', sorter: { path: 'Code' } }">
+					<core:Item key="{Code}" text="{Code} - {Name}"/>
+				</Select>
 				<Label class="topLabel" text="{i18n>trader}" />
-				<Input value="DORZHIEVB" />
+				<Input value="DORZHIEVB" id="trader" />
 				<Label class="topLabel" text="{i18n>createDate}" />
 				<DateTimePicker enabled="false" value="26 июл. 2018 г., 10:43:21" />
 				<Label class="topLabel" text="{i18n>createdBy}" />
 				<Input enabled="false" id="userName" value="DORZHIEVB" />
+				<Label class="topLabel" text="{i18n>currency}" />
+				<Input 
+					custom:id="currencyPopup"
+					custom:set="dictionaryCurrency"
+					custom:filters="Code,Name"
+					custom:name="Currency"
+					id="currencyPopupValueHelp"
+					showValueHelp="true"
+					valueHelpRequest="handleValueHelp"
+					value="{= ${Currency} ? ${Currency} : 'USD' }" width="100%" />
+				<Label class="topLabel" text="{i18n>volumeUom}" />
+				<Input 
+					custom:id="volumeUomPopup"
+					custom:set="dictionaryVolumeUOM"
+					custom:filters="Code,Name"
+					custom:omit="true"
+					id="volumeUomPopupValueHelp"
+					showValueHelp="true"
+					valueHelpRequest="handleValueHelp"
+					value="{= ${VolumeUom} ? ${VolumeUom} : 'TO' }" width="100%" />
 			</VBox>
-			<HBox justifyContent="SpaceBetween">
-				<VBox class="leftVBoxStyle" width="50%">
-					<Label class="topLabel" text="{i18n>currency}" />
-					<Select forceSelection="false" selectedKey="USD" width="100%">
-						<core:Item key="" text=""/>
-						<core:Item key="USD" text="USD"/>
-						<core:Item key="EUR" text="EUR"/>
-						<core:Item key="RUB" text="RUB"/>
-					</Select>
-				</VBox>
-				<VBox class="rightVBoxStyle" width="50%">
-					<Label class="topLabel" text="{i18n>volumeUom}" />
-					<Select forceSelection="false" selectedKey="TO" width="100%">
-						<core:Item key="" text=""/>
-						<core:Item key="TO" text="TO"/>
-					</Select>
-				</VBox>
-			</HBox>
 		</content>
 	</Panel>
 </core:FragmentDefinition>

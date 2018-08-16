@@ -2,55 +2,42 @@
 	<Panel expandable="true" expanded="true" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="01" />
+				<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" visible="false" />
+				<Input custom:max="36" value="{VolumeNumber}" custom:key="volumeNumber" liveChange="checkValue" type="Number" width="100%"/>
 				<ToolbarSpacer />
 				<CheckBox select="onCheckBoxSelect" custom:id="volume" selected="false" />
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<VBox>
-				<HBox justifyContent="SpaceBetween">
-					<VBox class="leftVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>type}" />
-						<Text text="{i18n>fixed}" />
-					</VBox>
-					<VBox class="rightVBoxStyle" visible="false" width="50%">
-						<Label class="topLabel" text="{i18n>owner}" />
-						<Text text="Myself" />
-					</VBox>
-				</HBox>
-				<Label class="topLabel" text="{i18n>meansOfTransport}" />
-				<Text text="Vessel" />
-			</VBox>
-			<List noDataText="{i18n>noData}" selectionChange="onListSelect">
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>volumeType}" />
+					<Switch change="onSwitch" state="{VolumeType}" customTextOn="{i18n>fixed}" customTextOff="{i18n>optional}">
+						<layoutData>
+							<FlexItemData growFactor="1" />
+						</layoutData>
+					</Switch>
+				</VBox>
+				<VBox class="rightVBoxStyle" visible="{= ${VolumeType} ? true : false }" width="50%">
+					<Label class="topLabel" text="{i18n>volumeOwner}" />
+					<Select custom:key="volumeOwner" forceSelection="false" selectedKey="{VolumeOwner}" width="100%" 
+						items="{ path: '/dictionaryVolumeOwnerSet', sorter: { path: 'Code' } }">
+						<core:Item key="{Code}" text="{Code} - {Name}"/>
+					</Select>
+				</VBox>
+			</HBox>
+			<List noDataText="{i18n>noData}" items="{ path: 'ToOfferPeriodAndPrice' }" selectionChange="onListSelect">
 				<headerToolbar>
 					<Toolbar>
-						<Title text="{i18n>prices}" titleStyle="H3" />
+						<Title text="{i18n>periodsPrices}" titleStyle="H3" />
 						<ToolbarSpacer />
-						<Button type="Accept" id="priceAdd" enabled="false" custom:id="price" text="{i18n>add}" press="add" />
-						<Button type="Emphasized" custom:id="price" text="{i18n>edit}" press="edit" enabled="false" />
-						<Button type="Reject" custom:id="price" text="{i18n>delete}" press="delete" enabled="false" />
+						<Button type="Accept" custom:id="periodsPrices" text="{i18n>add}" press="add" />
+						<Button type="Reject" custom:id="periodsPrices" text="{i18n>delete}" press="delete" enabled="false" />
 					</Toolbar>
 				</headerToolbar>
 				<items>
 					<CustomListItem>
-						<core:Fragment fragmentName="fragment.prices" type="XML"></core:Fragment>
-					</CustomListItem>
-				</items>
-			</List>
-			<List noDataText="{i18n>noData}" selectionChange="onListSelect">
-				<headerToolbar>
-					<Toolbar>
-						<Title text="{i18n>periods}" titleStyle="H3" />
-						<ToolbarSpacer />
-						<Button type="Accept" id="periodAdd" enabled="false" custom:id="period" text="{i18n>add}" press="add" />
-						<Button type="Emphasized" custom:id="period" text="{i18n>edit}" press="edit" enabled="false" />
-						<Button type="Reject" custom:id="period" text="{i18n>delete}" press="delete" enabled="false" />
-					</Toolbar>
-				</headerToolbar>
-				<items>
-					<CustomListItem>
-						<core:Fragment fragmentName="fragment.periods" type="XML"></core:Fragment>
+						<core:Fragment fragmentName="fragment.periodsPrices" type="XML"></core:Fragment>
 					</CustomListItem>
 				</items>
 			</List>

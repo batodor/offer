@@ -100,12 +100,15 @@
 	font-size: .9rem;
 	color: #000;
 }
-@media (max-width: 640px) { 
+@media (max-width: 1280px) { 
 	.sapMNav{
 		position: absolute;
 	}
 	.sapMSwt,
 	.sapUiSizeCompact .sapMSwt{
 		width: 110px;
+	}
+	.sapFDynamicPage-Std-Tablet .sapFDynamicPageContent, .sapFDynamicPage-Std-Tablet .sapFDynamicPageContentFitContainer{
+	    padding: 0;
 	}
 }

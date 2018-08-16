@@ -5,8 +5,7 @@
       "target": {
         "type": "service",
         "name": "sapui5",
-        "entryPath": "/resources",
-        "version": "1.52.9"
+        "entryPath": "/resources"
       },
       "description": "SAPUI5 Resources"
     },
@@ -15,8 +14,7 @@
       "target": {
         "type": "service",
         "name": "sapui5",
-        "entryPath": "/test-resources",
-        "version": "1.52.9"
+        "entryPath": "/test-resources"
       },
       "description": "SAPUI5 Test Resources"
     },
@@ -25,8 +23,7 @@
       "target": {
         "type": "service",
         "name": "sapui5",
-        "entryPath": "/resources",
-        "version": "1.52.9"
+        "entryPath": "/resources"
       },
       "description": "SAPUI5 Resources"
     },
@@ -35,8 +32,7 @@
       "target": {
         "type": "service",
         "name": "sapui5",
-        "entryPath": "/test-resources",
-        "version": "1.52.9"
+        "entryPath": "/test-resources"
       },
       "description": "SAPUI5 Test Resources"
     },
@@ -44,10 +40,10 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "ER8_500",
+        "name": "ERD_150",
         "entryPath": "/sap/opu/odata"
       },
-      "description": "ER8"
+      "description": "ERD 150"
     }
   ],
   "welcomeFile": "/webapp/test/flpSandbox.html",
