@@ -37,8 +37,8 @@
 								<core:Item key="{Code}" text="{Name}"/>
 							</Select>
 							<Label required="true" class="topLabel" text="{i18n>type}" />
-							<Select id="type" custom:key="type" custom:omit="true" selectedKey="{= ${Type} ? ${Type} : 'OF02'}" forceSelection="false" width="100%"
-								items="{ path: '/dictionaryTypeSet', sorter: { path: 'Name' } }">
+							<Select id="type" change="setOfferType" custom:key="type" custom:omit="true" selectedKey="{= ${Type} ? ${Type} : 'OF02'}" 
+								forceSelection="false" width="100%" items="{ path: '/dictionaryTypeSet', sorter: { path: 'Name' } }">
 								<core:Item key="{Code}" text="{Name}"/>
 							</Select>
 						</VBox>
@@ -83,14 +83,14 @@
 					<Page
 						id="p3"
 						title="{i18n>volumeSettings}">
-						<List noDataText="{i18n>noData}" id="volumesList" items="{ path: 'ToOfferVolume' }" selectionChange="onListSelect">
+						<List noDataText="{i18n>noData}" mode="SingleSelectMaster" id="volumesList" items="{ path: 'ToOfferVolume', templateShareable:false }" selectionChange="onListSelect">
 							<headerToolbar>
 								<Toolbar>
 									<Title text="{i18n>volumes}" titleStyle="H3" />
 									<ToolbarSpacer />
-									<Button type="Accept" custom:id="volumes" text="{i18n>add}" press="add" />
-									<Button type="Emphasized" custom:id="volumes" text="{i18n>copy}" press="copy" enabled="false" />
-									<Button type="Reject" custom:id="volumes" text="{i18n>delete}" press="delete" enabled="false" />
+									<Button type="Accept" id="volumeAddButton" custom:id="volumes" text="{i18n>add}" press="add" />
+									<Button type="Emphasized" id="volumeCopyButton" custom:id="volumes" text="{i18n>copy}" press="copy" enabled="false" />
+									<Button type="Reject" id="volumeDeleteButton" custom:id="volumes" text="{i18n>delete}" press="delete" enabled="false" />
 								</Toolbar>
 							</headerToolbar>
 							<items>
@@ -116,9 +116,9 @@
 				</pages>
 			</NavContainer>
 		</semantic:content>
-		<semantic:titleMainAction>
-			<semantic:TitleMainAction custom:id="offerList" press="copyFrom" text="{i18n>copyFrom}" />
-		</semantic:titleMainAction>
+		<!--<semantic:titleMainAction>-->
+		<!--	<semantic:TitleMainAction custom:id="offerList" press="copyFrom" text="{i18n>copyFrom}" />-->
+		<!--</semantic:titleMainAction>-->
 	</semantic:SemanticPage>
 
 </mvc:View>

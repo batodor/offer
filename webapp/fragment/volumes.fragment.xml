@@ -2,17 +2,17 @@
 	<Panel expandable="true" expanded="true" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
+				<Title text="{VolumeNumber}" />
 				<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" visible="false" />
-				<Input custom:max="36" value="{VolumeNumber}" custom:key="volumeNumber" liveChange="checkValue" type="Number" width="100%"/>
+				<Input value="{VolumeUOM}" visible="false" />
 				<ToolbarSpacer />
-				<CheckBox select="onCheckBoxSelect" custom:id="volume" selected="false" />
 			</Toolbar>
 		</headerToolbar>
 		<content>
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>volumeType}" />
-					<Switch change="onSwitch" state="{VolumeType}" customTextOn="{i18n>fixed}" customTextOff="{i18n>optional}">
+					<Switch change="onSwitch" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
 						<layoutData>
 							<FlexItemData growFactor="1" />
 						</layoutData>
@@ -21,12 +21,12 @@
 				<VBox class="rightVBoxStyle" visible="{= ${VolumeType} ? true : false }" width="50%">
 					<Label class="topLabel" text="{i18n>volumeOwner}" />
 					<Select custom:key="volumeOwner" forceSelection="false" selectedKey="{VolumeOwner}" width="100%" 
-						items="{ path: '/dictionaryVolumeOwnerSet', sorter: { path: 'Code' } }">
+						items="{ path: '/dictionaryVolumeOwnerSet', sorter: { path: 'Code' }, templateShareable:false }">
 						<core:Item key="{Code}" text="{Code} - {Name}"/>
 					</Select>
 				</VBox>
 			</HBox>
-			<List noDataText="{i18n>noData}" items="{ path: 'ToOfferPeriodAndPrice' }" selectionChange="onListSelect">
+			<List noDataText="{i18n>noData}" mode="SingleSelectMaster" items="{ path: 'ToOfferPeriodAndPrice', templateShareable:false }" selectionChange="onListSelect">
 				<headerToolbar>
 					<Toolbar>
 						<Title text="{i18n>periodsPrices}" titleStyle="H3" />

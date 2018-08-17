@@ -1,15 +1,15 @@
 <core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Panel expandable="true" expanded="true" width="auto">
+	<Panel expandable="true" expanded="false" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
 				<Title text="{ path: 'DateFrom', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }
 					{= ${DateFrom} ? ' - ' : '' } { path: 'DateTo', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }" />
 				<ToolbarSpacer />
-				<CheckBox select="onCheckBoxSelect" selected="false" />
 			</Toolbar>
 		</headerToolbar>
 		<content>
 			<VBox>
+				<Input value="{Position}" visible="false" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label required="true" class="topLabel" text="{i18n>dateFrom}" />
@@ -43,8 +43,8 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>toleranceUom}" />
-						<Select forceSelection="false" selectedKey="{ShipmentToleranceUOM}" class="fullWidth" width="100%" 
-							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' } }">
+						<Select forceSelection="false" selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }" class="fullWidth" width="100%" 
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }">
 							<core:Item key="{Code}" text="{Code} - {Name}"/>
 						</Select>
 					</VBox>
@@ -68,8 +68,8 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>toleranceUom}" />
-						<Select forceSelection="false" selectedKey="{TonnageToleranceUOM}" class="fullWidth" width="100%" 
-							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' } }">
+						<Select forceSelection="false" selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }" class="fullWidth" width="100%" 
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }">
 							<core:Item key="{Code}" text="{Code} - {Name}"/>
 						</Select>
 					</VBox>
@@ -79,31 +79,26 @@
 				</OverflowToolbar>
 				<Label required="true" class="topLabel" text="{i18n>incoterms}" />
 				<Select forceSelection="false" custom:key="incoterms" selectedKey="{Incoterms}" class="fullWidth" width="100%" 
-					items="{ path: '/dictionaryIncotermsSet', sorter: { path: 'Incoterms' } }">
+					items="{ path: '/dictionaryIncotermsSet', sorter: { path: 'Incoterms' }, templateShareable:false }">
 					<core:Item key="{Incoterms}" text="{Incoterms} - {Description}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>deliveryPoint}" />
-				<MultiInput
+				<Input
 					custom:id="portPopup"
-					custom:set="deliveryPoint"
+					custom:set="dictionaryDeliveryPoint"
 					custom:key="deliveryPoint"
 					custom:select="Name"
 					custom:filters="Country,Code,Name"
-					width="100%" 
-					enableMultiLineMode="true" 
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
 					showSuggestion="true"
 					suggest="handleSuggest"
-					suggestionItems="{/deliveryPointSet}"
-					tokens="{ path: 'ToDeliveryPoint' }">
+					value="{DeliveryPoint}"
+					suggestionItems="{ path: '/dictionaryDeliveryPointSet', templateShareable:false }">
 					<suggestionItems>
-						<core:Item key="{Code}" text="{Code} - {Name}" />
+						<core:Item key="{Code}" text="{Name}" />
 					</suggestionItems>
-					<tokens>
-					 	<Token key="{Code}" text="{Code} - {Name}" />
-					</tokens>
-				</MultiInput>
+				</Input>
 				<Label class="topLabel" text="{i18n>offerPrice}" />
 				<Input type="Number" value="{FixPrice}" placeholder="0" />
 				<HBox justifyContent="SpaceBetween">
@@ -130,8 +125,8 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>cvBase}" />
-						<Select selectedKey="{CVBase}" width="100%" forceSelection="false" 
-							items="{ path: '/dictionaryCVBaseSet', sorter: { path: 'Code' } }">
+						<Select forceSelection="false" selectedKey="{= ${CVBase} ? ${CVBase} : 'NAR' }" width="100%" 
+							items="{ path: '/dictionaryCVBaseSet', sorter: { path: 'Code' }, templateShareable:false }">
 							<core:Item key="{Code}" text="{Code}"/>
 						</Select>
 					</VBox>

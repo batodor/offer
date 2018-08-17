@@ -33,7 +33,7 @@ sap.ui.define([
 				this.typeArr = ["value", "dateValue", "selectedKey", "selected", "state", "tokens"];
 				
 				// Add fragments
-				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog" ];
+				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "volumes", "periodsPrices" ];
 				this.addFragments(fragmentsArr);
 				
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
@@ -43,7 +43,7 @@ sap.ui.define([
 			_onOfferMatched: function(oEvent) {
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
 				if(this.TCNumber){
-					this.getView().bindElement("/offerHeaderSet('" + this.TCNumber + "')");
+					this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
 					this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 					this.byId("approveOffer").setEnabled(true);
 				}
@@ -89,7 +89,7 @@ sap.ui.define([
 			
 			// Search function for all tables
 			triggerSearch: function(oEvent) {
-				var query = oEvent.getParameter("query") || oEvent.getSource().getProperty("selectedKey") || oEvent.getParameter("selected"),
+				var query = oEvent.getParameter("query") || oEvent.getParameter("selected"),
 					id = oEvent.getSource().data('id'),
 					key = oEvent.getSource().data('key'),
 					customOperator = oEvent.getSource().data('operator'),
@@ -202,7 +202,7 @@ sap.ui.define([
 					var item = items[i];
 					var path = item.getBindingContextPath();
 					var data = item.getModel().getData(path);
-					if(id === "portPopup" || id === "counterpartyPopup"){
+					if(id === "counterpartyPopup"){
 						var token = new sap.m.Token({
 							key: data.Code,
 							text: data.Name
@@ -217,45 +217,27 @@ sap.ui.define([
 				}
 				this[id + "Dialog"].close();
 			},
-			dialogAdd: function(oEvent) {
-				var button = oEvent.getSource();
-				var id = button.data("id");
-				var dialog = button.getParent();
-				var oModel = dialog.getModel();
-				//var oData = this.getOdata(dialog);
-				var bCheckAlert = this.checkKeys(dialog);
-				
-				if(!bCheckAlert){
-					// oModel.create("/" + id + "Set", oData);
-					this[id + "Dialog"].close();
-				}else{
-					var msg = this.getModel('i18n').getResourceBundle().getText("plsEnter") + " " + bCheckAlert.slice(0, -2);
-					MessageBox.alert(msg, {
-						actions: [sap.m.MessageBox.Action.CLOSE]
-					});
-				}
-			},
 			
 			// Sets the texts to show counterparty blacklist
 			setBlacklist: function(data, objects){
 				var blacklisted = data.BlackList;
 				var status = blacklisted ? this.getModel('i18n').getResourceBundle().getText("blacklisted") : 
 					this.getModel('i18n').getResourceBundle().getText("notBlacklisted");
-				
-				var counterpartyText = new sap.m.Text({
-					text: data.Name
+					
+				var counterpartyText = new sap.m.CustomListItem({
+					content: new sap.m.Text({ text: data.Name })
 				});
-				var statusText = new sap.m.Text({
-					text: status
+				var statusText = new sap.m.CustomListItem({
+					content: new sap.m.Text({ text: status })
 				});
-				var countryText = new sap.m.Text({
-					text: data.Country
+				var countryText = new sap.m.CustomListItem({
+					content: new sap.m.Text({ text: data.Country })
 				});
 				var texts = [counterpartyText,statusText,countryText];
 				for(var i = 0; i < texts.length; i++){
-					texts[i].addStyleClass("smallMarginBottom");
+					texts[i].getContent()[0].addStyleClass("smallMarginBottom");
 					if(blacklisted){
-						texts[i].addStyleClass("red");
+						texts[i].getContent()[0].addStyleClass("red");
 					}
 				}
 				this.byId(objects[0]).addItem(counterpartyText);
@@ -288,36 +270,13 @@ sap.ui.define([
 				}
 			},
 			
-			onCheckBoxSelect: function(oEvent){
-				var checkBox = oEvent.getSource();
-				var selectedItem = checkBox.getParent().getParent().getParent();
-				var list = selectedItem.getParent();
-				var items = list.getItems();
-				for(var i = 0; i < items.length; i++){
-					var item = items[i];
-					if(item._active){
-						var prevCheckBox = item.getContent()[0].getHeaderToolbar().getContent()[2];
-						prevCheckBox.setSelected(false);
-						item.setActive(false);
-					}
-				}
-				selectedItem.setActive(checkBox.getSelected());
-				list.fireSelectionChange();
-			},
 			onListSelect: function(oEvent){
 				var list = oEvent.getSource();
-				var items = list.getItems();
-				var item = false;
-				var toolbarContent = list.getHeaderToolbar().getContent();
-				for(var i = 0; i < items.length; i++){
-					if(items[i]._active){
-						item = items[i];
-					}
-				}
-				if(item){
-					this.setInput([toolbarContent[3], toolbarContent[4], toolbarContent[5]], true, "Enabled");
+				var toolbar = list.getHeaderToolbar().getContent();
+				if(list.getSelectedItems().length > 0){
+					this.setInput([toolbar[3], toolbar[4]], true, "Enabled");
 				}else{
-					this.setInput([toolbarContent[3], toolbarContent[4], toolbarContent[5]], false, "Enabled");
+					this.setInput([toolbar[3], toolbar[4]], false, "Enabled");
 				}
 			},
 			
@@ -326,34 +285,39 @@ sap.ui.define([
 				var button = oEvent.getSource();
 				var id = button.data("id");
 				var list = button.getParent().getParent();
-				
-				// Generate new fragment template as prototype
-				var length = list.getItems().length + 1;
-				this[id + length] = sap.ui.xmlfragment("fragment." + id, this);
-				this.getView().addDependent(this[id + length]);
-				
+				var fragmentClone = this[id].clone();
+				this.getView().addDependent(fragmentClone);
+				if(id === "volumes"){
+					var title = fragmentClone.getHeaderToolbar().getContent()[0];
+					var length = list.getItems().length + 1;
+					if(length < 10){
+						title.setText('0' + length);
+					}else{
+						title.setText(length);
+					}
+				}
 				var newItem = new sap.m.CustomListItem();
-				newItem.addContent(this[id + length]);
+				newItem.addContent(fragmentClone);
 				list.addItem(newItem);
 			},
 			delete: function(oEvent){
 				var button = oEvent.getSource();
 				var list = button.getParent().getParent();
-				var items = list.getItems();
-				for(var i = 0; i < items.length; i++){
-					if(items[i]._active){
-						var that = this;
-						MessageBox.confirm(that.getResourceBundle().getText("askDelete"), {
-							actions: [that.getResourceBundle().getText("delete"), sap.m.MessageBox.Action.CLOSE],
-							onClose: function(sAction) {
-								if (sAction === that.getResourceBundle().getText("delete")) {
-									list.removeItem(i - 1);
-								} else {
-									MessageToast.show("Delete canceled!");
+				var selectedItems = list.getSelectedItems();
+				if(selectedItems.length > 0){
+					var that = this;
+					MessageBox.confirm(that.getResourceBundle().getText("askDelete"), {
+						actions: [that.getResourceBundle().getText("delete"), sap.m.MessageBox.Action.CLOSE],
+						onClose: function(sAction) {
+							if (sAction === that.getResourceBundle().getText("delete")) {
+								for(var i=0; i<selectedItems.length; i++){
+									list.removeItem(selectedItems[i]);
 								}
+							} else {
+								MessageToast.show("Delete canceled!");
 							}
-						});
-					}
+						}
+					});
 				}
 			},
 			
@@ -447,8 +411,6 @@ sap.ui.define([
 								var token = {};
 								token.Name = tokens[l].getText();
 								token.Code = tokens[l].getKey();
-								//token.BlackList = false;
-								//token.Country = "";
 								value.push(token);
 							}
 						}else{
@@ -487,11 +449,11 @@ sap.ui.define([
 			},
 			
 			checkValue: function(oEvent){
-				var Input = oEvent.getSource();
-				var maxValue = Input.data("max") ? parseInt(Input.data("max")) : 100;
+				var input = oEvent.getSource();
+				var maxValue = input.data("max") ? parseInt(input) : 100;
 				var value = parseInt(oEvent.getParameter('newValue'));
 				var valueState = isNaN(value) ? "Error" : value > maxValue ? "Error" : "Success";
-				Input.setValueState(valueState);
+				input.setValueState(valueState);
 			},
 			
 			onSwitch: function(oEvent){
@@ -569,6 +531,25 @@ sap.ui.define([
 					title.setText(date2 + " - " + date);
 				}
 				
+			},
+			
+			setOfferType: function(oEvent){
+				this.byId('volumesList').removeAllItems();
+				if(oEvent.getParameter("selectedItem").getKey() === "OF01"){
+					this.byId('volumeAddButton').firePress();
+					this.setInput(["volumeAddButton", "volumeDeleteButton", "volumeCopyButton"], false, "Visible");
+				}else{
+					this.setInput(["volumeAddButton", "volumeDeleteButton", "volumeCopyButton"], true, "Visible");
+				}
+			},
+			
+			// On select item in Attachments table
+			onAttachmentSelect: function(e){
+				var listItems = e.getParameters("listItem");
+				if (listItems) {
+					var id = e.getSource().data("id");
+					this.setInput([id + "Delete", id + "Download"], true, "Enabled");
+				}
 			}
 		});
 	}

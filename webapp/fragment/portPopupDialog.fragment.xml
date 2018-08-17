@@ -17,7 +17,7 @@
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
-			<Table mode="MultiSelect" includeItemInSelection="true" custom:id="portPopup" id="portPopup" items="{}" select="onTableSelect" 
+			<Table mode="SingleSelectMaster" includeItemInSelection="true" custom:id="portPopup" id="portPopup" items="{}" select="onTableSelect" 
 				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false" 
 				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
 				<columns>
@@ -38,7 +38,7 @@
 		</content>
 		<buttons>
 			<Button text="{i18n>cancel}" custom:id="portPopup" type="Back" press="dialogCancel"/>
-			<Button text="{i18n>select}" custom:id="portPopup" custom:key="Code" type="Accept" id="portPopupSelect" enabled="false" press="dialogSelect"/>
+			<Button text="{i18n>select}" custom:id="portPopup" custom:key="Name" type="Accept" id="portPopupSelect" enabled="false" press="dialogSelect"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

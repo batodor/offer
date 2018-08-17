@@ -11,21 +11,36 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle">
 						<Label class="topLabel" text="{i18n>counterparty}" />
-						<VBox id="blacklistCounterparty">
-							<Text text="{i18n>none}" />
-						</VBox>
+						<!--<VBox id="blacklistCounterparty">-->
+						<!--	<Text text="{i18n>none}" />-->
+						<!--</VBox>-->
+						<List noDataText="{i18n>noData}" class="listText" id="blacklistCounterparty" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">
+							<CustomListItem>
+								<Text text="{Name}" />
+							</CustomListItem>
+						</List>
 					</VBox>
 					<VBox class="rightVBoxStyle" alignItems="End">
 						<Label class="topLabel" text="{i18n>blacklistStatus}" />
-						<VBox id="blacklistStatus" alignItems="End">
-							<Text text="{i18n>none}" />
-						</VBox>
+						<!--<VBox id="blacklistStatus" alignItems="End">-->
+						<!--	<Text text="{i18n>none}" />-->
+						<!--</VBox>-->
+						<List noDataText="{i18n>noData}" class="listText" id="blacklistStatus" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">
+							<CustomListItem>
+								<Text text="{= ${BlackList} ? ${i18n>blacklisted} : ${i18n>notBlacklisted} }" class="{= ${BlackList} ? 'red' : '' }" />
+							</CustomListItem>
+						</List>
 					</VBox>
 				</HBox>
 				<Label class="topLabel" text="{i18n>sanctions}" />
-				<VBox id="blacklistCountry">
-					<Text text="{i18n>none}" />
-				</VBox>
+				<!--<VBox id="blacklistCountry">-->
+				<!--	<Text text="{i18n>none}" />-->
+				<!--</VBox>-->
+				<List noDataText="{i18n>noData}" class="listText" id="blacklistCountry" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">
+					<CustomListItem>
+						<Text text="{Country}" />
+					</CustomListItem>
+				</List>
 				<Button width="90px" text="{i18n>request}" class="marginTop" press="openMail" />
 			</VBox>
 		</content>

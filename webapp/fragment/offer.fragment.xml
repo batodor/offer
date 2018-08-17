@@ -26,7 +26,7 @@
 					custom:key="counterparty"
 					custom:name="ToCounterpartyDetail"
 					showValueHelp="true"
-					tokens="{ path: 'ToCounterpartyDetail'	}"
+					tokens="{ path: 'ToCounterpartyDetail' }"
 					valueHelpRequest="handleValueHelp">
 					<tokens>
 						<Token key="{Code}" text="{Name}" />
@@ -52,18 +52,46 @@
 					items="{ path: '/dictionaryMeansOfTransportSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
-				<Label class="topLabel" text="{i18n>attachments}" />
-				<u:FileUploader name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
-					uploadUrl="{upload>/uploadUrl}" tooltip="Upload your file to the local server" change="onFileChange" uploadComplete="onFileUploaded" 
-					style="Emphasized" width="100%">
-					<u:headerParameters>
-						<u:FileUploaderParameter name="slug" value="{upload>/fileName}"/>
-						<u:FileUploaderParameter name="x-csrf-token" value="{upload>/token}"/>
-					</u:headerParameters>
-				</u:FileUploader>
 				<Label class="topLabel" text="{i18n>comments}" />
 				<TextArea id="comment" value="{Comments}" rows="6" width="100%" />
 			</VBox>
+		</content>
+	</Panel>
+	<Panel expandable="true" expanded="false" width="auto">
+		<headerToolbar>
+			<Toolbar height="3rem">
+				<Title text="{i18n>attachments}" />
+				<ToolbarSpacer />
+				<Button id="uploadDownload" custom:id="upload" text="{i18n>download}" press="tableDownload" type="Accept" enabled="false"/>
+				<Button id="uploadDelete" custom:id="upload" custom:upload="true" text="{i18n>delete}" press="tableDelete" type="Reject" enabled="false"/>
+			</Toolbar>
+		</headerToolbar>
+		<content>
+			<u:FileUploader class="topLabel" multiple="true" name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
+				uploadUrl="{upload>/uploadUrl}" tooltip="Upload your file to the local server" change="onFileChange" uploadComplete="onFileUploaded" 
+				style="Emphasized" width="100%">
+				<u:headerParameters>
+					<u:FileUploaderParameter name="slug" value="{upload>/fileName}"/>
+					<u:FileUploaderParameter name="x-csrf-token" value="{upload>/token}"/>
+				</u:headerParameters>
+			</u:FileUploader>
+			<Table id="uploadTable" class="topLabel" custom:id="upload" select="onAttachmentSelect" mode="SingleSelectMaster" includeItemInSelection="true" width="100%" 
+				items="{ path: 'ToAttachment' }" noDataText="{i18n>noData}" growing="true" growingThreshold="5" growingScrollToLoad="false">
+				<columns>
+					<Column width="40%"><Label class="black" text="{i18n>name}"/></Column>
+					<Column hAlign="Center" width="30%"><Label class="black" text="{i18n>type}"/></Column>
+					<Column hAlign="Center" width="30%"><Label class="black" text="{i18n>uploadDate}"/></Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{ path: 'FileName', formatter: '.formatter.getFileName' }" />
+							<Text text="{DocType} - {DocTypeDescr}"/>
+							<Text text="{ path: 'UploadDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
 		</content>
 	</Panel>
 </core:FragmentDefinition>

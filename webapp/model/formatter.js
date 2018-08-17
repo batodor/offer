@@ -15,7 +15,15 @@ sap.ui.define([
 					return "";
 				}
 				return parseFloat(sValue).toFixed(2);
+			},
+			
+			getFileName: function(fileName){
+				if (!fileName) {
+					return "";
+				}
+				return decodeURI(fileName);
 			}
+
 
 		};
 

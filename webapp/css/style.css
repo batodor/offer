@@ -5,6 +5,17 @@
 	margin-top: 1rem;
 	font-size: .85rem;
 }
+.listText .sapMLIB{
+	background: transparent;
+	border: 0;
+}
+.listText .sapMListNoData{
+	justify-content: start;
+	padding: 0 !important;
+}
+.sapMPanelContent:not(.sapMPanelBGTransparent){
+	border-bottom: 0;
+}
 .fullWidth{
 	width: 100%;
 }
@@ -57,11 +68,6 @@
 }
 .red{
 	color: red !important;
-}
-.sapMTitleStyleH3{
-	padding: .5rem 0;
-	display: block;
-	margin-top: 1rem;
 }
 .sapUiSizeCompact .sapMTB{
 	height: auto;
