@@ -291,9 +291,9 @@ sap.ui.define([
 					var title = fragmentClone.getHeaderToolbar().getContent()[0];
 					var length = list.getItems().length + 1;
 					if(length < 10){
-						title.setText('0' + length);
+						title.setText('0' + length + " / " + this.getResourceBundle().getText("fixed"));
 					}else{
-						title.setText(length);
+						title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
 					}
 				}
 				var newItem = new sap.m.CustomListItem();
@@ -458,8 +458,15 @@ sap.ui.define([
 			
 			onSwitch: function(oEvent){
 				var Switch = oEvent.getSource();
+				var type = Switch.data("type");
 				var state = oEvent.getParameter("state");
 				Switch.getParent().getParent().getItems()[1].setVisible(state);
+				if(type && type === "volumes"){
+					var title = Switch.getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
+					var newText = state ? title.getText().substring(0,5) + this.getResourceBundle().getText("optional") : 
+						title.getText().substring(0,5) + this.getResourceBundle().getText("fixed");
+					title.setText(newText);
+				}
 			},
 
 			handleSuggest: function(oEvent) {

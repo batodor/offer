@@ -2,7 +2,7 @@
 	<Panel expandable="true" expanded="true" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="{VolumeNumber}" />
+				<Title text="{VolumeNumber} / {= ${VolumeType} ? ${i18n>optional} : ${i18n>fixed} }" />
 				<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" visible="false" />
 				<Input value="{VolumeUOM}" visible="false" />
 				<ToolbarSpacer />
@@ -12,7 +12,7 @@
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>volumeType}" />
-					<Switch change="onSwitch" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
+					<Switch change="onSwitch" custom:type="volumes" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
 						<layoutData>
 							<FlexItemData growFactor="1" />
 						</layoutData>

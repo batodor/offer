@@ -74,7 +74,7 @@
 						</Select>
 					</VBox>
 				</HBox>
-				<OverflowToolbar width="100%">
+				<OverflowToolbar class="topLabel" width="100%">
 					<Title text="{i18n>prices}" titleStyle="H3"/>
 				</OverflowToolbar>
 				<Label required="true" class="topLabel" text="{i18n>incoterms}" />
