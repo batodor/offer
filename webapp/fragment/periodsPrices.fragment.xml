@@ -43,8 +43,8 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>toleranceUom}" />
-						<Select forceSelection="false" selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }" class="fullWidth" width="100%" 
-							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }">
+						<Select forceSelection="false" custom:name="ShipmentToleranceUOM" selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }"
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
 							<core:Item key="{Code}" text="{Code} - {Name}"/>
 						</Select>
 					</VBox>
@@ -68,8 +68,8 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>toleranceUom}" />
-						<Select forceSelection="false" selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }" class="fullWidth" width="100%" 
-							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }">
+						<Select forceSelection="false" custom:name="TonnageToleranceUOM" selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }"
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
 							<core:Item key="{Code}" text="{Code} - {Name}"/>
 						</Select>
 					</VBox>
@@ -125,7 +125,7 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>cvBase}" />
-						<Select forceSelection="false" selectedKey="{= ${CVBase} ? ${CVBase} : 'NAR' }" width="100%" 
+						<Select forceSelection="false" custom:name="CVBase" selectedKey="{= ${CVBase} ? ${CVBase} : 'NAR' }" width="100%" 
 							items="{ path: '/dictionaryCVBaseSet', sorter: { path: 'Code' }, templateShareable:false }">
 							<core:Item key="{Code}" text="{Code}"/>
 						</Select>

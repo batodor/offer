@@ -47,8 +47,9 @@ sap.ui.define([
 					return;
 				}
 				this._bMessageOpen = true;
+				// JSON.parse(sDetails.responseText).error.message.value;
 				MessageBox.error(
-					JSON.parse(sDetails.responseText).error.message.value,
+					this._sErrorText,
 					{
 						id : "serviceErrorMessageBox",
 						details: sDetails,

@@ -14,11 +14,11 @@
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label class="topLabel" text="{i18n>trader}" />
-				<Input value="DORZHIEVB" id="trader" />
+				<Input value="{Trader}" id="trader" />
 				<Label class="topLabel" text="{i18n>createDate}" />
-				<DateTimePicker enabled="false" value="26 июл. 2018 г., 10:43:21" />
+				<DateTimePicker enabled="false" value="{CreationDate}" />
 				<Label class="topLabel" text="{i18n>createdBy}" />
-				<Input enabled="false" id="userName" value="DORZHIEVB" />
+				<Input enabled="false" id="userName" value="{CreatedBy}" />
 				<Label class="topLabel" text="{i18n>currency}" />
 				<Input 
 					custom:id="currencyPopup"
