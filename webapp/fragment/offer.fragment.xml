@@ -18,6 +18,7 @@
 				<Label class="topLabel" text="{i18n>variantNumber}" />
 				<Input type="Number" id="number" value="{VariantNumber}" />
 				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
+				<Input value="{Counterparty}" id="counterpartyOne" visible="false" />
 				<MultiInput 
 					id="counterparty"
 					custom:id="counterpartyPopup"

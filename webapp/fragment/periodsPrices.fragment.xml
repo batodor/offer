@@ -9,7 +9,7 @@
 		</headerToolbar>
 		<content>
 			<VBox>
-				<Input value="{Position}" visible="false" />
+				<Input value="{TCPosition}" visible="false" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label required="true" class="topLabel" text="{i18n>dateFrom}" />

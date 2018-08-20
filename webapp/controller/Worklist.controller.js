@@ -37,16 +37,22 @@ sap.ui.define([
 				this.addFragments(fragmentsArr);
 				
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
-				this.getRouter().initialize();
 			},
 			
 			_onOfferMatched: function(oEvent) {
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
-				if(this.TCNumber){
-					this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
-					this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
-					this.byId("approveOffer").setEnabled(true);
-				}
+				this.getModel().metadataLoaded().then( function() {
+					if(this.TCNumber){
+						this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
+						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
+						this.byId("approveOffer").setEnabled(true);
+						
+					}else{
+						this.byId("creationDate").setDateValue(new Date());
+						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getFullName());
+						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getFullName());
+					}
+				}.bind(this));
 			},
 			
 			saveOffer: function(oEvent){
@@ -208,6 +214,7 @@ sap.ui.define([
 							text: data.Name
 						});
 						valueHelp.addToken(token);
+						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
 						valueHelp.setValue(data[key]);
 					}

@@ -16,9 +16,9 @@
 				<Label class="topLabel" text="{i18n>trader}" />
 				<Input value="{Trader}" id="trader" />
 				<Label class="topLabel" text="{i18n>createDate}" />
-				<DateTimePicker enabled="false" value="{CreationDate}" />
+				<DateTimePicker enabled="false" id="creationDate" dateValue="{CreationDate}" />
 				<Label class="topLabel" text="{i18n>createdBy}" />
-				<Input enabled="false" id="userName" value="{CreatedBy}" />
+				<Input enabled="false" id="createdBy" value="{CreatedBy}" />
 				<Label class="topLabel" text="{i18n>currency}" />
 				<Input 
 					custom:id="currencyPopup"
