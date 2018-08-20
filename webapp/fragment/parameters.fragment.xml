@@ -28,17 +28,18 @@
 					id="currencyPopupValueHelp"
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
-					value="{= ${Currency} ? ${Currency} : 'USD' }" width="100%" />
+					value="{Currency}"
+					placeholder="USD" width="100%" />
 				<Label class="topLabel" text="{i18n>volumeUom}" />
 				<Input 
 					custom:id="volumeUomPopup"
 					custom:set="dictionaryVolumeUOM"
 					custom:filters="Code,Name"
-					custom:omit="true"
 					id="volumeUomPopupValueHelp"
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
-					value="{= ${VolumeUom} ? ${VolumeUom} : 'TO' }" width="100%" />
+					value="{VolumeUOM}" 
+					placeholder="TO" width="100%" />
 			</VBox>
 		</content>
 	</Panel>

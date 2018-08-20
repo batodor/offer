@@ -4,6 +4,7 @@
 			<Toolbar height="3rem">
 				<Title text="{VolumeNumber} / {= ${VolumeType} ? ${i18n>optional} : ${i18n>fixed} }" />
 				<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" visible="false" />
+				<Input value="{VolumeNumber}" visible="false" />
 				<ToolbarSpacer />
 			</Toolbar>
 		</headerToolbar>

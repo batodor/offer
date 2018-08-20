@@ -124,3 +124,6 @@
 .sapMLIBSelected .sapMTitle{
 	color: #000;
 }
+.sapMLIBSelected .sapMLabel{
+	color: #333;
+}

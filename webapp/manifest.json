@@ -15,7 +15,11 @@
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
-					"localUri": "localService/metadata.xml"
+					"localUri": "localService/metadata.xml",
+					"metadataUrlParams": {
+						"sap-documentation": "heading",
+						"sap-language": "en"
+					}
 				}
 			},
 			"ZTS_OFFER_SRV": {
@@ -23,7 +27,11 @@
 				"type": "OData",
 				"settings": {
 					"odataVersion": "2.0",
-					"localUri": "localService/ZTS_OFFER_SRV/metadata.xml"
+					"localUri": "localService/ZTS_OFFER_SRV/metadata.xml",
+					"metadataUrlParams": {
+						"sap-documentation": "heading",
+						"sap-language": "en"
+					}
 				}
 			}
 		},

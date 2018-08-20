@@ -31,7 +31,7 @@
 						title="{i18n>offerTemplateSettings}" >
 						<VBox class="paddingRem" id="pageTradingPurpose">
 							<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" visible="false" />
-							<Input value="{VolumeUOM}" visible="false" />
+							<DateTimePicker dateValue="{LastChanged}" visible="false" />
 							<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
 							<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" 
 								items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">

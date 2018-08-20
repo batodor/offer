@@ -46,11 +46,10 @@ sap.ui.define([
 						this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						this.byId("approveOffer").setEnabled(true);
-						
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
-						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getFullName());
-						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getFullName());
+						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
+						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
 					}
 				}.bind(this));
 			},
@@ -61,7 +60,7 @@ sap.ui.define([
 				var offerData = this.getOdata(objectsArr);
 				var volumeData = this.getVolumeOdata();
 				var model = button.getModel();
-				var allData = Object.assign(offerData,volumeData);
+				var allData = this.mergeObjects(offerData,volumeData);
 				console.log(allData);
 				var that = this;
 				if(allData.TCNumber === "$$00000001"){
@@ -78,8 +77,7 @@ sap.ui.define([
 						}
 					});
 				}else{
-					var url = this.getView().getBindingContext().getPath();
-					model.update(url, allData, {
+					model.create("/offerHeaderSet", allData, {
 						success: function(response){
 							MessageBox.alert("Offer successfully edited!", {
 								actions: [sap.m.MessageBox.Action.CLOSE]
@@ -296,11 +294,14 @@ sap.ui.define([
 				this.getView().addDependent(fragmentClone);
 				if(id === "volumes"){
 					var title = fragmentClone.getHeaderToolbar().getContent()[0];
+					var titleValue = fragmentClone.getHeaderToolbar().getContent()[2];
 					var length = list.getItems().length + 1;
 					if(length < 10){
 						title.setText('0' + length + " / " + this.getResourceBundle().getText("fixed"));
+						titleValue.setValue('0' + length);
 					}else{
 						title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
+						titleValue.setValue(length);
 					}
 				}
 				var newItem = new sap.m.CustomListItem();
@@ -396,10 +397,10 @@ sap.ui.define([
 					if(input["sId"].indexOf('hbox') > -1){
 						var vboxes = input.getItems();
 						for(var j = 0; j < vboxes.length; j++){
-							oData = Object.assign(oData, this.getInputData(vboxes[j].getItems()[1]));
+							oData = this.mergeObjects(oData, this.getInputData(vboxes[j].getItems()[1]));
 						}
 					}else{
-						oData = Object.assign(oData, this.getInputData(input));
+						oData = this.mergeObjects(oData, this.getInputData(input));
 					}
 				}
 				return oData;
@@ -512,7 +513,7 @@ sap.ui.define([
 				for(var i = 0; i < volumes.length; i++){
 					var volumeName = this.getOdata(volumes[i].getContent()[0].getHeaderToolbar());
 					var volumeData = this.getOdata(volumes[i].getContent()[0]);
-					var allVolumeData = Object.assign(volumeName, volumeData);
+					var allVolumeData = this.mergeObjects(volumeName, volumeData);
 					oData.ToOfferVolume.push(allVolumeData);
 					
 					var periodsList = volumes[i].getContent()[0].getContent()[1];
@@ -564,6 +565,18 @@ sap.ui.define([
 					var id = e.getSource().data("id");
 					this.setInput([id + "Delete", id + "Download"], true, "Enabled");
 				}
+			},
+			
+			// Object.assign doesnt work in IE so this function is created
+			mergeObjects: function(objOne, objTwo){
+				var objs = [objOne, objTwo],
+			    result =  objs.reduce(function (r, o) {
+			        Object.keys(o).forEach(function (k) {
+			            r[k] = o[k];
+			        });
+			        return r;
+			    }, {});
+			    return result;
 			}
 		});
 	}
