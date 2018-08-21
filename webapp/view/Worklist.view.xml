@@ -31,7 +31,7 @@
 						title="{i18n>offerTemplateSettings}" >
 						<VBox class="paddingRem" id="pageTradingPurpose">
 							<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" visible="false" />
-							<DatePicker dateValue="{LastChanged}" visible="false" />
+							<Input value="{LastChanged}" visible="false" />
 							<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
 							<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" 
 								items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">
@@ -66,6 +66,7 @@
 								</l:BlockLayoutCell>
 								<l:BlockLayoutCell width="1">
 									<core:Fragment fragmentName="fragment.blacklist" type="XML"></core:Fragment>
+									<core:Fragment fragmentName="fragment.attachments" type="XML"></core:Fragment>
 								</l:BlockLayoutCell>
 							</l:BlockLayoutRow>
 						</l:BlockLayout>

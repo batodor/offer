@@ -1,0 +1,49 @@
+<core:FragmentDefinition 
+	xmlns:u="sap.ui.unified" 
+	xmlns:l="sap.ui.layout" 
+	xmlns="sap.m" 
+	xmlns:core="sap.ui.core" 
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel expandable="true" expanded="false" width="auto">
+		<headerToolbar>
+			<Toolbar height="3rem">
+				<Title text="{i18n>attachments}" />
+				<ToolbarSpacer />
+				<Button id="uploadDownload" custom:id="upload" text="{i18n>download}" press="tableDownload" type="Accept" enabled="false"/>
+				<Button id="uploadDelete" custom:id="upload" custom:upload="true" text="{i18n>delete}" press="tableDelete" type="Reject" enabled="false"/>
+			</Toolbar>
+		</headerToolbar>
+		<content>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="70%">
+					<u:FileUploader class="topLabel" multiple="true" name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
+						uploadUrl="{upload>/uploadUrl}" tooltip="Upload your file to the local server" change="onFileChange" uploadComplete="onFileUploaded" 
+						style="Emphasized" width="100%">
+						<u:headerParameters>
+							<u:FileUploaderParameter name="slug" value="{upload>/fileName}"/>
+							<u:FileUploaderParameter name="x-csrf-token" value="{upload>/token}"/>
+						</u:headerParameters>
+					</u:FileUploader>
+				</VBox>
+				<VBox class="rightVBoxStyle" id="uploadVbox" alignContent="End" justifyContent="Center" visible="false" width="30%">
+					<Button class="topLabel" id="uploadButton" enabled="false" custom:id="upload" press="upload" width="100%" text="{i18n>upload}" />
+				</VBox>
+			</HBox>
+			<Table id="uploadTable" class="topLabel" custom:id="upload" select="onAttachmentSelect" mode="SingleSelectMaster" includeItemInSelection="true" width="100%" 
+				items="{ path: 'ToAttachment' }" noDataText="{i18n>noData}" growing="true" growingThreshold="5" growingScrollToLoad="false">
+				<columns>
+					<Column><Label class="black" text="{i18n>name}"/></Column>
+					<Column hAlign="Center" width="100px"><Label class="black" text="{i18n>uploadDate}"/></Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{ path: 'FileName', formatter: '.formatter.getFileName' }" />
+							<Text text="{ path: 'CreateOn', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+	</Panel>
+</core:FragmentDefinition>

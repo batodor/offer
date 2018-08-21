@@ -46,6 +46,7 @@ sap.ui.define([
 						this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						this.byId("approveOffer").setEnabled(true);
+						this.byId("uploadVbox").setVisible(true);
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -61,30 +62,32 @@ sap.ui.define([
 				var volumeData = this.getVolumeOdata();
 				var model = button.getModel();
 				var allData = this.mergeObjects(offerData,volumeData);
-				console.log(allData);
-				var that = this;
+				var uploader = this.byId("upload");
+				var settings = {};
+				var msg = '';
+				var alertSettings = {
+					actions: [sap.m.MessageBox.Action.CLOSE]
+				};
 				if(allData.TCNumber === "$$00000001"){
-					model.create("/offerHeaderSet", allData, {
-						success: function(response){
-							MessageBox.alert("Offer successfully created!", {
-								actions: [sap.m.MessageBox.Action.CLOSE],
-								onClose: function(sAction) {
-									that.getRouter().navTo("worklist", {
-										TCNumber: response.TCNumber
-									});
-								}
-							});
-						}
-					});
+					msg = "Offer successfully created";
+					alertSettings.onClose = function(sAction) {
+						this.getRouter().navTo("worklist", {
+							TCNumber: response.TCNumber
+						});
+					};
 				}else{
-					model.create("/offerHeaderSet", allData, {
-						success: function(response){
-							MessageBox.alert("Offer successfully edited!", {
-								actions: [sap.m.MessageBox.Action.CLOSE]
-							});
-						}
-					});
+					msg = "Offer saved";
 				}
+				console.log(allData);
+				settings.success = function(response){
+					MessageBox.alert(msg, alertSettings);
+					if(uploader.getValue()){
+						var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
+						uploader.setUploadUrl(uploadUrl);
+						uploader.upload();
+					}
+				};
+				model.create("/offerHeaderSet", allData, settings);
 			},
 			
 			approveOffer: function(oEvent){
@@ -577,6 +580,79 @@ sap.ui.define([
 			        return r;
 			    }, {});
 			    return result;
+			},
+			
+			// -------------------- Attachments functions --------------------
+			// Triggered each time the new file was selected in fileUploader
+			// Changes the fileName (slug)
+			onFileChange: function(oEvent){
+				var uploader = oEvent.getSource();
+				var name = oEvent.getParameter("newValue");
+				var uploadModel = uploader.getModel("upload");
+				if(uploadModel){
+					var data = uploadModel.getData();
+					data.fileName = encodeURI(name);
+					uploadModel.setData(data);
+				}else{
+					var model = this.getModel();
+					var oData = { token: model.getSecurityToken(), fileName: encodeURI(name) };
+					var newModel = new JSONModel(oData);
+					uploader.setModel(newModel,"upload");
+				}
+				if(uploader.getValue()){
+					this.byId("uploadButton").setEnabled(true);
+				}
+			},
+			
+			// Download function
+			tableDownload: function(oEvent){
+				var id = oEvent.getSource().data("id");
+				var table = this.byId(id + "Table") || sap.ui.getCore().byId(id + "Table");
+				var url = table.getModel().sServiceUrl + table.getSelectedItem().getBindingContextPath() + "/$value";
+				window.open(url);
+			},
+			tableDelete: function(oEvent) {
+				var button = oEvent.getSource();
+				var id = button.data("id");
+				var table = this.byId(id + "Table") || sap.ui.getCore().byId(id + "Table");
+				var url = table.getSelectedItem().getBindingContextPath();
+				
+				// If upload table change the delete url
+				if(button.data("upload")){
+					url = url + "/$value";
+				}
+				
+				var model = table.getModel();
+				MessageBox.confirm("Are you sure you want to delete?", {
+					actions: ["Delete", sap.m.MessageBox.Action.CLOSE],
+					onClose: function(sAction) {
+						if (sAction === "Delete") {
+							model.remove(url,{
+								success: function(){
+									
+								}
+							});
+						} else {
+							MessageToast.show("Delete canceled!");
+						}
+					}
+				});
+			},
+			onFileUploaded: function(oEvent){
+				var uploader = oEvent.getSource();
+				uploader.setValue();
+				this.getModel().refresh(true);
+			},
+			upload: function(oEvent){
+				var button = oEvent.getSource();
+				var id = button.data("id");
+				var uploader = this.byId(id);
+				if(uploader.getValue()){
+					var model = this.getModel();
+					var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + this.TCNumber + "')/ToAttachment";
+					uploader.setUploadUrl(uploadUrl);
+					uploader.upload();
+				}
 			}
 		});
 	}

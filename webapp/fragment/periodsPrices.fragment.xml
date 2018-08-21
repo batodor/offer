@@ -99,8 +99,6 @@
 						<core:Item key="{Code}" text="{Name}" />
 					</suggestionItems>
 				</Input>
-				<Label class="topLabel" text="{i18n>offerPrice}" />
-				<Input type="Number" value="{FixPrice}" placeholder="0" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>price}" />
@@ -118,6 +116,8 @@
 						<Input value="{IndexFormula}" />
 					</VBox>
 				</HBox>
+				<Label class="topLabel" text="{i18n>offerPrice}" />
+				<Input type="Number" value="{FixPrice}" placeholder="0" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>cv}" />
