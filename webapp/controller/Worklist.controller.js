@@ -41,7 +41,12 @@ sap.ui.define([
 			
 			_onOfferMatched: function(oEvent) {
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
+				this.Type = oEvent.getParameter("arguments").Type;
 				this.getModel().metadataLoaded().then( function() {
+					if(this.Type){
+						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer2"));
+						this.byId("navCon").to(this.byId("p4"));
+					}
 					if(this.TCNumber){
 						this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
@@ -259,7 +264,7 @@ sap.ui.define([
 			nextPage: function(oEvent){
 				var button = oEvent.getSource();
 				var navCon = this.byId("navCon");
-				var id = button.data("next");
+				var next = button.data("next");
 				if(button.data("check")){
 					var page = this.byId(button.data("id"));
 					var bCheckAlert = this.checkKeys(page);
@@ -271,8 +276,13 @@ sap.ui.define([
 						return true;
 					}
 				}
-				if(id){
-					navCon.to(this.byId(id));
+				if(next){
+					if(next === "p1"){
+						this.getRouter().navTo("worklist", {
+							TCNumber: this.byId("offerId").getValue()       
+						});
+					}
+					navCon.to(this.byId(next));
 				}else{
 					navCon.back();
 				}

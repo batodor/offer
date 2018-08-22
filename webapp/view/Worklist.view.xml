@@ -115,6 +115,24 @@
 							</Toolbar>
 						</footer>
 					</Page>
+					<Page
+						id="p4"
+						title="{i18n>enterOfferId}">
+						<VBox id="offerIdVbox" class="paddingRem">
+							<Label required="true" class="topLabel" text="{i18n>offerId}" />
+							<Input custom:key="offerId" id="offerId" value="" width="100%" />
+						</VBox>
+						<footer>
+							<Toolbar>
+								<ToolbarSpacer />
+								<Button type="Accept" 
+									custom:next="p1" 
+									custom:check="true"
+									custom:id="offerIdVbox"
+									press="nextPage" text="{i18n>enter}" />
+							</Toolbar>
+						</footer>
+					</Page>
 				</pages>
 			</NavContainer>
 		</semantic:content>

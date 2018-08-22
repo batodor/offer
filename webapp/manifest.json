@@ -117,7 +117,8 @@
 			"routes": [
 				{
 					"pattern": [
-						":TCNumber:"
+						":TCNumber:",
+						"Type/{Type}"
 					],
 					"name": "worklist",
 					"target": [
