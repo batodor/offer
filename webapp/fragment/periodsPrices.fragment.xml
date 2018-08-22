@@ -113,7 +113,7 @@
 						class="rightVBoxStyle"
 						width="50%">
 						<Label required="true" class="topLabel" text="{i18n>indexFormula}" />
-						<Input value="{IndexFormula}" />
+						<Input custom:key="indexFormula" value="{IndexFormula}" />
 					</VBox>
 				</HBox>
 				<Label class="topLabel" text="{i18n>offerPrice}" />

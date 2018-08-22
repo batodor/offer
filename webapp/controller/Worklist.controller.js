@@ -64,35 +64,42 @@ sap.ui.define([
 				var button = oEvent.getSource();
 				var objectsArr = button.data("blocks").split(',');
 				var offerData = this.getOdata(objectsArr);
-				var volumeData = this.getVolumeOdata();
-				var model = button.getModel();
-				var allData = this.mergeObjects(offerData,volumeData);
-				var uploader = this.byId("upload");
-				var settings = {};
-				var msg = '';
-				var alertSettings = {
-					actions: [sap.m.MessageBox.Action.CLOSE]
-				};
-				if(allData.TCNumber === "$$00000001"){
-					msg = "Offer successfully created";
-					alertSettings.onClose = function(sAction) {
-						this.getRouter().navTo("worklist", {
-							TCNumber: response.TCNumber
-						});
-					};
+				var volumeDataAndCheck = this.getVolumeOdata();
+				if(volumeDataAndCheck.check){
+					var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-5);
+					MessageBox.alert(msg, {
+						actions: [sap.m.MessageBox.Action.CLOSE]
+					});
 				}else{
-					msg = "Offer saved";
-				}
-				console.log(allData);
-				settings.success = function(response){
-					MessageBox.alert(msg, alertSettings);
-					if(uploader.getValue()){
-						var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
-						uploader.setUploadUrl(uploadUrl);
-						uploader.upload();
+					var model = button.getModel();
+					var allData = this.mergeObjects(offerData,volumeDataAndCheck.data);
+					var uploader = this.byId("upload");
+					var settings = {};
+					var msg = '';
+					var alertSettings = {
+						actions: [sap.m.MessageBox.Action.CLOSE]
+					};
+					if(allData.TCNumber === "$$00000001"){
+						msg = "Offer successfully created";
+						alertSettings.onClose = function(sAction) {
+							this.getRouter().navTo("worklist", {
+								TCNumber: response.TCNumber
+							});
+						};
+					}else{
+						msg = "Offer saved";
 					}
-				};
-				model.create("/offerHeaderSet", allData, settings);
+					console.log(allData);
+					settings.success = function(response){
+						MessageBox.alert(msg, alertSettings);
+						if(uploader.getValue()){
+							var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
+							uploader.setUploadUrl(uploadUrl);
+							uploader.upload();
+						}
+					};
+					model.create("/offerHeaderSet", allData, settings);
+				}
 			},
 			
 			approveOffer: function(oEvent){
@@ -520,24 +527,34 @@ sap.ui.define([
 			
 			getVolumeOdata: function(){
 				var oData = {};
+				oData.data = {};
+				oData.check = "";
 				var list = this.byId("volumesList");
 				var volumes = list.getItems();
-				oData.ToOfferVolume = [];
+				oData.data.ToOfferVolume = [];
 				for(var i = 0; i < volumes.length; i++){
 					var volumeName = this.getOdata(volumes[i].getContent()[0].getHeaderToolbar());
 					var volumeData = this.getOdata(volumes[i].getContent()[0]);
 					var allVolumeData = this.mergeObjects(volumeName, volumeData);
-					oData.ToOfferVolume.push(allVolumeData);
-					
-					var periodsList = volumes[i].getContent()[0].getContent()[1];
-					var periods = periodsList.getItems();
-					
+					if(allVolumeData.VolumeType){
+						var volumeCheck = this.checkOdata(allVolumeData, ["VolumeOwner"]);
+						oData.check = oData.check + volumeCheck + ",";
+					}
+					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
+					if(periods.length === 0){
+						oData.check = oData.check + "Periods / Prices";
+					}
 					allVolumeData.ToOfferPeriodAndPrice = [];
-					
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
 						var periodOdata = this.getOdata(period);
 						allVolumeData.ToOfferPeriodAndPrice.push(periodOdata);
+						var checkPeriods = this.checkOdata(periodOdata, ["DateFrom", "DateTo","Incoterms", "DeliveryPoint"]);
+						oData.check = oData.check + checkPeriods;
+					}
+					oData.data.ToOfferVolume.push(allVolumeData);
+					if(volumeCheck || periods.length === 0 || checkPeriods){
+						oData.check = oData.check + " for " + allVolumeData.VolumeNumber + " Volume and ";
 					}
 				}
 				return oData;
@@ -663,6 +680,20 @@ sap.ui.define([
 					uploader.setUploadUrl(uploadUrl);
 					uploader.upload();
 				}
+			},
+			
+			// oData = object with data, keyArr is array of keys to check
+			checkOdata: function(oData, keyArr){
+				var check = "";
+				for(var key in oData){
+					if(keyArr.indexOf(key) > -1 && !oData[key]){
+						check = check + key + ",";
+					}
+				}
+				if(check){
+					check = check.slice(0,-1);
+				}
+				return check;
 			}
 		});
 	}

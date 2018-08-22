@@ -19,7 +19,7 @@
 					</Switch>
 				</VBox>
 				<VBox class="rightVBoxStyle" visible="{= ${VolumeType} ? true : false }" width="50%">
-					<Label class="topLabel" text="{i18n>volumeOwner}" />
+					<Label required="true" class="topLabel" text="{i18n>volumeOwner}" />
 					<Select custom:key="volumeOwner" forceSelection="false" selectedKey="{VolumeOwner}" width="100%" 
 						items="{ path: '/dictionaryVolumeOwnerSet', sorter: { path: 'Code' }, templateShareable:false }">
 						<core:Item key="{Code}" text="{Code} - {Name}"/>
