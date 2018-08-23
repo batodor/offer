@@ -1,48 +1,73 @@
 <core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Panel expandable="true" expanded="true" width="auto">
+	<!--<HBox justifyContent="SpaceBetween">-->
+	<!--	<VBox class="leftVBoxStyle">-->
+	<!--		<Label class="topLabel" text="{i18n>counterparty}" />-->
+	<!--		<List noDataText="{i18n>noData}" class="listText" id="blacklistCounterparty" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">-->
+	<!--			<CustomListItem>-->
+	<!--				<Text text="{Name}" />-->
+	<!--			</CustomListItem>-->
+	<!--		</List>-->
+	<!--	</VBox>-->
+	<!--	<VBox class="rightVBoxStyle" alignItems="End">-->
+	<!--		<Label class="topLabel" text="{i18n>blacklistStatus}" />-->
+	<!--		<List noDataText="{i18n>noData}" class="listText" id="blacklistStatus" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">-->
+	<!--			<CustomListItem>-->
+	<!--				<Text text="{= ${BlackList} ? ${i18n>blacklisted} : ${i18n>notBlacklisted} }" class="{= ${BlackList} ? 'red' : '' }" />-->
+	<!--			</CustomListItem>-->
+	<!--		</List>-->
+	<!--	</VBox>-->
+	<!--</HBox>-->
+	<!--<Label class="topLabel" text="{i18n>sanctions}" />-->
+	<!--<List noDataText="{i18n>noData}" class="listText" id="blacklistCountry" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">-->
+	<!--	<CustomListItem>-->
+	<!--		<Text text="{Country}" />-->
+	<!--	</CustomListItem>-->
+	<!--</List>-->
+	<!--<Button width="90px" text="{i18n>request}" class="marginTop" press="openMail" />-->
+	<Panel id="complianceRisksPanel" expandable="true" expanded="true" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="{i18n>blacklist}" />
+				<Title text="{i18n>complainceRisks}" />
 				<ToolbarSpacer />
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<VBox>
-				<HBox justifyContent="SpaceBetween">
-					<VBox class="leftVBoxStyle">
-						<Label class="topLabel" text="{i18n>counterparty}" />
-						<!--<VBox id="blacklistCounterparty">-->
-						<!--	<Text text="{i18n>none}" />-->
-						<!--</VBox>-->
-						<List noDataText="{i18n>noData}" class="listText" id="blacklistCounterparty" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">
-							<CustomListItem>
-								<Text text="{Name}" />
-							</CustomListItem>
-						</List>
-					</VBox>
-					<VBox class="rightVBoxStyle" alignItems="End">
-						<Label class="topLabel" text="{i18n>blacklistStatus}" />
-						<!--<VBox id="blacklistStatus" alignItems="End">-->
-						<!--	<Text text="{i18n>none}" />-->
-						<!--</VBox>-->
-						<List noDataText="{i18n>noData}" class="listText" id="blacklistStatus" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">
-							<CustomListItem>
-								<Text text="{= ${BlackList} ? ${i18n>blacklisted} : ${i18n>notBlacklisted} }" class="{= ${BlackList} ? 'red' : '' }" />
-							</CustomListItem>
-						</List>
-					</VBox>
-				</HBox>
-				<Label class="topLabel" text="{i18n>sanctions}" />
-				<!--<VBox id="blacklistCountry">-->
-				<!--	<Text text="{i18n>none}" />-->
-				<!--</VBox>-->
-				<List noDataText="{i18n>noData}" class="listText" id="blacklistCountry" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">
-					<CustomListItem>
-						<Text text="{Country}" />
-					</CustomListItem>
-				</List>
-				<Button width="90px" text="{i18n>request}" class="marginTop" press="openMail" />
-			</VBox>
+			<List noDataText="{i18n>noData}" class="listText" items="{ path: 'ToCounterpartyDetail', templateShareable:false }">
+				<CustomListItem>
+					<Panel expandable="true" expanded="true" width="auto">
+						<headerToolbar>
+							<Toolbar height="3rem">
+								<Title text="{Name}" />
+								<ToolbarSpacer />
+							</Toolbar>
+						</headerToolbar>
+						<content>
+							<VBox>
+								<HBox justifyContent="SpaceBetween">
+									<VBox class="leftVBoxStyle" width="50%">
+										<Label class="topLabel" text="{i18n>rating}" />
+										<Text text="{Rating}" />
+									</VBox>
+									<VBox class="rightVBoxStyle" width="50%">
+										<Label class="topLabel" text="{i18n>status}" />
+										<Text class="{= ${BlackList} ? 'red' : '' }" text="{= ${BlackList} ? ${i18n>blacklisted} : ${i18n>notBlacklisted} }" />
+									</VBox>
+								</HBox>
+								<Label class="topLabel" text="{i18n>risks}" />
+								<List noDataText="{i18n>noData}" class="listText" items="{ path: 'ToComplianceRisk', templateShareable:false }">
+									<CustomListItem>
+										<HBox width="100%">
+											<core:Icon src="sap-icon://circle-task-2" class="size1" 
+												color="{= ${Color} === 'R' ? 'red' : ${Color} === 'G' ? 'green' : 'yellow' }" />
+											<Text text="{RiskName}" />
+										</HBox>
+									</CustomListItem>
+								</List>
+							</VBox>
+						</content>
+					</Panel>
+				</CustomListItem>
+			</List>
 		</content>
 	</Panel>
 </core:FragmentDefinition>

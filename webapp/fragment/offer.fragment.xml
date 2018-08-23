@@ -22,12 +22,13 @@
 				<MultiInput 
 					id="counterparty"
 					custom:id="counterpartyPopup"
-					custom:set="counterpartyDetail"
+					custom:set="offerCounterparty"
 					custom:filters="Code,Name"
 					custom:key="counterparty"
-					custom:name="ToCounterpartyDetail"
+					custom:name="ToOfferCounterparty"
 					showValueHelp="true"
-					tokens="{ path: 'ToCounterpartyDetail' }"
+					tokenChange="onMultiUpdate"
+					tokens="{ path: 'ToOfferCounterparty' }"
 					valueHelpRequest="handleValueHelp">
 					<tokens>
 						<Token key="{Code}" text="{Name}" />

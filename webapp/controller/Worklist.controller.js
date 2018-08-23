@@ -39,6 +39,7 @@ sap.ui.define([
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 			},
 			
+			
 			_onOfferMatched: function(oEvent) {
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
 				this.Type = oEvent.getParameter("arguments").Type;
@@ -51,11 +52,12 @@ sap.ui.define([
 						this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						this.byId("approveOffer").setEnabled(true);
-						this.byId("uploadVbox").setVisible(true);
+						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox"], true, "Visible");
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
+						this.setInput(["uploadDownload", "uploadDelete"], false, "Visible");
 					}
 				}.bind(this));
 			},
@@ -210,13 +212,6 @@ sap.ui.define([
 				var valueHelp = this.byId(dynamicId) || sap.ui.getCore().byId(dynamicId);
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
 				
-				if(id === "counterpartyPopup"){
-					var objects = ["blacklistCounterparty","blacklistStatus","blacklistCountry"];
-					for(var i = 0; i < objects.length; i++){
-						this.byId(objects[i]).removeAllItems();
-					}
-				}
-				
 				for(var i = 0; i < items.length; i++){
 					var item = items[i];
 					var path = item.getBindingContextPath();
@@ -231,40 +226,35 @@ sap.ui.define([
 					}else{
 						valueHelp.setValue(data[key]);
 					}
-					if(id === "counterpartyPopup"){
-						this.setBlacklist(data, objects);
-					}
+				}
+				if(id === "counterpartyPopup"){
+					this.getRisks(valueHelp);
 				}
 				this[id + "Dialog"].close();
 			},
 			
-			// Sets the texts to show counterparty blacklist
-			setBlacklist: function(data, objects){
-				var blacklisted = data.BlackList;
-				var status = blacklisted ? this.getModel('i18n').getResourceBundle().getText("blacklisted") : 
-					this.getModel('i18n').getResourceBundle().getText("notBlacklisted");
-					
-				var counterpartyText = new sap.m.CustomListItem({
-					content: new sap.m.Text({ text: data.Name })
-				});
-				var statusText = new sap.m.CustomListItem({
-					content: new sap.m.Text({ text: status })
-				});
-				var countryText = new sap.m.CustomListItem({
-					content: new sap.m.Text({ text: data.Country })
-				});
-				var texts = [counterpartyText,statusText,countryText];
-				for(var i = 0; i < texts.length; i++){
-					texts[i].getContent()[0].addStyleClass("smallMarginBottom");
-					if(blacklisted){
-						texts[i].getContent()[0].addStyleClass("red");
-					}
+			getRisks: function(valueHelp){
+				var tokens = valueHelp.getTokens();
+				var list = this.byId("complianceRisksPanel").getContent()[0];
+				list.removeAllItems();
+				var filters = [];
+				for(var i = 0; i < tokens.length; i++){
+					filters.push(new Filter({path: "Code", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
 				}
-				this.byId(objects[0]).addItem(counterpartyText);
-				this.byId(objects[1]).addItem(statusText);
-				if(data.Country){
-					this.byId(objects[2]).addItem(countryText);
+				if(filters.length > 0){
+					var allFilters = new Filter({ filters: filters, and: false });
+					list.bindItems({
+						path: "/counterpartyDetailSet", 
+						filters: allFilters, 
+						template: list['mBindingInfos'].items.template.clone()
+					});
 				}
+			},
+			
+			// On multi input tokens update
+			onMultiUpdate: function(oEvent){
+				var input = oEvent.getSource();
+				this.getRisks(input);
 			},
 			
 			// Next page function
@@ -536,9 +526,12 @@ sap.ui.define([
 					var volumeName = this.getOdata(volumes[i].getContent()[0].getHeaderToolbar());
 					var volumeData = this.getOdata(volumes[i].getContent()[0]);
 					var allVolumeData = this.mergeObjects(volumeName, volumeData);
+					var volumeCheck = "";
 					if(allVolumeData.VolumeType){
-						var volumeCheck = this.checkOdata(allVolumeData, ["VolumeOwner"]);
-						oData.check = oData.check + volumeCheck + ",";
+						volumeCheck = this.checkOdata(allVolumeData, ["VolumeOwner"]);
+						if(volumeCheck){
+							oData.check = oData.check + volumeCheck + ",";
+						}
 					}
 					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
 					if(periods.length === 0){
@@ -554,6 +547,7 @@ sap.ui.define([
 					}
 					oData.data.ToOfferVolume.push(allVolumeData);
 					if(volumeCheck || periods.length === 0 || checkPeriods){
+						oData.check = oData.check.slice(0, -1);
 						oData.check = oData.check + " for " + allVolumeData.VolumeNumber + " Volume and ";
 					}
 				}

@@ -9,8 +9,8 @@
 			<Toolbar height="3rem">
 				<Title text="{i18n>attachments}" />
 				<ToolbarSpacer />
-				<Button id="uploadDownload" custom:id="upload" text="{i18n>download}" press="tableDownload" type="Accept" enabled="false"/>
-				<Button id="uploadDelete" custom:id="upload" custom:upload="true" text="{i18n>delete}" press="tableDelete" type="Reject" enabled="false"/>
+				<Button id="uploadDownload" visible="false" custom:id="upload" text="{i18n>download}" press="tableDownload" type="Accept" enabled="false"/>
+				<Button id="uploadDelete" visible="false" custom:id="upload" custom:upload="true" text="{i18n>delete}" press="tableDelete" type="Reject" enabled="false"/>
 			</Toolbar>
 		</headerToolbar>
 		<content>
