@@ -19,6 +19,9 @@
 .fullWidth{
 	width: 100%;
 }
+.marginRight{
+	margin-right: .5rem;
+}
 .margin-top{
 	margin-top: 1rem;
 }

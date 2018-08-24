@@ -9,7 +9,7 @@
 		<content>
 			<VBox id="parameters">
 				<Label class="topLabel" text="{i18n>companyBranch}" />
-				<Select custom:name="CompanyBranch" forceSelection="true" selectedKey="{= ${CompanyBranch} ? ${CompanyBranch} : '7100' }" width="100%" 
+				<Select id="companyBranch" custom:name="CompanyBranch" forceSelection="true" selectedKey="{= ${CompanyBranch} ? ${CompanyBranch} : '7100' }" width="100%" 
 					items="{ path: '/dictionaryCompanyBranchSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>

@@ -49,10 +49,15 @@ sap.ui.define([
 						this.byId("navCon").to(this.byId("p4"));
 					}
 					if(this.TCNumber){
-						this.getView().bindElement({ path: "/offerHeaderSet('" + this.TCNumber + "')" });
+						this.getView().bindElement({ 
+							path: "/offerHeaderSet('" + this.TCNumber + "')"
+							// events: { dataReceived: this.dataReceived.bind(this) } 
+						});
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						this.byId("approveOffer").setEnabled(true);
 						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox"], true, "Visible");
+						
+						
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -61,6 +66,11 @@ sap.ui.define([
 					}
 				}.bind(this));
 			},
+			
+			// dataReceived: function(){
+			// 	var valueHelp = this.byId("counterparty");
+			// 	this.getLimits(valueHelp); 
+			// },
 			
 			saveOffer: function(oEvent){
 				var button = oEvent.getSource();
@@ -227,34 +237,58 @@ sap.ui.define([
 						valueHelp.setValue(data[key]);
 					}
 				}
-				if(id === "counterpartyPopup"){
-					this.getRisks(valueHelp);
-				}
 				this[id + "Dialog"].close();
 			},
 			
+			// Get Risks on select of Counterparties
 			getRisks: function(valueHelp){
 				var tokens = valueHelp.getTokens();
-				var list = this.byId("complianceRisksPanel").getContent()[0];
-				list.removeAllItems();
+				var risks = this.byId("risks");
+				risks.removeAllItems();
 				var filters = [];
 				for(var i = 0; i < tokens.length; i++){
 					filters.push(new Filter({path: "Code", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
 				}
 				if(filters.length > 0){
-					var allFilters = new Filter({ filters: filters, and: false });
-					list.bindItems({
-						path: "/counterpartyDetailSet", 
-						filters: allFilters, 
-						template: list['mBindingInfos'].items.template.clone()
+					//var allFilters = new Filter({ filters: filters, and: false });
+					risks.bindItems({
+						path: "/offerHeaderSet('$$00000001')/ToOfferCounterparty", 
+						filters: filters, 
+						template: risks['mBindingInfos'].items.template.clone()
 					});
 				}
+			},
+			
+			// Get Risks on select of Counterparties
+			getLimits: function(valueHelp){
+				var tokens = valueHelp.getTokens();
+				var limits = this.byId("limits");
+				limits.removeAllItems();
+				var filters = [];
+				for(var i = 0; i < tokens.length; i++){
+					filters.push(new Filter({path: "Partner", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
+				}
+				var partnersFilter = new Filter({ filters: filters, and: false });
+				var companyFilter = new Filter({path: "CompanyCode", operator: FilterOperator.EQ, value1: this.byId("companyBranch").getSelectedKey() });
+				var allFilters = new Filter({ filters: [ partnersFilter, companyFilter ], and: true });
+				if(filters.length > 0){
+					limits.bindItems({ 
+						path: "/offerHeaderSet('$$00000001')/ToLimit", 
+						filters: allFilters,
+						template: limits['mBindingInfos'].items.template.clone()
+					});
+				}
+				this.multi = false;
 			},
 			
 			// On multi input tokens update
 			onMultiUpdate: function(oEvent){
 				var input = oEvent.getSource();
-				this.getRisks(input);
+				if(this.multi){
+					this.getRisks(input);
+				}
+				this.getLimits(input);
+				this.multi = true;
 			},
 			
 			// Next page function
@@ -495,9 +529,6 @@ sap.ui.define([
 					aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.StartsWith, sTerm));
 				}
 				oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
-			},
-			
-			copyFrom: function(){
 			},
 			
 			// Gete inputs from array of ids or directly from object

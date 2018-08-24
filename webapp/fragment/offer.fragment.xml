@@ -14,9 +14,9 @@
 		<content>
 			<VBox id="pageOfferDetails">
 				<Label class="topLabel" text="{i18n>status}" />
-				<Input enabled="false" id="status" value="{Status}" />
+				<Input enabled="false" value="{Status}" />
 				<Label class="topLabel" text="{i18n>variantNumber}" />
-				<Input type="Number" id="number" value="{VariantNumber}" />
+				<Input type="Number" value="{VariantNumber}" />
 				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
 				<Input value="{Counterparty}" id="counterpartyOne" visible="false" />
 				<MultiInput 
@@ -26,7 +26,6 @@
 					custom:filters="Code,Name"
 					custom:key="counterparty"
 					custom:name="ToOfferCounterparty"
-					showValueHelp="true"
 					tokenChange="onMultiUpdate"
 					tokens="{ path: 'ToOfferCounterparty' }"
 					valueHelpRequest="handleValueHelp">
