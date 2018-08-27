@@ -34,8 +34,10 @@
 									<CustomListItem>
 										<HBox width="100%">
 											<core:Icon 
-												src="sap-icon://{= ${Color} === 'red' ? 'alert' : '' }{= ${Color} === 'yellow' ? 'message-warning' : '' }{= ${Color} === 'green' ? 'accept' : '' }" 
-												class="size1 marginRight" color="{Color}" />
+												src="{= ${Color} === 'red' ? 'sap-icon://alert' : '' }{= ${Color} === 'yellow' ? 'sap-icon://message-warning' : '' }{= ${Color} === 'green' ? 'sap-icon://accept' : '' }" 
+												class="size1 marginRight" 
+												color="{Color}"
+												visible="{= ${Color} ? true : false }" />
 											<Text text="{RiskName}" />
 										</HBox>
 									</CustomListItem>
@@ -48,8 +50,7 @@
 			<OverflowToolbar class="topLabel" height="3rem" width="100%">
 				<Title text="{i18n>limits}" titleStyle="H3"/>
 			</OverflowToolbar>
-			<List noDataText="{i18n>noData}" id="limits" class="listText" items="{}">
-				<items>
+			<List noDataText="{i18n>none}" id="limits" class="listText" items="{}">
 				<CustomListItem>
 					<VBox>
 						<HBox justifyContent="SpaceBetween">
@@ -66,8 +67,24 @@
 						<Text text="{Tonnage} {TonnageUOM}" />
 					</VBox>
 				</CustomListItem>
-				</items>
 			</List>
+			<OverflowToolbar class="topLabel" height="3rem" width="100%">
+				<Title text="{i18n>otherRisks}" titleStyle="H3"/>
+			</OverflowToolbar>
+			<HBox justifyContent="SpaceBetween">
+				<VBox class="leftVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>countriesSanction}" />
+					<Text id="countriesSanction" text="{i18n>none}" />
+				</VBox>
+				<VBox class="rightVBoxStyle" width="50%">
+					<Label class="topLabel" text="{i18n>risks}" />
+					<List noDataText="{i18n>none}" class="listText heightAuto" items="{ path: 'ToRisksByOffer', templateShareable: false }">
+						<CustomListItem>
+							<Text text="{RiskName}" />
+						</CustomListItem>
+					</List>
+				</VBox>
+			</HBox>
 		</content>
 	</Panel>
 </core:FragmentDefinition>

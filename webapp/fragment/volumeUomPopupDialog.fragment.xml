@@ -6,7 +6,7 @@
 				busyIndicatorDelay="{detailView>/lineItemTableDelay}" class="sapUiResponsiveMargin">
 				<headerToolbar>
 					<Toolbar class="white">
-						<SearchField placeholder="{i18n>code}" custom:id="volumeUomPopup" custom:key="Code" custom:operator="EQ" showSearchButton="true" 
+						<SearchField placeholder="{i18n>code}" custom:id="volumeUomPopup" custom:key="Code" showSearchButton="true" 
 							search="triggerSearch" width="100%" id="volumeUomPopupCodeFilter" />
 						<ToolbarSpacer/>
 						<SearchField placeholder="{i18n>name}" custom:id="volumeUomPopup" custom:key="Name" showSearchButton="true" 

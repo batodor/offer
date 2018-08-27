@@ -1,0 +1,40 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog title="{i18n>approve}" stretch="true" class="sapUiContentPadding" id="approveDialog">
+		<content>
+			<VBox>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label text="{i18n>validityDate}" />
+						<DatePicker dateValue="{ValidityDate}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label text="{i18n>recap}" />
+						<Switch state="{Recap}" customTextOn="{i18n>recap}" customTextOff="{i18n>dontRecap}" />
+					</VBox>
+				</HBox>
+				<Label class="topLabel" text="{i18n>enterComments}" />
+				<TextArea value="{Comment}" rows="6" width="100%" />
+				<Label class="topLabel" text="{i18n>attachments}" />
+				<Table id="approveUpload" custom:id="approveUpload" select="onAttachmentSelect" mode="SingleSelectMaster" includeItemInSelection="true" 
+					width="100%" items="{}" noDataText="{i18n>noData}" growing="true" growingThreshold="5" growingScrollToLoad="false">
+					<columns>
+						<Column><Label class="black" text="{i18n>name}"/></Column>
+						<Column hAlign="Center" width="100px"><Label class="black" text="{i18n>uploadDate}"/></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<Text text="{ path: 'FileName', formatter: '.formatter.getFileName' }" />
+								<Text text="{ path: 'CreateOn', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+		</content>
+		<buttons>
+			<Button text="{i18n>cancel}" custom:id="approve" type="Back" press="dialogCancel"/>
+			<Button text="{i18n>select}" custom:id="approve" type="Accept" enabled="false" press="dialogApprove"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

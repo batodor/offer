@@ -4,11 +4,11 @@
 			<l:BlockLayout>
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="1">
-						<SearchField placeholder="{i18n>counterparty}" custom:id="counterpartyPopup" custom:key="Code" custom:operator="EQ" showSearchButton="true" 
+						<SearchField placeholder="{i18n>counterparty}" custom:id="counterpartyPopup" custom:key="Code" showSearchButton="true" 
 							search="triggerSearch" width="100%" id="counterpartyPopupCodeFilter" />
 					</l:BlockLayoutCell>
 					<l:BlockLayoutCell width="1">
-						<SearchField placeholder="{i18n>name}" maxLength="10" custom:id="counterpartyPopup" custom:key="Name" showSearchButton="true" 
+						<SearchField placeholder="{i18n>name}" maxLength="10" custom:id="counterpartyPopup" custom:operator="Contains" custom:key="Name" showSearchButton="true" 
 							search="triggerSearch" width="100%" id="counterpartyPopupNameFilter" />
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>

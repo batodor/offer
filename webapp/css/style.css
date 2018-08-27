@@ -8,6 +8,10 @@
 .listText .sapMLIB{
 	background: transparent;
 	border: 0;
+	color: #000;
+}
+.heightAuto .sapMLIB{
+	height: auto;
 }
 .listText .sapMListNoData{
 	justify-content: start;
@@ -80,13 +84,13 @@
 }
 .sapMSwt,
 .sapUiSizeCompact .sapMSwt{
-	width: 100px;
+	width: 110px;
 }
 .sapMSwtLabel{
-	width: 85px;
+	width: 90px;
 }
 .sapMSwtOn .sapMSwtHandle{
-	left: 80px;
+	left: 90px;
 }
 .noMargin{
 	margin: 0;

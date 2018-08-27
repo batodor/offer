@@ -33,7 +33,7 @@ sap.ui.define([
 				this.typeArr = ["value", "dateValue", "selectedKey", "selected", "state", "tokens"];
 				
 				// Add fragments
-				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "volumes", "periodsPrices" ];
+				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "volumes", "periodsPrices", "approveDialog" ];
 				this.addFragments(fragmentsArr);
 				
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
@@ -115,7 +115,13 @@ sap.ui.define([
 			},
 			
 			approveOffer: function(oEvent){
-				
+				var id = oEvent.getSource().data("id");
+				var approveUpload = sap.ui.getCore().byId(id + "Upload");
+				approveUpload.bindItems({
+					path: "/offerHeaderSet('" + this.TCNumber + "')/ToAttachment",
+					template: approveUpload['mBindingInfos'].items.template.clone()
+				});
+				this[id + "Dialog"].open();
 			},
 			
 			// Search function for all tables
@@ -131,7 +137,7 @@ sap.ui.define([
 					this.search[id] = {};
 				}
 				if(typeof query !== "undefined"){
-					var operator = FilterOperator.Contains;
+					var operator = FilterOperator.EQ;
 					if(customOperator){
 						operator = FilterOperator[customOperator];
 					}
@@ -161,7 +167,7 @@ sap.ui.define([
 				var table = sap.ui.getCore().byId(id);
 				table.bindItems({
 					path: bindSet,
-					template: table['mBindingInfos'].items.template
+					template: table['mBindingInfos'].items.template.clone()
 				});
 				this.search = {}; // nullify search object
 				if(filters){
@@ -221,7 +227,10 @@ sap.ui.define([
 				var dynamicId = button.data("dynamicId");
 				var valueHelp = this.byId(dynamicId) || sap.ui.getCore().byId(dynamicId);
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
-				
+				if(id === "counterpartyPopup"){
+					var tokens = this.byId("counterparty").getTokens();
+					var countries = "";
+				}
 				for(var i = 0; i < items.length; i++){
 					var item = items[i];
 					var path = item.getBindingContextPath();
@@ -231,11 +240,19 @@ sap.ui.define([
 							key: data.Code,
 							text: data.Name
 						});
-						valueHelp.addToken(token);
+						tokens.push(token);
+						if(data.Country){
+							countries = countries + data.Country + ",";
+						}
 						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
 						valueHelp.setValue(data[key]);
 					}
+				}
+				if(id === "counterpartyPopup"){
+					valueHelp.setTokens(tokens);
+					var countriesText = this.byId("countriesSanction");
+					countries ? countriesText.setText(countries.slice(0,-1)).addStyleClass("red") : countriesText.removeStyleClass("red");
 				}
 				this[id + "Dialog"].close();
 			},
@@ -250,10 +267,12 @@ sap.ui.define([
 					filters.push(new Filter({path: "Code", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
 				}
 				if(filters.length > 0){
-					//var allFilters = new Filter({ filters: filters, and: false });
+					var partnersFilter = new Filter({ filters: filters, and: false });
+					var tcnumberFilter = new Filter({path: "TCNumber", operator: FilterOperator.EQ, value1: this.byId("TCNumber").getValue() });
+					var allFilters = new Filter({ filters: [ partnersFilter, tcnumberFilter ], and: true });
 					risks.bindItems({
-						path: "/offerHeaderSet('$$00000001')/ToOfferCounterparty", 
-						filters: filters, 
+						path: "/offerCounterpartySet", 
+						filters: allFilters, 
 						template: risks['mBindingInfos'].items.template.clone()
 					});
 				}
@@ -272,13 +291,13 @@ sap.ui.define([
 				var companyFilter = new Filter({path: "CompanyCode", operator: FilterOperator.EQ, value1: this.byId("companyBranch").getSelectedKey() });
 				var allFilters = new Filter({ filters: [ partnersFilter, companyFilter ], and: true });
 				if(filters.length > 0){
+					var TCNumber = this.byId("TCNumber").getValue();
 					limits.bindItems({ 
-						path: "/offerHeaderSet('$$00000001')/ToLimit", 
+						path: "/offerHeaderSet('" + TCNumber + "')/ToLimit", 
 						filters: allFilters,
 						template: limits['mBindingInfos'].items.template.clone()
 					});
 				}
-				this.multi = false;
 			},
 			
 			// On multi input tokens update
@@ -420,13 +439,27 @@ sap.ui.define([
 				var inputs = this.getInputs(object);
 				for(var i = 0; i < inputs.length; i++){
 					var input = inputs[i];
-					if(input.data("key")){
-						if((input["mProperties"].hasOwnProperty("value") && !input.getValue()) || 
-						(input["mProperties"].hasOwnProperty("selectedKey") && !input.getSelectedKey()) ||
-						(input.hasOwnProperty("_tokenizer") && input.getTokens().length === 0) ||
-						(input.hasOwnProperty("_oMaxDate") && !input.getDateValue())){
-							check = check + " " + this.getModel('i18n').getResourceBundle().getText(input.data("key")) + ", ";
+					if(input["sId"].indexOf('hbox') > -1){
+						var vboxes = input.getItems();
+						for(var j = 0; j < vboxes.length; j++){
+							check = check + this.checkKeysInner(vboxes[j].getItems()[1]);
 						}
+					}else{
+						check = check +  this.checkKeysInner(input);
+					}
+					
+				}
+				return check;
+			},
+			// Created to check hboxes too
+			checkKeysInner: function(input){
+				var check = "";
+				if(input.data("key")){
+					if((input["mProperties"].hasOwnProperty("value") && !input.getValue()) || 
+					(input["mProperties"].hasOwnProperty("selectedKey") && !input.getSelectedKey()) ||
+					(input.hasOwnProperty("_tokenizer") && input.getTokens().length === 0) ||
+					(input.hasOwnProperty("_oMaxDate") && !input.getDateValue())){
+						check = check + " " + this.getModel('i18n').getResourceBundle().getText(input.data("key")) + ", ";
 					}
 				}
 				return check;
@@ -466,13 +499,17 @@ sap.ui.define([
 								value.push(token);
 							}
 						}else{
-							value = input.getProperty(type)
+							value = input.getProperty(type);
 						}
 						var name = input.getBindingInfo(type).binding.sPath;
 						
 						// Set default value(placeholder) if value is not defined
 						if(!value && input["mProperties"].hasOwnProperty("placeholder")){
 							value = input["mProperties"].placeholder;
+						}
+						
+						if(input["mProperties"].hasOwnProperty("min") || input["mProperties"].hasOwnProperty("max")){
+							value = value.toString();
 						}
 						
 						// If inputs name is not defined
@@ -603,16 +640,6 @@ sap.ui.define([
 				
 			},
 			
-			setOfferType: function(oEvent){
-				this.byId('volumesList').removeAllItems();
-				if(oEvent.getParameter("selectedItem").getKey() === "OF01"){
-					this.byId('volumeAddButton').firePress();
-					this.setInput(["volumeAddButton", "volumeDeleteButton", "volumeCopyButton"], false, "Visible");
-				}else{
-					this.setInput(["volumeAddButton", "volumeDeleteButton", "volumeCopyButton"], true, "Visible");
-				}
-			},
-			
 			// On select item in Attachments table
 			onAttachmentSelect: function(e){
 				var listItems = e.getParameters("listItem");
@@ -719,6 +746,26 @@ sap.ui.define([
 					check = check.slice(0,-1);
 				}
 				return check;
+			},
+			
+			// Filter function for selectors
+			filterSelect: function(oEvent){
+				var select = oEvent.getSource();
+				var newValue = select.getSelectedItem().getKey();
+				var filterName = select.data("filterName");
+				var filterSelect = this.byId(select.data("filter"));
+				var filter = new Filter(filterName, FilterOperator.EQ, newValue);
+				//console.log(filterSelect.getItems());
+				//filterSelect.getBinding("items").filter(filter);
+				this.setDefaultValue(newValue, filterSelect);
+			},
+			
+			setDefaultValue: function(value, select){
+				var url = this.getModel().sServiceUrl;
+				$.get(url + "/productDefaultSet('" + value + "')/?$format=json", function( data ) {
+					var id = data.d.Product;
+					select.setSelectedKey(id);
+				});
 			}
 		});
 	}

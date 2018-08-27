@@ -4,7 +4,7 @@
 			<l:BlockLayout>
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="1">
-						<SearchField placeholder="{i18n>countryCode}" id="portPopupCountryFilter" custom:id="portPopup" custom:key="Country" showSearchButton="true" 
+						<SearchField placeholder="{i18n>countryCode}" id="portPopupCountryFilter" custom:operator="Contains" custom:id="portPopup" custom:key="Country" showSearchButton="true" 
 							search="triggerSearch" width="100%"  />
 					</l:BlockLayoutCell>
 					<l:BlockLayoutCell width="1">
@@ -12,7 +12,7 @@
 							search="triggerSearch" width="100%"/>
 					</l:BlockLayoutCell>
 					<l:BlockLayoutCell width="1">
-						<SearchField placeholder="{i18n>portName}" id="portPopupNameFilter" custom:id="portPopup" custom:key="Name" showSearchButton="true" 
+						<SearchField placeholder="{i18n>portName}" id="portPopupNameFilter" custom:operator="Contains" custom:id="portPopup" custom:key="Name" showSearchButton="true" 
 							search="triggerSearch" width="100%"/>
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>

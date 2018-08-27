@@ -13,10 +13,34 @@
 		</headerToolbar>
 		<content>
 			<VBox id="pageOfferDetails">
-				<Label class="topLabel" text="{i18n>status}" />
-				<Input enabled="false" value="{Status}" />
-				<Label class="topLabel" text="{i18n>variantNumber}" />
-				<Input type="Number" value="{VariantNumber}" />
+				<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" id="TCNumber" visible="false" />
+				<Input value="{LastChanged}" visible="false" />
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
+						<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" 
+							items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">
+							<core:Item key="{Code}" text="{Name}"/>
+						</Select>
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label required="true" class="topLabel" text="{i18n>offerType}" />
+						<Select id="type" selectedKey="{= ${OfferType} ? ${OfferType} : 'OF01' }" custom:key="offerType" 
+							forceSelection="false" width="100%" items="{ path: '/dictionaryOfferTypeSet', sorter: { path: 'Name' } }">
+							<core:Item key="{Code}" text="{Code} - {Name}"/>
+						</Select>
+					</VBox>
+				</HBox>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>status}" />
+						<Input enabled="false" value="{Status}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>variantNumber}" />
+						<StepInput min="1" max="5" value="{VariantNumber}" />
+					</VBox>
+				</HBox>
 				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
 				<Input value="{Counterparty}" id="counterpartyOne" visible="false" />
 				<MultiInput 
@@ -27,6 +51,7 @@
 					custom:key="counterparty"
 					custom:name="ToOfferCounterparty"
 					tokenChange="onMultiUpdate"
+					enableMultiLineMode="true"
 					tokens="{ path: 'ToOfferCounterparty' }"
 					valueHelpRequest="handleValueHelp">
 					<tokens>
@@ -34,8 +59,13 @@
 					</tokens>
 				</MultiInput>
 				<Label required="true" class="topLabel" text="{i18n>productType}" />
-				<Select id="productType" custom:key="productType" forceSelection="false" selectedKey="{ProductType}" width="100%" 
-					items="{ path: '/dictionarySalesDivisionsSet', sorter: { path: 'Code' } }">
+				<Select custom:key="productType" change="filterSelect" custom:filter="product" custom:filterName="ProductType" forceSelection="false" selectedKey="{ProductType}" width="100%" 
+					items="{ path: '/dictionaryProductTypeSet', sorter: { path: 'Code' } }">
+					<core:Item key="{Code}" text="{Code} - {Name}"/>
+				</Select>
+				<Label required="true" class="topLabel" text="{i18n>product}" />
+				<Select custom:key="product" id="product" forceSelection="false" selectedKey="{Product}" width="100%" 
+					items="{ path: '/dictionaryProductSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>paymentMethod}"/>
