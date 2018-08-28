@@ -9,23 +9,78 @@
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<HBox justifyContent="SpaceBetween">
-				<VBox class="leftVBoxStyle" width="50%">
-					<Label class="topLabel" text="{i18n>volumeType}" />
-					<Switch change="onSwitch" custom:type="volumes" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}" />
-				</VBox>
-				<VBox class="rightVBoxStyle" visible="{= ${VolumeType} ? true : false }" width="50%">
-					<Label required="true" class="topLabel" text="{i18n>volumeOwner}" />
-					<Select custom:key="volumeOwner" forceSelection="false" selectedKey="{VolumeOwner}" width="100%" 
-						items="{ path: '/dictionaryVolumeOwnerSet', sorter: { path: 'Code' }, templateShareable:false }">
-						<core:Item key="{Code}" text="{Code} - {Name}"/>
-					</Select>
-				</VBox>
-			</HBox>
+			<VBox>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>volumeType}" />
+						<Switch change="onSwitch" custom:type="volumes" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}" />
+					</VBox>
+					<VBox class="rightVBoxStyle" visible="{= ${VolumeType} ? true : false }" width="50%">
+						<Label required="true" class="topLabel" text="{i18n>volumeOwner}" />
+						<Select custom:key="volumeOwner" forceSelection="false" selectedKey="{VolumeOwner}" width="100%" 
+							items="{ path: '/dictionaryVolumeOwnerSet', sorter: { path: 'Code' }, templateShareable:false }">
+							<core:Item key="{Code}" text="{Code} - {Name}"/>
+						</Select>
+					</VBox>
+				</HBox>
+				<OverflowToolbar width="100%">
+					<Title text="{i18n>prices}" titleStyle="H3"/>
+				</OverflowToolbar>
+				<Label required="true" class="topLabel" text="{i18n>incoterms}" />
+				<Select forceSelection="false" custom:key="incoterms" selectedKey="{Incoterms}" class="fullWidth" width="100%" 
+					items="{ path: '/dictionaryIncotermsSet', sorter: { path: 'Incoterms' }, templateShareable:false }">
+					<core:Item key="{Incoterms}" text="{Incoterms} - {Description}"/>
+				</Select>
+				<Label required="true" class="topLabel" text="{i18n>deliveryPoint}" />
+				<Input
+					custom:id="portPopup"
+					custom:set="dictionaryDeliveryPoint"
+					custom:key="deliveryPoint"
+					custom:select="Name"
+					custom:filters="Country,Code,Name"
+					showValueHelp="true"
+					valueHelpRequest="handleValueHelp"
+					showSuggestion="true"
+					suggest="handleSuggest"
+					value="{DeliveryPoint}"
+					suggestionItems="{ path: '/dictionaryDeliveryPointSet', templateShareable:false }">
+					<suggestionItems>
+						<core:Item key="{Code}" text="{Name}" />
+					</suggestionItems>
+				</Input>
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>price}" />
+						<Switch change="onSwitch" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}" />
+					</VBox>
+					<VBox 
+						visible="{= ${IndexFormula} ? true : false }" 
+						class="rightVBoxStyle"
+						width="50%">
+						<Label required="true" class="topLabel" text="{i18n>indexFormula}" />
+						<Input custom:key="indexFormula" value="{IndexFormula}" />
+					</VBox>
+				</HBox>
+				<Label class="topLabel" required="true" text="{i18n>offerPrice}" />
+				<Input type="Number" custom:key="offerPrice" value="{FixPrice}" />
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>cv}" />
+						<Input value="{CV}" placeholder="0" type="Number" />
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>cvBase}" />
+						<Select forceSelection="false" custom:name="CVBase" selectedKey="{= ${CVBase} ? ${CVBase} : 'NAR' }" width="100%" 
+							items="{ path: '/dictionaryCVBaseSet', sorter: { path: 'Code' }, templateShareable:false }">
+							<core:Item key="{Code}" text="{Code}"/>
+						</Select>
+					</VBox>
+				</HBox>
+			</VBox>
 			<List noDataText="{i18n>noData}" mode="SingleSelectMaster" items="{ path: 'ToOfferPeriod', templateShareable:false }" selectionChange="onListSelect">
 				<headerToolbar>
 					<Toolbar>
-						<Title text="{i18n>periodsPrices}" titleStyle="H3" />
+						<Title text="{i18n>periods}" titleStyle="H3" />
 						<ToolbarSpacer />
 						<Button type="Accept" custom:id="periodsPrices" text="{i18n>add}" press="add" />
 						<Button type="Emphasized" custom:id="periodsPrices" text="{i18n>copy}" press="copy" enabled="false" />

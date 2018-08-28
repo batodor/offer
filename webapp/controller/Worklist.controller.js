@@ -67,15 +67,17 @@ sap.ui.define([
 			// This function triggered after bind 
 			// Added in Select(Product Type)
 			dataReceived: function(){
-				this.filterSelect();
+				if(this.TCNumber){
+					this.filterSelect();
+				}
 			},
 			
 			// Main save offer function, also runned for creating and saving existing offer
 			saveOffer: function(oEvent){
 				var button = oEvent.getSource();
 				var objectsArr = button.data("blocks").split(',');
-				var offerData = this.getOdata(objectsArr);
-				var volumeDataAndCheck = this.getVolumeOdata();
+				var offerData = this.getData(objectsArr);
+				var volumeDataAndCheck = this.getVolumeData();
 				if(volumeDataAndCheck.check){
 					var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-4);
 					this.alert(msg);
@@ -89,7 +91,7 @@ sap.ui.define([
 						actions: [sap.m.MessageBox.Action.CLOSE]
 					};
 					if(allData.TCNumber === "$$00000001"){
-						msg = this.getResourceBundle().getText("offerCreated") + response.TCNumber;
+						msg = this.getResourceBundle().getText("offerCreated");
 						alertSettings.onClose = function(sAction) {
 							this.getRouter().navTo("worklist", {
 								TCNumber: response.TCNumber
@@ -100,7 +102,7 @@ sap.ui.define([
 					}
 					console.log(allData);
 					settings.success = function(response){
-						this.alert(msg, alertSettings);
+						this.alert(msg + " " + response.TCNumber, alertSettings);
 						if(uploader.getValue()){
 							var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
 							uploader.setUploadUrl(uploadUrl);
@@ -164,7 +166,9 @@ sap.ui.define([
 						}
 						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
-						valueHelp.setValue(data[key]);
+						var value = data.hasOwnProperty("Name") ? data.Name : data[key];
+						valueHelp.data("data", data[key]);
+						valueHelp.setValue(value);
 					}
 				}
 				if(id === "counterpartyPopup"){
@@ -381,7 +385,7 @@ sap.ui.define([
 			},
 		
 			// Set odata from any dialog, argument object = any object / return object inputs Data
-			getOdata: function(object){
+			getData: function(object){
 				var oData = {};
 				var inputs = this.getInputs(object);
 				for(var i = 0; i < inputs.length; i++){
@@ -389,15 +393,15 @@ sap.ui.define([
 					if(input["sId"].indexOf('hbox') > -1){
 						var vboxes = input.getItems();
 						for(var j = 0; j < vboxes.length; j++){
-							oData = this.mergeObjects(oData, this.getOdateInner(vboxes[j].getItems()[1]));
+							oData = this.mergeObjects(oData, this.getDataInner(vboxes[j].getItems()[1]));
 						}
 					}else{
-						oData = this.mergeObjects(oData, this.getOdateInner(input));
+						oData = this.mergeObjects(oData, this.getDataInner(input));
 					}
 				}
 				return oData;
 			},
-			getOdateInner: function(input){
+			getDataInner: function(input){
 				var oData = {};
 				for(var j = 0; j < this.typeArr.length; j++){
 					var type = this.typeArr[j];
@@ -415,6 +419,10 @@ sap.ui.define([
 						}else{
 							value = input.getProperty(type);
 						}
+						if(input.data("data")){
+							value = input.data("data");
+						}
+						
 						var name = input.getBindingInfo(type).binding.sPath;
 						
 						// Set default value(placeholder) if value is not defined
@@ -460,7 +468,7 @@ sap.ui.define([
 				var state = oEvent.getParameter("state");
 				Switch.getParent().getParent().getItems()[1].setVisible(state);
 				if(type && type === "volumes"){
-					var title = Switch.getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
+					var title = Switch.getParent().getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
 					var newText = state ? title.getText().substring(0,5) + this.getResourceBundle().getText("optional") : 
 						title.getText().substring(0,5) + this.getResourceBundle().getText("fixed");
 					title.setText(newText);
@@ -492,7 +500,7 @@ sap.ui.define([
 				return inputs;
 			},
 			
-			getVolumeOdata: function(){
+			getVolumeData: function(){
 				var oData = {};
 				oData.data = {};
 				oData.check = "";
@@ -500,41 +508,47 @@ sap.ui.define([
 				var volumes = list.getItems();
 				oData.data.ToOfferVolume = [];
 				for(var i = 0; i < volumes.length; i++){
-					var volumeName = this.getOdata(volumes[i].getContent()[0].getHeaderToolbar());
-					var volumeData = this.getOdata(volumes[i].getContent()[0]);
+					var volumeName = this.getData(volumes[i].getContent()[0].getHeaderToolbar());
+					var volumeData = this.getData(volumes[i].getContent()[0].getContent()[0]);
 					var allVolumeData = this.mergeObjects(volumeName, volumeData);
-					var volumeCheck = "";
+					
+					var volumeCheck = this.checkDataInner(allVolumeData, ["Incoterms", "DeliveryPoint", "FixPrice"]);
+					if(volumeCheck){
+						oData.check = oData.check + volumeCheck + ", ";
+					}
 					if(allVolumeData.VolumeType){
-						volumeCheck = this.checkOdataInner(allVolumeData, ["VolumeOwner"]);
-						if(volumeCheck){
-							oData.check = oData.check + volumeCheck + ",";
+						var volumeTypeCheck = this.checkDataInner(allVolumeData, ["VolumeOwner"]);
+						if(volumeTypeCheck){
+							oData.check = oData.check + volumeTypeCheck + ", ";
 						}
 					}
+					
 					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
 					if(periods.length === 0){
-						oData.check = oData.check + "Periods";
+						if(oData.check){
+							oData.check = oData.check.slice(0,-2);
+						}
+						oData.check = oData.check + " and Periods";
 					}
 					allVolumeData.ToOfferPeriodAndPrice = [];
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
-						var periodOdata = this.getOdata(period);
-						allVolumeData.ToOfferPeriodAndPrice.push(periodOdata);
-						var checkPeriods = this.checkOdataInner(periodOdata, ["DateFrom", "DateTo","Incoterms", "DeliveryPoint"]);
+						var periodData = this.getData(period);
+						allVolumeData.ToOfferPeriodAndPrice.push(periodData);
+						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo"]);
+						if(checkPeriods && oData.check){
+							oData.check = oData.check.slice(0,-1) + " and ";
+						}
 						oData.check = oData.check + checkPeriods;
 						
-						if(periodOdata){
-							var dateFrom = periodOdata.DateFrom ? periodOdata.DateFrom.toLocaleDateString() : '';
-							var dateTo = periodOdata.DateTo ? periodOdata.DateTo.toLocaleDateString() : '';
-							oData.check = oData.check + " for " + dateFrom + " - " + dateTo + " and ";
+						if(checkPeriods){
+							oData.check = oData.check + " for Period " + (j + 1) + " ";
 						}
 					}
 					oData.data.ToOfferVolume.push(allVolumeData);
-					if(periodOdata){
-						oData.check = oData.check.slice(0,-5);
-					}
 					if(volumeCheck || periods.length === 0 || checkPeriods){
 						//oData.check = oData.check.slice(0, -1);
-						oData.check = oData.check + " in " + allVolumeData.VolumeNumber + " Volume \n\n ";
+						oData.check = oData.check + " in Volume " + allVolumeData.VolumeNumber + " \n\n ";
 					}
 				}
 				return oData;
@@ -645,8 +659,9 @@ sap.ui.define([
 				}
 			},
 			
+			
 			// oData = object with data, keyArr is array of keys to check
-			checkOdataInner: function(oData, keyArr){
+			checkDataInner: function(oData, keyArr){
 				var check = "";
 				for(var key in oData){
 					if(keyArr.indexOf(key) > -1 && !oData[key]){
