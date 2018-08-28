@@ -26,7 +26,7 @@
 					</Select>
 				</VBox>
 			</HBox>
-			<List noDataText="{i18n>noData}" mode="SingleSelectMaster" items="{ path: 'ToOfferPeriodAndPrice', templateShareable:false }" selectionChange="onListSelect">
+			<List noDataText="{i18n>noData}" mode="SingleSelectMaster" items="{ path: 'ToOfferPeriod', templateShareable:false }" selectionChange="onListSelect">
 				<headerToolbar>
 					<Toolbar>
 						<Title text="{i18n>periodsPrices}" titleStyle="H3" />

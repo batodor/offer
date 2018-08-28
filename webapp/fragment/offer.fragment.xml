@@ -17,17 +17,17 @@
 				<Input value="{LastChanged}" visible="false" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
-						<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
-						<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" 
-							items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">
-							<core:Item key="{Code}" text="{Name}"/>
-						</Select>
-					</VBox>
-					<VBox class="rightVBoxStyle" width="50%">
 						<Label required="true" class="topLabel" text="{i18n>offerType}" />
 						<Select id="type" selectedKey="{= ${OfferType} ? ${OfferType} : 'OF01' }" custom:key="offerType" 
 							forceSelection="false" width="100%" items="{ path: '/dictionaryOfferTypeSet', sorter: { path: 'Name' } }">
 							<core:Item key="{Code}" text="{Code} - {Name}"/>
+						</Select>
+					</VBox>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
+						<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" 
+							items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">
+							<core:Item key="{Code}" text="{Name}"/>
 						</Select>
 					</VBox>
 				</HBox>
@@ -64,7 +64,7 @@
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>product}" />
-				<Select custom:key="product" id="product" forceSelection="false" selectedKey="{Product}" width="100%" 
+				<Select custom:key="product" id="product" selectedKey="{Product}" width="100%" forceSelection="false" 
 					items="{ path: '/dictionaryProductSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>

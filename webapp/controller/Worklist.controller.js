@@ -79,9 +79,7 @@ sap.ui.define([
 				var volumeDataAndCheck = this.getVolumeOdata();
 				if(volumeDataAndCheck.check){
 					var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-5);
-					MessageBox.alert(msg, {
-						actions: [sap.m.MessageBox.Action.CLOSE]
-					});
+					this.alert(msg);
 				}else{
 					var model = button.getModel();
 					var allData = this.mergeObjects(offerData,volumeDataAndCheck.data);
@@ -103,7 +101,7 @@ sap.ui.define([
 					}
 					console.log(allData);
 					settings.success = function(response){
-						MessageBox.alert(msg, alertSettings);
+						this.alert(msg, alertSettings);
 						if(uploader.getValue()){
 							var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
 							uploader.setUploadUrl(uploadUrl);
@@ -320,9 +318,7 @@ sap.ui.define([
 					var bCheckAlert = this.checkKeys(page);
 					if(bCheckAlert){
 						var msg = this.getModel('i18n').getResourceBundle().getText("plsEnter") + " " + bCheckAlert.slice(0, -2);
-						MessageBox.alert(msg, {
-							actions: [sap.m.MessageBox.Action.CLOSE]
-						});
+						this.alert(msg);
 						return true;
 					}
 				}
@@ -634,6 +630,11 @@ sap.ui.define([
 					title.setText(date + " - " + date2);
 				}else{
 					dp2 = dp.getParent().getParent().getItems()[0].getItems()[1];
+					if(dp.getDateValue() && dp2.getDateValue() && dp.getDateValue() < dp2.getDateValue()){
+						var msg = this.getResourceBundle().getText("wrongDates");
+						this.alert(msg);
+						return true;
+					}
 					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
 					title.setText(date2 + " - " + date);
 				}
@@ -766,6 +767,12 @@ sap.ui.define([
 					var id = data.d.Product;
 					select.setSelectedKey(id);
 				});
+			},
+			
+			// Default alert message
+			alert: function(msg, settingsArg){
+				var settings = settingsArg ? settingsArg : { actions: [sap.m.MessageBox.Action.CLOSE] };
+				MessageBox.alert(msg, settings);
 			}
 		});
 	}
