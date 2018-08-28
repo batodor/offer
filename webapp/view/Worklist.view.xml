@@ -22,37 +22,10 @@
 			<NavContainer
 				id="navCon"
 				defaultTransitionName="slide"
-				initialPage="p1"
+				initialPage="p3"
 				class="navContainerControl"
 				width="100%">
 				<pages>
-					<!--<Page-->
-					<!--	id="p1"-->
-					<!--	title="{i18n>offerTemplateSettings}" >-->
-					<!--	<VBox class="paddingRem" id="pageTradingPurpose">-->
-					<!--		<Input value="{= ${TCNumber} ? ${TCNumber} : '$$00000001' }" custom:name="TCNumber" id="TCNumber" visible="false" />-->
-					<!--		<Input value="{LastChanged}" visible="false" />-->
-					<!--		<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />-->
-					<!--		<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" -->
-					<!--			items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">-->
-					<!--			<core:Item key="{Code}" text="{Name}"/>-->
-					<!--		</Select>-->
-					<!--		<Label required="true" class="topLabel" text="{i18n>type}" />-->
-					<!--		<Select id="type" change="setOfferType" custom:key="type" custom:omit="true" selectedKey="{= ${Type} ? ${Type} : 'OF02'}" -->
-					<!--			forceSelection="false" width="100%" items="{ path: '/dictionaryTypeSet', sorter: { path: 'Name' } }">-->
-					<!--			<core:Item key="{Code}" text="{Name}"/>-->
-					<!--		</Select>-->
-					<!--	</VBox>-->
-					<!--	<footer>-->
-					<!--		<Toolbar>-->
-					<!--			<ToolbarSpacer />-->
-					<!--			<Button id="tradingPurposeNextButton" type="Accept" -->
-					<!--				custom:next="p2" -->
-					<!--				custom:check="true"-->
-					<!--				custom:id="pageTradingPurpose" press="nextPage" text="{i18n>next}" />-->
-					<!--		</Toolbar>-->
-					<!--	</footer>-->
-					<!--</Page>-->
 					<Page
 						id="p1"
 						title="{i18n>offer}" >
@@ -72,7 +45,6 @@
 						</l:BlockLayout>
 						<footer>
 							<Toolbar>
-								<!--<Button id="offerSettingsPrevButton" type="Back" custom:next="p1" press="nextPage" text="{i18n>back}" />-->
 								<ToolbarSpacer />
 								<Button 
 									custom:id="pageOfferDetails" 
@@ -111,7 +83,7 @@
 									type="Accept" 
 									press="saveOffer" 
 									text="{i18n>save}"/>
-								<Button id="approveOffer" enabled="false" custom:id="approve" type="Accept" press="approveOffer" text="{i18n>approve}" />
+								<Button id="tableApprove" enabled="false" custom:id="approve" type="Accept" press="tableApprove" text="{i18n>approve}" />
 							</Toolbar>
 						</footer>
 					</Page>
@@ -136,9 +108,6 @@
 				</pages>
 			</NavContainer>
 		</semantic:content>
-		<!--<semantic:titleMainAction>-->
-		<!--	<semantic:TitleMainAction custom:id="offerList" press="copyFrom" text="{i18n>copyFrom}" />-->
-		<!--</semantic:titleMainAction>-->
 	</semantic:SemanticPage>
 
 </mvc:View>

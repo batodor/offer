@@ -18,7 +18,7 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label required="true" class="topLabel" text="{i18n>offerType}" />
-						<Select id="type" selectedKey="{= ${OfferType} ? ${OfferType} : 'OF01' }" custom:key="offerType" 
+						<Select id="type" custom:name="offerType" selectedKey="{= ${OfferType} ? ${OfferType} : 'OF01' }" custom:key="offerType" 
 							forceSelection="false" width="100%" items="{ path: '/dictionaryOfferTypeSet', sorter: { path: 'Name' } }">
 							<core:Item key="{Code}" text="{Code} - {Name}"/>
 						</Select>
@@ -38,7 +38,7 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>variantNumber}" />
-						<StepInput min="1" max="5" value="{VariantNumber}" />
+						<StepInput min="1" max="5" custom:string="true" value="{VariantNumber}" />
 					</VBox>
 				</HBox>
 				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
@@ -59,8 +59,12 @@
 					</tokens>
 				</MultiInput>
 				<Label required="true" class="topLabel" text="{i18n>productType}" />
-				<Select custom:key="productType" change="filterSelect" custom:filter="product" custom:filterName="ProductType" forceSelection="false" selectedKey="{ProductType}" width="100%" 
-					items="{ path: '/dictionaryProductTypeSet', sorter: { path: 'Code' } }">
+				<Select custom:key="productType" id="productType" change="filterSelect" custom:filter="product" custom:filterName="ProductType" forceSelection="false" 
+					selectedKey="{ProductType}" width="100%" items="{ 
+						path: '/dictionaryProductTypeSet', 
+						sorter: { path: 'Code' },
+						events: { dataReceived: '.dataReceived' }
+					}">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>product}" />

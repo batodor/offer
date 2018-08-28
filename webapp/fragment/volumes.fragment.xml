@@ -12,11 +12,7 @@
 			<HBox justifyContent="SpaceBetween">
 				<VBox class="leftVBoxStyle" width="50%">
 					<Label class="topLabel" text="{i18n>volumeType}" />
-					<Switch change="onSwitch" custom:type="volumes" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}">
-						<layoutData>
-							<FlexItemData growFactor="1" />
-						</layoutData>
-					</Switch>
+					<Switch change="onSwitch" custom:type="volumes" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}" />
 				</VBox>
 				<VBox class="rightVBoxStyle" visible="{= ${VolumeType} ? true : false }" width="50%">
 					<Label required="true" class="topLabel" text="{i18n>volumeOwner}" />
@@ -32,6 +28,7 @@
 						<Title text="{i18n>periodsPrices}" titleStyle="H3" />
 						<ToolbarSpacer />
 						<Button type="Accept" custom:id="periodsPrices" text="{i18n>add}" press="add" />
+						<Button type="Emphasized" custom:id="periodsPrices" text="{i18n>copy}" press="copy" enabled="false" />
 						<Button type="Reject" custom:id="periodsPrices" text="{i18n>delete}" press="delete" enabled="false" />
 					</Toolbar>
 				</headerToolbar>

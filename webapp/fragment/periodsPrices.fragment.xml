@@ -20,10 +20,9 @@
 						<DatePicker change="onDateChange" custom:key="dateTo" dateValue="{DateTo}" />
 					</VBox>
 				</HBox>
+				
 				<Label class="topLabel" text="{i18n>numberOfShipments}" />
-				<ToolbarSpacer/>
 				<Input type="Number" value="{NumberOfShipments}" />
-				<ToolbarSpacer/>
 				
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
@@ -39,13 +38,13 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>shipmentTolerance}" />
-						<Input type="Number" placeholder="0" value="{ShipmentTolerance}" />
+						<StepInput min="0" max="100" textAlign="Center" value="{ShipmentTolerance}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>toleranceUom}" />
 						<Select forceSelection="false" custom:name="ShipmentToleranceUOM" selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }"
 							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
-							<core:Item key="{Code}" text="{Code} - {Name}"/>
+							<core:Item key="{Code}" text="{Code}"/>
 						</Select>
 					</VBox>
 				</HBox>
@@ -64,13 +63,13 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnageTolerance}" />
-						<Input type="Number" placeholder="0" value="{TonnageTolerance}" />
+						<StepInput min="0" max="100" textAlign="Center" value="{TonnageTolerance}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>toleranceUom}" />
 						<Select forceSelection="false" custom:name="TonnageToleranceUOM" selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }"
 							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
-							<core:Item key="{Code}" text="{Code} - {Name}"/>
+							<core:Item key="{Code}" text="{Code}"/>
 						</Select>
 					</VBox>
 				</HBox>
@@ -112,8 +111,8 @@
 						<Input custom:key="indexFormula" value="{IndexFormula}" />
 					</VBox>
 				</HBox>
-				<Label class="topLabel" text="{i18n>offerPrice}" />
-				<Input type="Number" value="{FixPrice}" placeholder="0" />
+				<Label class="topLabel" required="true" text="{i18n>offerPrice}" />
+				<Input type="Number" custom:key="offerPrice" value="{FixPrice}" placeholder="0" />
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>cv}" />

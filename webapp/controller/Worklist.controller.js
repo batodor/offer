@@ -39,7 +39,7 @@ sap.ui.define([
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 			},
 			
-			
+			// After offer loaded, sets the mode Create/Edit
 			_onOfferMatched: function(oEvent) {
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
 				this.Type = oEvent.getParameter("arguments").Type;
@@ -50,14 +50,11 @@ sap.ui.define([
 					}
 					if(this.TCNumber){
 						this.getView().bindElement({ 
-							path: "/offerHeaderSet('" + this.TCNumber + "')"
-							// events: { dataReceived: this.dataReceived.bind(this) } 
+							path: "/offerHeaderSet('" + this.TCNumber + "')" 
 						});
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
-						this.byId("approveOffer").setEnabled(true);
+						this.byId("tableApprove").setEnabled(true);
 						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox"], true, "Visible");
-						
-						
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -67,18 +64,20 @@ sap.ui.define([
 				}.bind(this));
 			},
 			
-			// dataReceived: function(){
-			// 	var valueHelp = this.byId("counterparty");
-			// 	this.getLimits(valueHelp); 
-			// },
+			// This function triggered after bind 
+			// Added in Select(Product Type)
+			dataReceived: function(){
+				this.filterSelect();
+			},
 			
+			// Main save offer function, also runned for creating and saving existing offer
 			saveOffer: function(oEvent){
 				var button = oEvent.getSource();
 				var objectsArr = button.data("blocks").split(',');
 				var offerData = this.getOdata(objectsArr);
 				var volumeDataAndCheck = this.getVolumeOdata();
 				if(volumeDataAndCheck.check){
-					var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-5);
+					var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-4);
 					this.alert(msg);
 				}else{
 					var model = button.getModel();
@@ -90,14 +89,14 @@ sap.ui.define([
 						actions: [sap.m.MessageBox.Action.CLOSE]
 					};
 					if(allData.TCNumber === "$$00000001"){
-						msg = "Offer successfully created";
+						msg = this.getResourceBundle().getText("offerCreated") + response.TCNumber;
 						alertSettings.onClose = function(sAction) {
 							this.getRouter().navTo("worklist", {
 								TCNumber: response.TCNumber
 							});
 						};
 					}else{
-						msg = "Offer saved";
+						msg = this.getResourceBundle().getText("offerSaved");
 					}
 					console.log(allData);
 					settings.success = function(response){
@@ -112,7 +111,8 @@ sap.ui.define([
 				}
 			},
 			
-			approveOffer: function(oEvent){
+			// Actually opens the approve dialog
+			tableApprove: function(oEvent){
 				var id = oEvent.getSource().data("id");
 				var approveUpload = sap.ui.getCore().byId(id + "Upload");
 				approveUpload.bindItems({
@@ -120,86 +120,6 @@ sap.ui.define([
 					template: approveUpload['mBindingInfos'].items.template.clone()
 				});
 				this[id + "Dialog"].open();
-			},
-			
-			// Search function for all tables
-			triggerSearch: function(oEvent) {
-				var query = oEvent.getParameter("query") || oEvent.getParameter("selected"),
-					id = oEvent.getSource().data('id'),
-					key = oEvent.getSource().data('key'),
-					customOperator = oEvent.getSource().data('operator'),
-					oTable = this.byId(id) || sap.ui.getCore().byId(id),
-					filters = [];
-					
-				if(!this.search[id]){ 
-					this.search[id] = {};
-				}
-				if(typeof query !== "undefined"){
-					var operator = FilterOperator.EQ;
-					if(customOperator){
-						operator = FilterOperator[customOperator];
-					}
-					this.search[id][key] = new Filter({path: key, operator: operator, value1: query });
-				}else{
-					delete this.search[id][key];
-				}
-				
-				var filterKeys = Object.keys(this.search[id]);
-				for(var i in filterKeys){
-					filters.push(this.search[id][filterKeys[i]]);
-				}
-				var newFilter = new Filter({ filters: filters, and: true });
-				if(filters.length === 0){
-					newFilter = filters;
-				}
-				oTable.getBinding("items").filter(newFilter);
-			},
-			
-			// On value help opens new dialog with filters
-			handleValueHelp: function(oEvent){
-				var button = oEvent.getSource();
-				var id = button.data("id");
-				var dynamicId = button.getId();
-				var bindSet = button.data("set") ? "/" + button.data("set") + 'Set' : "/" + id + 'Set';
-				var filters = button.data("filters");
-				var table = sap.ui.getCore().byId(id);
-				table.bindItems({
-					path: bindSet,
-					template: table['mBindingInfos'].items.template.clone()
-				});
-				this.search = {}; // nullify search object
-				if(filters){
-					var filtersArr = filters.split(',');
-					for(var i = 0; i < filtersArr.length; i++){
-						for(var j = 0; j < this.typeArr.length; j++){
-							var input = sap.ui.getCore().byId(id + filtersArr[i] + "Filter");
-							var type = this.typeArr[j];
-							if(input["mProperties"].hasOwnProperty(type)){
-								input.setProperty(type);
-							}
-						}
-					}
-				}
-				var selectButton = this.byId(id + "Select") || sap.ui.getCore().byId(id + "Select");
-				selectButton.data("dynamicId", dynamicId);
-				
-				this[id + "Dialog"].getButtons()[1].setEnabled(false);
-				this[id + "Dialog"].open();
-			},
-			
-			// Add xml fragments to this view as dependent
-			// objArr = array of string ids of objects declared on init
-			addFragments: function(objArr){
-				for(var i = 0; i < objArr.length; i++){
-					try {
-						this[objArr[i]] = sap.ui.xmlfragment("fragment." + objArr[i], this);
-						this.getView().addDependent(this[objArr[i]]);
-					} catch (err) {
-						// Just in case if any of the dialog fragment has syntax error
-						console.log("Error in dialog with ID: " + this.objArr[i] + "Dialog " + err);
-					}
-					
-				}
 			},
 			
 			// Event on selection of table items
@@ -367,6 +287,29 @@ sap.ui.define([
 				newItem.addContent(fragmentClone);
 				list.addItem(newItem);
 			},
+			copy: function(oEvent){
+				var button = oEvent.getSource();
+				var list = button.getParent().getParent();
+				var selectedItem = list.getSelectedItem();
+				if(selectedItem){
+					var id = button.data("id");
+					if(id === "volumes"){
+						var clone = selectedItem.clone();
+						this.getView().addDependent(clone);
+						var title = clone.getContent()[0].getHeaderToolbar().getContent()[0];
+						var titleValue = clone.getContent()[0].getHeaderToolbar().getContent()[2];
+						var length = list.getItems().length + 1;
+						if(length < 10){
+							title.setText('0' + length + " / " + this.getResourceBundle().getText("fixed"));
+							titleValue.setValue('0' + length);
+						}else{
+							title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
+							titleValue.setValue(length);
+						}
+					}
+					list.addItem(clone);
+				}
+			},
 			delete: function(oEvent){
 				var button = oEvent.getSource();
 				var list = button.getParent().getParent();
@@ -401,30 +344,6 @@ sap.ui.define([
 					}
 					if(input){
 						eval(evalStr);
-					}
-				}
-			},
-			
-			// Set key inputs as disabled/enabled for editting
-			// Arguments: dialog = object dialog, flag = boolean flag for enabled/disabled
-			// all = boolean set all inputs
-			setEnabledDialog: function(dialog, flag, all){
-				var inputs = dialog.getContent();
-				for(var i = 0; i < inputs.length; i++){
-					for(var j = 0; j < this.typeArr.length; j++){
-						var type = this.typeArr[j];
-						var input = inputs[i];
-						if(input["mBindingInfos"].hasOwnProperty(type)){
-							if(all){
-								input.setEnabled(flag);
-							}else{ 
-								if(input.data("key")){
-									input.setEnabled(false);
-								}else{
-									input.setEnabled(flag);
-								}
-							}
-						}
 					}
 				}
 			},
@@ -470,16 +389,15 @@ sap.ui.define([
 					if(input["sId"].indexOf('hbox') > -1){
 						var vboxes = input.getItems();
 						for(var j = 0; j < vboxes.length; j++){
-							oData = this.mergeObjects(oData, this.getInputData(vboxes[j].getItems()[1]));
+							oData = this.mergeObjects(oData, this.getOdateInner(vboxes[j].getItems()[1]));
 						}
 					}else{
-						oData = this.mergeObjects(oData, this.getInputData(input));
+						oData = this.mergeObjects(oData, this.getOdateInner(input));
 					}
 				}
 				return oData;
 			},
-			
-			getInputData: function(input){
+			getOdateInner: function(input){
 				var oData = {};
 				for(var j = 0; j < this.typeArr.length; j++){
 					var type = this.typeArr[j];
@@ -504,7 +422,7 @@ sap.ui.define([
 							value = input["mProperties"].placeholder;
 						}
 						
-						if(input["mProperties"].hasOwnProperty("min") || input["mProperties"].hasOwnProperty("max")){
+						if(input.data("string")){
 							value = value.toString();
 						}
 						
@@ -526,11 +444,6 @@ sap.ui.define([
 					}
 				}
 				return oData;
-			},
-			
-			openMail: function(oEvent){
-				var counterParty = oEvent.getSource().data("key");
-				window.open("mailto:");
 			},
 			
 			checkValue: function(oEvent){
@@ -592,27 +505,36 @@ sap.ui.define([
 					var allVolumeData = this.mergeObjects(volumeName, volumeData);
 					var volumeCheck = "";
 					if(allVolumeData.VolumeType){
-						volumeCheck = this.checkOdata(allVolumeData, ["VolumeOwner"]);
+						volumeCheck = this.checkOdataInner(allVolumeData, ["VolumeOwner"]);
 						if(volumeCheck){
 							oData.check = oData.check + volumeCheck + ",";
 						}
 					}
 					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
 					if(periods.length === 0){
-						oData.check = oData.check + "Periods / Prices";
+						oData.check = oData.check + "Periods";
 					}
 					allVolumeData.ToOfferPeriodAndPrice = [];
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
 						var periodOdata = this.getOdata(period);
 						allVolumeData.ToOfferPeriodAndPrice.push(periodOdata);
-						var checkPeriods = this.checkOdata(periodOdata, ["DateFrom", "DateTo","Incoterms", "DeliveryPoint"]);
+						var checkPeriods = this.checkOdataInner(periodOdata, ["DateFrom", "DateTo","Incoterms", "DeliveryPoint"]);
 						oData.check = oData.check + checkPeriods;
+						
+						if(periodOdata){
+							var dateFrom = periodOdata.DateFrom ? periodOdata.DateFrom.toLocaleDateString() : '';
+							var dateTo = periodOdata.DateTo ? periodOdata.DateTo.toLocaleDateString() : '';
+							oData.check = oData.check + " for " + dateFrom + " - " + dateTo + " and ";
+						}
 					}
 					oData.data.ToOfferVolume.push(allVolumeData);
+					if(periodOdata){
+						oData.check = oData.check.slice(0,-5);
+					}
 					if(volumeCheck || periods.length === 0 || checkPeriods){
-						oData.check = oData.check.slice(0, -1);
-						oData.check = oData.check + " for " + allVolumeData.VolumeNumber + " Volume and ";
+						//oData.check = oData.check.slice(0, -1);
+						oData.check = oData.check + " in " + allVolumeData.VolumeNumber + " Volume \n\n ";
 					}
 				}
 				return oData;
@@ -648,18 +570,6 @@ sap.ui.define([
 					var id = e.getSource().data("id");
 					this.setInput([id + "Delete", id + "Download"], true, "Enabled");
 				}
-			},
-			
-			// Object.assign doesnt work in IE so this function is created
-			mergeObjects: function(objOne, objTwo){
-				var objs = [objOne, objTwo],
-			    result =  objs.reduce(function (r, o) {
-			        Object.keys(o).forEach(function (k) {
-			            r[k] = o[k];
-			        });
-			        return r;
-			    }, {});
-			    return result;
 			},
 			
 			// -------------------- Attachments functions --------------------
@@ -736,7 +646,7 @@ sap.ui.define([
 			},
 			
 			// oData = object with data, keyArr is array of keys to check
-			checkOdata: function(oData, keyArr){
+			checkOdataInner: function(oData, keyArr){
 				var check = "";
 				for(var key in oData){
 					if(keyArr.indexOf(key) > -1 && !oData[key]){
@@ -751,19 +661,18 @@ sap.ui.define([
 			
 			// Filter function for selectors
 			filterSelect: function(oEvent){
-				var select = oEvent.getSource();
+				var select = oEvent ? oEvent.getSource() : this.byId("productType");
 				var newValue = select.getSelectedItem().getKey();
 				var filterName = select.data("filterName");
 				var filterSelect = this.byId(select.data("filter"));
 				var filter = new Filter(filterName, FilterOperator.EQ, newValue);
 				//console.log(filterSelect.getItems());
-				//filterSelect.getBinding("items").filter(filter);
-				this.setDefaultValue(newValue, filterSelect);
+				filterSelect.getBinding("items").filter(filter);
+				this.setSelectDefaultValue(newValue, filterSelect);
 			},
-			
-			setDefaultValue: function(value, select){
+			setSelectDefaultValue: function(value, select){
 				var url = this.getModel().sServiceUrl;
-				$.get(url + "/productDefaultSet('" + value + "')/?$format=json", function( data ) {
+				$.get(url + "/defaultProductByTypeSet('" + value + "')/?$format=json", function( data ) {
 					var id = data.d.Product;
 					select.setSelectedKey(id);
 				});
@@ -773,6 +682,103 @@ sap.ui.define([
 			alert: function(msg, settingsArg){
 				var settings = settingsArg ? settingsArg : { actions: [sap.m.MessageBox.Action.CLOSE] };
 				MessageBox.alert(msg, settings);
+			},
+			
+			// Add xml fragments to this view as dependent
+			// objArr = array of string ids of objects declared on init
+			addFragments: function(objArr){
+				for(var i = 0; i < objArr.length; i++){
+					try {
+						this[objArr[i]] = sap.ui.xmlfragment("fragment." + objArr[i], this);
+						this.getView().addDependent(this[objArr[i]]);
+					} catch (err) {
+						// Just in case if any of the dialog fragment has syntax error
+						console.log("Error in dialog with ID: " + this.objArr[i] + "Dialog " + err);
+					}
+					
+				}
+			},
+			
+			// Object.assign doesnt work in IE so this function is created
+			mergeObjects: function(objOne, objTwo){
+				var objs = [objOne, objTwo],
+			    result =  objs.reduce(function (r, o) {
+			        Object.keys(o).forEach(function (k) {
+			            r[k] = o[k];
+			        });
+			        return r;
+			    }, {});
+			    return result;
+			},
+			
+			// Search function for all tables
+			triggerSearch: function(oEvent) {
+				var query = oEvent.getParameter("query") || oEvent.getParameter("selected"),
+					id = oEvent.getSource().data('id'),
+					key = oEvent.getSource().data('key'),
+					customOperator = oEvent.getSource().data('operator'),
+					oTable = this.byId(id) || sap.ui.getCore().byId(id),
+					filters = [];
+					
+				if(!this.search[id]){ 
+					this.search[id] = {};
+				}
+				if(typeof query !== "undefined"){
+					var operator = FilterOperator.EQ;
+					if(customOperator){
+						operator = FilterOperator[customOperator];
+					}
+					this.search[id][key] = new Filter({path: key, operator: operator, value1: query });
+				}else{
+					delete this.search[id][key];
+				}
+				
+				var filterKeys = Object.keys(this.search[id]);
+				for(var i in filterKeys){
+					filters.push(this.search[id][filterKeys[i]]);
+				}
+				var newFilter = new Filter({ filters: filters, and: true });
+				if(filters.length === 0){
+					newFilter = filters;
+				}
+				oTable.getBinding("items").filter(newFilter);
+			},
+			
+			// On value help opens new dialog with filters
+			handleValueHelp: function(oEvent){
+				var button = oEvent.getSource();
+				var id = button.data("id");
+				var dynamicId = button.getId();
+				var bindSet = button.data("set") ? "/" + button.data("set") + 'Set' : "/" + id + 'Set';
+				var filters = button.data("filters");
+				var table = sap.ui.getCore().byId(id);
+				table.bindItems({
+					path: bindSet,
+					template: table['mBindingInfos'].items.template.clone()
+				});
+				this.search = {}; // nullify search object
+				if(filters){
+					var filtersArr = filters.split(',');
+					for(var i = 0; i < filtersArr.length; i++){
+						for(var j = 0; j < this.typeArr.length; j++){
+							var input = sap.ui.getCore().byId(id + filtersArr[i] + "Filter");
+							var type = this.typeArr[j];
+							if(input["mProperties"].hasOwnProperty(type)){
+								input.setProperty(type);
+							}
+						}
+					}
+				}
+				var selectButton = this.byId(id + "Select") || sap.ui.getCore().byId(id + "Select");
+				selectButton.data("dynamicId", dynamicId);
+				
+				this[id + "Dialog"].getButtons()[1].setEnabled(false);
+				this[id + "Dialog"].open();
+			},
+			
+			openMail: function(oEvent){
+				var counterParty = oEvent.getSource().data("key");
+				window.open("mailto:");
 			}
 		});
 	}
