@@ -86,23 +86,25 @@ sap.ui.define([
 					var allData = this.mergeObjects(offerData,volumeDataAndCheck.data);
 					var uploader = this.byId("upload");
 					var settings = {};
-					var msg = '';
-					var alertSettings = {
-						actions: [sap.m.MessageBox.Action.CLOSE]
-					};
+					var msg = ''; 
+					var that = this;
 					if(allData.TCNumber === "$$00000001"){
-						msg = this.getResourceBundle().getText("offerCreated");
-						alertSettings.onClose = function(sAction) {
-							this.getRouter().navTo("worklist", {
-								TCNumber: response.TCNumber
-							});
-						};
+						msg = that.getResourceBundle().getText("offerCreated");
 					}else{
 						msg = this.getResourceBundle().getText("offerSaved");
 					}
 					console.log(allData);
 					settings.success = function(response){
-						this.alert(msg + " " + response.TCNumber, alertSettings);
+						that.alert(msg + " " + response.TCNumber, {
+							actions: [sap.m.MessageBox.Action.CLOSE],
+							onClose: function(sAction){
+								if(allData.TCNumber === "$$00000001"){
+									that.getRouter().navTo("worklist", {
+										TCNumber: response.TCNumber
+									});
+								}
+							} 
+						});
 						if(uploader.getValue()){
 							var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
 							uploader.setUploadUrl(uploadUrl);
@@ -534,7 +536,7 @@ sap.ui.define([
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
 						var periodData = this.getData(period);
-						allVolumeData.ToOfferPeriodAndPrice.push(periodData);
+						allVolumeData.ToOfferPeriod.push(periodData);
 						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo"]);
 						if(checkPeriods && oData.check){
 							oData.check = oData.check.slice(0,-1) + " and ";

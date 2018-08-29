@@ -24,7 +24,7 @@
 					</VBox>
 				</HBox>
 				<OverflowToolbar width="100%">
-					<Title text="{i18n>prices}" titleStyle="H3"/>
+					<Title text="{i18n>prices}" class="marginTop" titleStyle="H3"/>
 				</OverflowToolbar>
 				<Label required="true" class="topLabel" text="{i18n>incoterms}" />
 				<Select forceSelection="false" custom:key="incoterms" selectedKey="{Incoterms}" class="fullWidth" width="100%" 
