@@ -22,13 +22,32 @@
 			<NavContainer
 				id="navCon"
 				defaultTransitionName="slide"
-				initialPage="p1"
+				initialPage="p3"
 				class="navContainerControl"
 				width="100%">
 				<pages>
 					<Page
 						id="p1"
-						title="{i18n>offer}" >
+						title="{i18n>enterOfferId}">
+						<VBox id="offerIdVbox" class="paddingRem">
+							<Label required="true" class="topLabel" text="{i18n>offerId}" />
+							<Input custom:key="offerId" id="offerId" value="" width="100%" />
+						</VBox>
+						<footer>
+							<Toolbar>
+								<ToolbarSpacer />
+								<Button type="Accept" 
+									custom:next="p2" 
+									custom:check="true"
+									custom:edit="true"
+									custom:id="offerIdVbox"
+									press="nextPage" text="{i18n>enter}" />
+							</Toolbar>
+						</footer>
+					</Page>
+					<Page
+						id="p2"
+						title="{i18n>offerGeneralData}" >
 						<l:BlockLayout>
 							<l:BlockLayoutRow>
 								<l:BlockLayoutCell width="1">
@@ -47,6 +66,12 @@
 							<Toolbar>
 								<ToolbarSpacer />
 								<Button 
+									id="saveOffer1" 
+									custom:blocks="pageOfferDetails,parameters" 
+									type="Accept" 
+									press="saveOffer" 
+									text="{i18n>save}"/>
+								<Button 
 									custom:id="pageOfferDetails" 
 									custom:check="true"
 									id="offerSettingsNextButton" 
@@ -56,8 +81,9 @@
 					</Page>
 					<Page
 						id="p3"
-						title="{i18n>volumeSettings}">
-						<List noDataText="{i18n>noData}" mode="SingleSelectMaster" id="volumesList" items="{ path: 'ToOfferVolume', templateShareable:false }" selectionChange="onListSelect">
+						title="{i18n>offerVolumePeriod}">
+						<List noDataText="{i18n>noData}" mode="SingleSelectMaster" id="volumesList" items="{ path: 'ToOfferVolume', templateShareable:true }" 
+							selectionChange="onListSelect">
 							<headerToolbar>
 								<Toolbar>
 									<Title text="{i18n>volumes}" titleStyle="H3" />
@@ -75,33 +101,15 @@
 						</List>
 						<footer>
 							<Toolbar>
-								<Button id="volumePrevButton" type="Back" custom:next="p1" press="nextPage" text="{i18n>back}" />
+								<Button id="volumePrevButton" type="Back" custom:next="p2" press="nextPage" text="{i18n>back}" />
 								<ToolbarSpacer />
 								<Button 
-									id="saveOffer" 
+									id="saveOffer2" 
 									custom:blocks="pageOfferDetails,parameters" 
 									type="Accept" 
 									press="saveOffer" 
 									text="{i18n>save}"/>
 								<Button id="tableApprove" enabled="false" custom:id="approve" type="Accept" press="tableApprove" text="{i18n>approve}" />
-							</Toolbar>
-						</footer>
-					</Page>
-					<Page
-						id="p4"
-						title="{i18n>enterOfferId}">
-						<VBox id="offerIdVbox" class="paddingRem">
-							<Label required="true" class="topLabel" text="{i18n>offerId}" />
-							<Input custom:key="offerId" id="offerId" value="" width="100%" />
-						</VBox>
-						<footer>
-							<Toolbar>
-								<ToolbarSpacer />
-								<Button type="Accept" 
-									custom:next="p1" 
-									custom:check="true"
-									custom:id="offerIdVbox"
-									press="nextPage" text="{i18n>enter}" />
 							</Toolbar>
 						</footer>
 					</Page>

@@ -18,9 +18,9 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label required="true" class="topLabel" text="{i18n>offerType}" />
-						<Select id="type" custom:name="OfferType" selectedKey="{= ${OfferType} ? ${OfferType} : 'OF01' }" custom:key="offerType" 
+						<Select id="type" custom:name="OfferType" selectedKey="{OfferType}" custom:key="offerType" 
 							forceSelection="false" width="100%" items="{ path: '/dictionaryOfferTypeSet', sorter: { path: 'Name' } }">
-							<core:Item key="{Code}" text="{Code} - {Name}"/>
+							<core:Item key="{Code}" text="{Name}"/>
 						</Select>
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
@@ -65,7 +65,7 @@
 						sorter: { path: 'Code' },
 						events: { dataReceived: '.dataReceived' }
 					}">
-					<core:Item key="{Code}" text="{Code} - {Name}"/>
+					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>product}" />
 				<Select custom:key="product" id="product" selectedKey="{Product}" width="100%" forceSelection="false" 
@@ -75,12 +75,12 @@
 				<Label required="true" class="topLabel" text="{i18n>paymentMethod}"/>
 				<Select id="paymentMethod" selectedKey="{PaymentMethod}" custom:key="paymentMethod" width="100%" forceSelection="false" 
 					items="{ path: '/dictionaryPaymentMethodSet', sorter: { path: 'Name' } }">
-					<core:Item key="{Code}" text="{Code} - {Name}"/>
+					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>paymentTerms}"/>
 				<Select id="paymentTerms" selectedKey="{PaymentTerm}" custom:key="paymentTerms" width="100%" forceSelection="false" 
 					items="{ path: '/dictionaryPaymentTermSet', sorter: { path: 'Name' }}">
-					<core:Item key="{Code}" text="{Code} - {Name}"/>
+					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>meansOfTransport}" />
 				<Select custom:key="meansOfTransport" selectedKey="{MeansOfTransport}" forceSelection="false" width="100%"

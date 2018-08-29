@@ -54,12 +54,12 @@ sap.ui.define([
 						});
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						this.byId("tableApprove").setEnabled(true);
-						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox"], true, "Visible");
+						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox", "saveOffer1"], true, "Visible");
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
-						this.setInput(["uploadDownload", "uploadDelete"], false, "Visible");
+						this.setInput(["uploadDownload", "uploadDelete", "saveOffer1"], false, "Visible");
 					}
 				}.bind(this));
 			},
@@ -68,7 +68,11 @@ sap.ui.define([
 			// Added in Select(Product Type)
 			dataReceived: function(){
 				if(this.TCNumber){
-					this.filterSelect();
+					var that = this;
+					setTimeout(function(){
+						that.filterSelect();
+					});
+					
 				}
 			},
 			
@@ -249,7 +253,7 @@ sap.ui.define([
 					}
 				}
 				if(next){
-					if(next === "p1"){
+					if(button.data("edit")){
 						this.getRouter().navTo("worklist", {
 							TCNumber: this.byId("offerId").getValue()       
 						});
@@ -312,6 +316,10 @@ sap.ui.define([
 							title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
 							titleValue.setValue(length);
 						}
+					}
+					if(id === "periodsPrices"){
+						var TCPosition = clone.getContent()[0].getContent()[0].getItems()[0];
+						TCPosition.setValue("");
 					}
 					list.addItem(clone);
 				}
@@ -548,8 +556,7 @@ sap.ui.define([
 						}
 					}
 					oData.data.ToOfferVolume.push(allVolumeData);
-					if(volumeCheck || periods.length === 0 || checkPeriods){
-						//oData.check = oData.check.slice(0, -1);
+					if(oData.check){
 						oData.check = oData.check + " in Volume " + allVolumeData.VolumeNumber + " \n\n ";
 					}
 				}
@@ -794,8 +801,21 @@ sap.ui.define([
 			},
 			
 			openMail: function(oEvent){
-				var counterParty = oEvent.getSource().data("key");
+				//var counterParty = oEvent.getSource().data("key");
 				window.open("mailto:");
+			},
+			
+			count: function(oEvent){
+				var input = oEvent.getSource();
+				var size = input.data("size");
+				var vboxArr = size ? input.getParent().getParent().getParent().getItems() : input.getParent().getItems();
+				var shipNumber = vboxArr[3].getValue();
+				var shipMin = vboxArr[4].getItems()[0].getItems()[1].getValue();
+				var shipMax = vboxArr[4].getItems()[1].getItems()[1].getValue();
+				var tonMin = vboxArr[6].getItems()[0].getItems()[1];
+				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
+				tonMin.setValue(shipNumber*shipMin);
+				tonMax.setValue(shipNumber*shipMax);
 			}
 		});
 	}

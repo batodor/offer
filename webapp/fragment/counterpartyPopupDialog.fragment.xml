@@ -4,12 +4,12 @@
 			<l:BlockLayout>
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="1">
-						<SearchField placeholder="{i18n>counterparty}" custom:id="counterpartyPopup" custom:key="Code" showSearchButton="true" 
-							search="triggerSearch" width="100%" id="counterpartyPopupCodeFilter" />
-					</l:BlockLayoutCell>
-					<l:BlockLayoutCell width="1">
 						<SearchField placeholder="{i18n>name}" maxLength="10" custom:id="counterpartyPopup" custom:operator="Contains" custom:key="Name" showSearchButton="true" 
 							search="triggerSearch" width="100%" id="counterpartyPopupNameFilter" />
+					</l:BlockLayoutCell>
+					<l:BlockLayoutCell width="1">
+						<SearchField placeholder="{i18n>code}" custom:id="counterpartyPopup" custom:key="Code" showSearchButton="true" 
+							search="triggerSearch" width="100%" id="counterpartyPopupCodeFilter" />
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
@@ -17,14 +17,14 @@
 				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false"
 				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
 				<columns>
-					<Column><Text class="black" text="{i18n>code}"/></Column>
 					<Column><Text class="black" text="{i18n>name}"/></Column>
+					<Column><Text class="black" text="{i18n>code}"/></Column>
 				</columns>
 				<items>
 					<ColumnListItem>
 						<cells>
-							<Text text="{Code}"/>
 							<Text text="{Name}"/>
+							<Text text="{Code}"/>
 						</cells>
 					</ColumnListItem>
 				</items>

@@ -50,7 +50,7 @@
 				</Input>
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>price}" />
+						<Label class="topLabel" text="{i18n>priceType}" />
 						<Switch change="onSwitch" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}" />
 					</VBox>
 					<VBox 
@@ -77,7 +77,7 @@
 					</VBox>
 				</HBox>
 			</VBox>
-			<List noDataText="{i18n>noData}" mode="SingleSelectMaster" items="{ path: 'ToOfferPeriod', templateShareable:false }" selectionChange="onListSelect">
+			<List noDataText="{i18n>noData}" mode="SingleSelectMaster" items="{ path: 'ToOfferPeriod', templateShareable:true }" selectionChange="onListSelect">
 				<headerToolbar>
 					<Toolbar>
 						<Title text="{i18n>periods}" titleStyle="H3" />

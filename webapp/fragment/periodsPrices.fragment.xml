@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Panel expandable="true" expanded="false" width="auto">
+	<Panel expandable="true" expanded="true" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
 				<Title text="{ path: 'DateFrom', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }
@@ -22,16 +22,16 @@
 				</HBox>
 				
 				<Label class="topLabel" text="{i18n>numberOfShipments}" />
-				<StepInput min="0" max="100" custom:string="true" textAlign="Center" value="{NumberOfShipments}" />
+				<StepInput change="count" min="0" max="100" custom:string="true" textAlign="Center" value="{NumberOfShipments}" />
 				
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>min})" />
-						<Input type="Number" placeholder="0" value="{ShipmentSizeMin}" />
+						<Input change="count" custom:size="min" type="Number" placeholder="0" value="{ShipmentSizeMin}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>shipmentSize} ({i18n>max})" />
-						<Input type="Number" placeholder="0" value="{ShipmentSizeMax}" />
+						<Input change="count" custom:size="max" type="Number" placeholder="0" value="{ShipmentSizeMax}" />
 					</VBox>
 				</HBox>
 				
