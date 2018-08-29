@@ -297,9 +297,9 @@ sap.ui.define([
 				var selectedItem = list.getSelectedItem();
 				if(selectedItem){
 					var id = button.data("id");
+					var clone = selectedItem.clone();
+					this.getView().addDependent(clone);
 					if(id === "volumes"){
-						var clone = selectedItem.clone();
-						this.getView().addDependent(clone);
 						var title = clone.getContent()[0].getHeaderToolbar().getContent()[0];
 						var titleValue = clone.getContent()[0].getHeaderToolbar().getContent()[2];
 						var length = list.getItems().length + 1;
@@ -530,7 +530,7 @@ sap.ui.define([
 						}
 						oData.check = oData.check + " and Periods";
 					}
-					allVolumeData.ToOfferPeriodAndPrice = [];
+					allVolumeData.ToOfferPeriod = [];
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
 						var periodData = this.getData(period);
