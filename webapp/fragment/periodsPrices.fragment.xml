@@ -41,7 +41,7 @@
 						<StepInput min="0" max="100" custom:string="true" textAlign="Center" value="{ShipmentTolerance}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>toleranceUom}" />
+						<Label class="topLabel" text="{i18n>shipmentToleranceUom}" />
 						<Select forceSelection="false" custom:name="ShipmentToleranceUOM" selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }"
 							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
 							<core:Item key="{Code}" text="{Code}"/>
@@ -66,7 +66,7 @@
 						<StepInput min="0" max="100" custom:string="true" textAlign="Center" value="{TonnageTolerance}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>toleranceUom}" />
+						<Label class="topLabel" text="{i18n>tonnageToleranceUom}" />
 						<Select forceSelection="false" custom:name="TonnageToleranceUOM" selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }"
 							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
 							<core:Item key="{Code}" text="{Code}"/>

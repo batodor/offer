@@ -46,7 +46,7 @@ sap.ui.define([
 				this.getModel().metadataLoaded().then( function() {
 					if(this.Type){
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer2"));
-						this.byId("navCon").to(this.byId("p4"));
+						this.byId("navCon").to(this.byId("p1"));
 					}
 					if(this.TCNumber){
 						this.getView().bindElement({ 
@@ -262,6 +262,7 @@ sap.ui.define([
 				}else{
 					navCon.back();
 				}
+				this.collectLimitsData();
 			},
 			
 			onListSelect: function(oEvent){
@@ -816,6 +817,44 @@ sap.ui.define([
 				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
 				tonMin.setValue(shipNumber*shipMin);
 				tonMax.setValue(shipNumber*shipMax);
+			},
+			
+			collectLimitsData: function(){
+				var oData = {};
+				var offerData = this.getData(["pageOfferDetails","parameters"]);
+				var volumeData = this.getVolumeData();
+				oData.Counterparty = '';
+				for(var i = 0; i < offerData.ToOfferCounterparty.length; i++){
+					oData.Counterparty = oData.Counterparty + offerData.ToOfferCounterparty[i].Code + ";";
+				}
+				oData.Counterparty = oData.Counterparty.slice(0, -1);
+				oData.CompanyBranch = offerData.CompanyBranch;
+				oData.PaymentMethod = offerData.PaymentMethod;
+				oData.PaymentTerm = offerData.PaymentTerm;
+				var DateFrom = null;
+				var DateTo = null;
+				var oneDay = 24*60*60*1000;
+				var Tonnage = 0;
+				for(var i = 0; i < volumeData.data.ToOfferVolume.length; i++){
+					for(var j = 0; j < volumeData.data.ToOfferVolume[i].ToOfferPeriod.length; j++){
+						var period = volumeData.data.ToOfferVolume[i].ToOfferPeriod[j];
+						if(DateFrom){
+							DateFrom = period.DateFrom < DateFrom ? period.DateFrom : DateFrom;
+						}else{
+							DateFrom = period.DateFrom;
+						}
+						if(DateTo){
+							DateTo = period.DateTo > DateTo ? period.DateTo : DateTo;
+						}else{
+							DateTo = period.DateTo;
+						}
+						Tonnage = Tonnage + parseInt(period.TonnageMax);
+					}
+				}
+				var Days = Math.round(Math.abs((DateFrom.getTime() - DateTo.getTime())/(oneDay)));
+				oData.Days = Days;
+				oData.Tonnage = Tonnage;
+				console.log(oData);
 			}
 		});
 	}

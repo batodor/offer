@@ -38,7 +38,7 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>variantNumber}" />
-						<StepInput min="1" max="5" textAlign="Center" custom:string="true" value="{VariantNumber}" />
+						<Input value="{VariantNumber}" />
 					</VBox>
 				</HBox>
 				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
