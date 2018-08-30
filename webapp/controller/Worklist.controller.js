@@ -542,6 +542,17 @@ sap.ui.define([
 							oData.check = oData.check + volumeTypeCheck + ", ";
 						}
 					}
+					if(allVolumeData.PriceType){
+						var volumePriceForBase = this.checkDataInner(allVolumeData, ["OfferPriceForBase"]);
+						if(volumePriceForBase){
+							oData.check = oData.check + this.getResourceBundle().getText("offerPriceForBase") + ", ";
+						}
+					}else{
+						var volumeIndexFormula = this.checkDataInner(allVolumeData, ["IndexFormula"]);
+						if(volumeIndexFormula){
+							oData.check = oData.check + this.getResourceBundle().getText("indexFormula") + ", ";
+						}
+					}
 					
 					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
 					if(periods.length === 0){
