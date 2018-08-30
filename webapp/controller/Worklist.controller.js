@@ -86,6 +86,7 @@ sap.ui.define([
 					var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-4);
 					this.alert(msg);
 				}else{
+					this.setInput(["saveOffer1","saveOffer2"], false, "Enabled");
 					var model = button.getModel();
 					var allData = this.mergeObjects(offerData,volumeDataAndCheck.data);
 					var uploader = this.byId("upload");
@@ -114,6 +115,7 @@ sap.ui.define([
 							uploader.setUploadUrl(uploadUrl);
 							uploader.upload();
 						}
+						that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
 					};
 					model.create("/offerHeaderSet", allData, settings);
 				}
@@ -323,6 +325,7 @@ sap.ui.define([
 					}
 					list.addItem(clone);
 				}
+				this.checkLimits();
 			},
 			delete: function(oEvent){
 				var button = oEvent.getSource();
@@ -583,7 +586,7 @@ sap.ui.define([
 					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
 					title.setText(date2 + " - " + date);
 				}
-				
+				this.checkLimits();
 			},
 			
 			// On select item in Attachments table
@@ -816,6 +819,7 @@ sap.ui.define([
 				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
 				tonMin.setValue(shipNumber*shipMin);
 				tonMax.setValue(shipNumber*shipMax);
+				this.checkLimits();
 			},
 			
 			collectLimitsData: function(){
@@ -823,10 +827,13 @@ sap.ui.define([
 				var offerData = this.getData(["pageOfferDetails","parameters"]);
 				var volumeData = this.getVolumeData();
 				oData.Partners = '';
-				for(var i = 0; i < offerData.ToOfferCounterparty.length; i++){
-					oData.Partners = oData.Partners + offerData.ToOfferCounterparty[i].Code + ";";
+				var partnersList = this.byId("counterparty").getTokens();
+				for(var i = 0; i < partnersList.length; i++){
+					oData.Partners = oData.Partners + partnersList[i].getKey() + ";";
 				}
-				oData.Partners = oData.Partners.slice(0, -1);
+				if(oData.Partners){
+					oData.Partners = oData.Partners.slice(0, -1);
+				}
 				oData.CompanyCode = offerData.CompanyBranch;
 				oData.PaymentMethod = offerData.PaymentMethod;
 				oData.PaymentTerm = offerData.PaymentTerm;
@@ -853,7 +860,7 @@ sap.ui.define([
 				var Period = Math.round(Math.abs((DateFrom - DateTo)/(oneDay)));
 				oData.Period = Period;
 				oData.Tonnage = Tonnage;
-				oData.TCNumber = this.TCNumber;
+				oData.TCNumber = this.byId("TCNumber").getValue();
 				return oData;
 			},
 			
