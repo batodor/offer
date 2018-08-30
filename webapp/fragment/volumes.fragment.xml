@@ -13,7 +13,7 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>volumeType}" />
-						<Switch change="onSwitch" custom:type="volumes" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}" />
+						<Switch change="onSwitch" custom:input="select" custom:type="volumes" state="{VolumeType}" customTextOn="{i18n>optional}" customTextOff="{i18n>fixed}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" visible="{= ${VolumeType} ? true : false }" width="50%">
 						<Label required="true" class="topLabel" text="{i18n>volumeOwner}" />
@@ -51,7 +51,7 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>priceType}" />
-						<Switch change="onSwitch" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}" />
+						<Switch change="onSwitch" custom:switch="true" state="false" customTextOn="{i18n>index}" customTextOff="{i18n>fix}" />
 					</VBox>
 					<VBox 
 						visible="{= ${IndexFormula} ? true : false }" 
@@ -59,6 +59,13 @@
 						width="50%">
 						<Label required="true" class="topLabel" text="{i18n>indexFormula}" />
 						<Input custom:key="indexFormula" value="{IndexFormula}" />
+					</VBox>
+					<VBox 
+						visible="{= ${IndexFormula} ? false : true }" 
+						class="rightVBoxStyle"
+						width="50%">
+						<Label required="true" class="topLabel" text="{i18n>offerPriceForBase}" />
+						<Input custom:key="offerPriceForBase" value="{IndexFormula}" />
 					</VBox>
 				</HBox>
 				<Label class="topLabel" required="true" text="{i18n>offerPrice}" />

@@ -109,7 +109,7 @@
 									type="Accept" 
 									press="saveOffer" 
 									text="{i18n>save}"/>
-								<Button id="tableApprove" enabled="false" custom:id="approve" type="Accept" press="tableApprove" text="{i18n>approve}" />
+								<Button id="tableApprove" enabled="false" custom:id="approve" type="Accept" press="tableApprove" text="{i18n>sendToApproval}" />
 							</Toolbar>
 						</footer>
 					</Page>

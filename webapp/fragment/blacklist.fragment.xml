@@ -51,12 +51,17 @@
 				<Title text="{i18n>limits}" titleStyle="H3"/>
 			</OverflowToolbar>
 			<VBox id="limits">
+				<Label class="topLabel" text="{i18n>paymentTerms}" />
+				<HBox width="100%">
+					<core:Icon class="marginRight" id="limitPaymentConditionIcon" />
+					<Text id="limitPaymentCondition" text="{i18n>none}" />
+				</HBox>
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
-						<Label class="topLabel" text="{i18n>paymentTerms}" />
+						<Label class="topLabel" text="{i18n>tonnage}" />
 						<HBox width="100%">
-							<core:Icon class="marginRight" id="limitPaymentConditionIcon" />
-							<Text id="limitPaymentCondition" text="{i18n>none}" />
+							<core:Icon class="marginRight" id="limitTonnageIcon" />
+							<Text id="limitTonnage" text="{i18n>none}" />
 						</HBox>
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
@@ -66,11 +71,6 @@
 							<Text id="limitPeriod" text="{i18n>none}" />
 						</HBox>
 					</VBox>
-				</HBox>
-				<Label class="topLabel" text="{i18n>tonnage}" />
-				<HBox width="100%">
-					<core:Icon class="marginRight" id="limitTonnageIcon" />
-					<Text id="limitTonnage" text="{i18n>none}" />
 				</HBox>
 			</VBox>
 			<OverflowToolbar class="topLabel" height="3rem" width="100%">

@@ -54,12 +54,12 @@ sap.ui.define([
 						});
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						this.byId("tableApprove").setEnabled(true);
-						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox", "saveOffer1"], true, "Visible");
+						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox"], true, "Visible");
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
-						this.byId("trader").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
+						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
-						this.setInput(["uploadDownload", "uploadDelete", "saveOffer1"], false, "Visible");
+						this.setInput(["uploadDownload", "uploadDelete"], false, "Visible");
 					}
 				}.bind(this));
 			},
@@ -72,7 +72,6 @@ sap.ui.define([
 					setTimeout(function(){
 						that.filterSelect();
 					});
-					//this.checkLimits();
 				}
 			},
 			
@@ -124,11 +123,6 @@ sap.ui.define([
 			// Actually opens the approve dialog
 			tableApprove: function(oEvent){
 				var id = oEvent.getSource().data("id");
-				var approveUpload = sap.ui.getCore().byId(id + "Upload");
-				approveUpload.bindItems({
-					path: "/offerHeaderSet('" + this.TCNumber + "')/ToAttachment",
-					template: approveUpload['mBindingInfos'].items.template.clone()
-				});
 				this[id + "Dialog"].open();
 			},
 			
@@ -170,7 +164,7 @@ sap.ui.define([
 						});
 						tokens.push(token);
 						if(data.Country){
-							countries = countries + data.Country + ",";
+							countries = countries + data.Country + ", ";
 						}
 						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
@@ -182,9 +176,41 @@ sap.ui.define([
 				if(id === "counterpartyPopup"){
 					valueHelp.setTokens(tokens);
 					var countriesText = this.byId("countriesSanction");
-					countries ? countriesText.setText(countries.slice(0,-1)).addStyleClass("red") : countriesText.removeStyleClass("red");
+					if(countries){
+						countriesText.setText(countries.slice(0,-2)).addStyleClass("red");
+					}else{
+						countriesText.removeStyleClass("red");
+					}
 				}
 				this[id + "Dialog"].close();
+			},
+			dialogApprove: function(oEvent){
+				var uploadItems = sap.ui.getCore().byId("approveUpload").getSelectedItems();
+				var attachList = '';
+				for(var i = 0; i < uploadItems.length; i++){
+					attachList = attachList + this.getModel().getData(uploadItems[i].getBindingContextPath()).FileGUID + ";";
+				}
+				attachList = attachList.slice(0,-1);
+				var oFuncParams = { 
+					TCNumber: this.TCNumber,
+					Comment: sap.ui.getCore().byId("approveComment").getValue(),
+					ValidityDate: sap.ui.getCore().byId("approveValidityDate").getDateValue(),
+					AttachList: attachList
+				};
+				console.log(oFuncParams);
+				this.getModel().callFunction("/SentOfferToApproval", {
+					method: "POST",
+					urlParameters: oFuncParams,
+					success: this.onApproveSuccess.bind(this, "SentOfferToApproval")
+				});
+			},
+			onApproveSuccess: function(link, oData) {
+				var oResult = oData[link];
+				if (oResult.ActionSuccessful) {
+					MessageToast.show(oResult.Message);
+				} else {
+					MessageBox.error(oResult.Message);
+				}
 			},
 			
 			// Get Risks on select of Counterparties
@@ -207,28 +233,6 @@ sap.ui.define([
 					});
 				}
 			},
-			
-			// Get Risks on select of Counterparties
-			// getLimits: function(valueHelp){
-			// 	var tokens = valueHelp.getTokens();
-			// 	var limits = this.byId("limits");
-			// 	limits.removeAllItems();
-			// 	var filters = [];
-			// 	for(var i = 0; i < tokens.length; i++){
-			// 		filters.push(new Filter({path: "Partner", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
-			// 	}
-			// 	var partnersFilter = new Filter({ filters: filters, and: false });
-			// 	var companyFilter = new Filter({path: "CompanyCode", operator: FilterOperator.EQ, value1: this.byId("companyBranch").getSelectedKey() });
-			// 	var allFilters = new Filter({ filters: [ partnersFilter, companyFilter ], and: true });
-			// 	if(filters.length > 0){
-			// 		var TCNumber = this.byId("TCNumber").getValue();
-			// 		limits.bindItems({ 
-			// 			path: "/offerHeaderSet('" + TCNumber + "')/ToLimit", 
-			// 			filters: allFilters,
-			// 			template: limits['mBindingInfos'].items.template.clone()
-			// 		});
-			// 	}
-			// },
 			
 			// On multi input tokens update
 			onMultiUpdate: function(oEvent){
@@ -479,7 +483,10 @@ sap.ui.define([
 				var Switch = oEvent.getSource();
 				var type = Switch.data("type");
 				var state = oEvent.getParameter("state");
-				Switch.getParent().getParent().getItems()[1].setVisible(state);
+				Switch.getParent().getParent().getItems()[1].setVisible(state).getItems()[1].setSelectedKey("").setValue("");
+				if(Switch.data("switch")){
+					Switch.getParent().getParent().getItems()[2].setVisible(!state).getItems()[1].setSelectedKey("").setValue("");
+				}
 				if(type && type === "volumes"){
 					var title = Switch.getParent().getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
 					var newText = state ? title.getText().substring(0,5) + this.getResourceBundle().getText("optional") : 
@@ -878,8 +885,8 @@ sap.ui.define([
 				this.byId("limitPeriodIcon").setColor(oResult.PeriodExceed ? "red" : "green").setSrc(oResult.PeriodExceed ? 'sap-icon://alert' : 'sap-icon://accept');
 				this.byId("limitTonnageIcon").setColor(oResult.TonnageExceed ? "red" : "green").setSrc(oResult.TonnageExceed ? 'sap-icon://alert' : 'sap-icon://accept');
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition);
-				this.byId("limitPeriod").setText(oResult.Period);
-				this.byId("limitTonnage").setText(oResult.Tonnage);
+				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
+				this.byId("limitTonnage").setText(oResult.Tonnage + " " + oResult.TonnageUoM);
 			}
 		});
 	}

@@ -14,7 +14,10 @@
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label class="topLabel" text="{i18n>trader}" />
-				<Input value="{Trader}" id="trader" />
+				<Select forceSelection="true" id="trader" selectedKey="{Trader}" width="100%" 
+					items="{ path: '/dictionaryTraderSet', sorter: { path: 'Name' } }">
+					<core:Item key="{Code}" text="{Name}"/>
+				</Select>
 				<Label class="topLabel" text="{i18n>createDate}" />
 				<DateTimePicker enabled="false" id="creationDate" dateValue="{CreationDate}" />
 				<Label class="topLabel" text="{i18n>createdBy}" />
