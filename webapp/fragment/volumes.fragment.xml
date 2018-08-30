@@ -64,7 +64,7 @@
 						class="rightVBoxStyle"
 						width="50%">
 						<Label required="true" class="topLabel" text="{i18n>offerPriceForBase}" />
-						<Input custom:key="offerPriceForBase" value="{OfferPriceForBase}" />
+						<Input custom:key="offerPriceForBase" type="Number" value="{OfferPriceBaseRoute}" />
 					</VBox>
 				</HBox>
 				<Label class="topLabel" required="true" text="{i18n>offerPrice}" />
