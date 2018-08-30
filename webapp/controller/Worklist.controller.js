@@ -195,7 +195,8 @@ sap.ui.define([
 					TCNumber: this.TCNumber,
 					Comment: sap.ui.getCore().byId("approveComment").getValue(),
 					ValidityDate: sap.ui.getCore().byId("approveValidityDate").getDateValue(),
-					AttachList: attachList
+					AttachList: attachList,
+					GlobalTrader: sap.ui.getCore().byId("approveTrader").getSelectedKey()
 				};
 				console.log(oFuncParams);
 				this.getModel().callFunction("/SentOfferToApproval", {
