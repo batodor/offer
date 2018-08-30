@@ -50,42 +50,29 @@
 			<OverflowToolbar class="topLabel" height="3rem" width="100%">
 				<Title text="{i18n>limits}" titleStyle="H3"/>
 			</OverflowToolbar>
-			<List noDataText="{i18n>none}" id="limits" class="listText" items="{}">
-				<CustomListItem>
-					<VBox>
-						<HBox justifyContent="SpaceBetween">
-							<VBox class="leftVBoxStyle" width="50%">
-								<Label class="topLabel" text="{i18n>paymentTerms}" />
-								<HBox width="100%">
-									<core:Icon 
-										src="{= ${PaymentCondition} ? 'sap-icon://alert' : 'sap-icon://accept' }" 
-										class="size1 marginRight" 
-										color="{= ${PaymentCondition} ? 'red' : 'green' }" />
-									<Text text="{PaymentCondition}" />
-								</HBox>
-							</VBox>
-							<VBox class="rightVBoxStyle" width="50%">
-								<Label class="topLabel" text="{i18n>period}" />
-								<HBox width="100%">
-									<core:Icon 
-										src="{= ${Period} ? 'sap-icon://alert' : 'sap-icon://accept' }" 
-										class="size1 marginRight" 
-										color="{= ${Period} ? 'red' : 'green' }" />
-									<Text text="{Period} {PeriodUOM}" />
-								</HBox>
-							</VBox>
-						</HBox>
-						<Label class="topLabel" text="{i18n>tonnage}" />
+			<VBox id="limits">
+				<HBox justifyContent="SpaceBetween">
+					<VBox class="leftVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>paymentTerms}" />
 						<HBox width="100%">
-							<core:Icon 
-								src="{= ${Tonnage} ? 'sap-icon://alert' : 'sap-icon://accept' }" 
-								class="size1 marginRight" 
-								color="{= ${Tonnage} ? 'red' : 'green' }" />
-							<Text text="{Tonnage} {TonnageUOM}" />
+							<core:Icon class="marginRight" id="limitPaymentConditionIcon" />
+							<Text id="limitPaymentCondition" text="{i18n>none}" />
 						</HBox>
 					</VBox>
-				</CustomListItem>
-			</List>
+					<VBox class="rightVBoxStyle" width="50%">
+						<Label class="topLabel" text="{i18n>period}" />
+						<HBox width="100%">
+							<core:Icon class="marginRight" id="limitPeriodIcon" />
+							<Text id="limitPeriod" text="{i18n>none}" />
+						</HBox>
+					</VBox>
+				</HBox>
+				<Label class="topLabel" text="{i18n>tonnage}" />
+				<HBox width="100%">
+					<core:Icon class="marginRight" id="limitTonnageIcon" />
+					<Text id="limitTonnage" text="{i18n>none}" />
+				</HBox>
+			</VBox>
 			<OverflowToolbar class="topLabel" height="3rem" width="100%">
 				<Title text="{i18n>otherRisks}" titleStyle="H3"/>
 			</OverflowToolbar>

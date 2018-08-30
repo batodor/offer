@@ -72,7 +72,7 @@ sap.ui.define([
 					setTimeout(function(){
 						that.filterSelect();
 					});
-					
+					//this.checkLimits();
 				}
 			},
 			
@@ -207,26 +207,26 @@ sap.ui.define([
 			},
 			
 			// Get Risks on select of Counterparties
-			getLimits: function(valueHelp){
-				var tokens = valueHelp.getTokens();
-				var limits = this.byId("limits");
-				limits.removeAllItems();
-				var filters = [];
-				for(var i = 0; i < tokens.length; i++){
-					filters.push(new Filter({path: "Partner", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
-				}
-				var partnersFilter = new Filter({ filters: filters, and: false });
-				var companyFilter = new Filter({path: "CompanyCode", operator: FilterOperator.EQ, value1: this.byId("companyBranch").getSelectedKey() });
-				var allFilters = new Filter({ filters: [ partnersFilter, companyFilter ], and: true });
-				if(filters.length > 0){
-					var TCNumber = this.byId("TCNumber").getValue();
-					limits.bindItems({ 
-						path: "/offerHeaderSet('" + TCNumber + "')/ToLimit", 
-						filters: allFilters,
-						template: limits['mBindingInfos'].items.template.clone()
-					});
-				}
-			},
+			// getLimits: function(valueHelp){
+			// 	var tokens = valueHelp.getTokens();
+			// 	var limits = this.byId("limits");
+			// 	limits.removeAllItems();
+			// 	var filters = [];
+			// 	for(var i = 0; i < tokens.length; i++){
+			// 		filters.push(new Filter({path: "Partner", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
+			// 	}
+			// 	var partnersFilter = new Filter({ filters: filters, and: false });
+			// 	var companyFilter = new Filter({path: "CompanyCode", operator: FilterOperator.EQ, value1: this.byId("companyBranch").getSelectedKey() });
+			// 	var allFilters = new Filter({ filters: [ partnersFilter, companyFilter ], and: true });
+			// 	if(filters.length > 0){
+			// 		var TCNumber = this.byId("TCNumber").getValue();
+			// 		limits.bindItems({ 
+			// 			path: "/offerHeaderSet('" + TCNumber + "')/ToLimit", 
+			// 			filters: allFilters,
+			// 			template: limits['mBindingInfos'].items.template.clone()
+			// 		});
+			// 	}
+			// },
 			
 			// On multi input tokens update
 			onMultiUpdate: function(oEvent){
@@ -234,7 +234,7 @@ sap.ui.define([
 				if(this.multi){
 					this.getRisks(input);
 				}
-				this.getLimits(input);
+				this.checkLimits(input);
 				this.multi = true;
 			},
 			
@@ -262,7 +262,6 @@ sap.ui.define([
 				}else{
 					navCon.back();
 				}
-				this.collectLimitsData();
 			},
 			
 			onListSelect: function(oEvent){
@@ -823,12 +822,12 @@ sap.ui.define([
 				var oData = {};
 				var offerData = this.getData(["pageOfferDetails","parameters"]);
 				var volumeData = this.getVolumeData();
-				oData.Counterparty = '';
+				oData.Partners = '';
 				for(var i = 0; i < offerData.ToOfferCounterparty.length; i++){
-					oData.Counterparty = oData.Counterparty + offerData.ToOfferCounterparty[i].Code + ";";
+					oData.Partners = oData.Partners + offerData.ToOfferCounterparty[i].Code + ";";
 				}
-				oData.Counterparty = oData.Counterparty.slice(0, -1);
-				oData.CompanyBranch = offerData.CompanyBranch;
+				oData.Partners = oData.Partners.slice(0, -1);
+				oData.CompanyCode = offerData.CompanyBranch;
 				oData.PaymentMethod = offerData.PaymentMethod;
 				oData.PaymentTerm = offerData.PaymentTerm;
 				var DateFrom = null;
@@ -851,10 +850,29 @@ sap.ui.define([
 						Tonnage = Tonnage + parseInt(period.TonnageMax);
 					}
 				}
-				var Days = Math.round(Math.abs((DateFrom.getTime() - DateTo.getTime())/(oneDay)));
-				oData.Days = Days;
+				var Period = Math.round(Math.abs((DateFrom - DateTo)/(oneDay)));
+				oData.Period = Period;
 				oData.Tonnage = Tonnage;
-				console.log(oData);
+				oData.TCNumber = this.TCNumber;
+				return oData;
+			},
+			
+			checkLimits: function(){
+				var oFuncParams = this.collectLimitsData();
+				this.getModel().callFunction("/CheckValidityLimits", {
+					method: "GET",
+					urlParameters: oFuncParams,
+					success: this.onCheckLimitsSuccess.bind(this, "CheckValidityLimits")
+				});
+			},
+			onCheckLimitsSuccess: function(link, oData) {
+				var oResult = oData[link];
+				this.byId("limitPaymentConditionIcon").setColor(oResult.PaymentExceed ? "red" : "green").setSrc(oResult.PaymentExceed ? 'sap-icon://alert' : 'sap-icon://accept');
+				this.byId("limitPeriodIcon").setColor(oResult.PeriodExceed ? "red" : "green").setSrc(oResult.PeriodExceed ? 'sap-icon://alert' : 'sap-icon://accept');
+				this.byId("limitTonnageIcon").setColor(oResult.TonnageExceed ? "red" : "green").setSrc(oResult.TonnageExceed ? 'sap-icon://alert' : 'sap-icon://accept');
+				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition);
+				this.byId("limitPeriod").setText(oResult.Period);
+				this.byId("limitTonnage").setText(oResult.Tonnage);
 			}
 		});
 	}
