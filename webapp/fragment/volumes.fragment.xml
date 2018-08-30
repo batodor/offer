@@ -61,7 +61,6 @@
 						<Input custom:key="indexFormula" value="{IndexFormula}" />
 					</VBox>
 					<VBox 
-						visible="{= ${OfferPriceForBase} ? true : false }" 
 						class="rightVBoxStyle"
 						width="50%">
 						<Label required="true" class="topLabel" text="{i18n>offerPriceForBase}" />

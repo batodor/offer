@@ -116,6 +116,9 @@ sap.ui.define([
 						}
 						that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
 					};
+					settings.error = function(){
+						that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
+					};
 					model.create("/offerHeaderSet", allData, settings);
 				}
 			},
@@ -544,14 +547,14 @@ sap.ui.define([
 						}
 					}
 					if(allVolumeData.PriceType){
-						var volumePriceForBase = this.checkDataInner(allVolumeData, ["OfferPriceForBase"]);
-						if(volumePriceForBase){
-							oData.check = oData.check + this.getResourceBundle().getText("offerPriceForBase") + ", ";
-						}
-					}else{
 						var volumeIndexFormula = this.checkDataInner(allVolumeData, ["IndexFormula"]);
 						if(volumeIndexFormula){
 							oData.check = oData.check + this.getResourceBundle().getText("indexFormula") + ", ";
+						}
+					}else{
+						var volumePriceForBase = this.checkDataInner(allVolumeData, ["OfferPriceForBase"]);
+						if(volumePriceForBase){
+							oData.check = oData.check + this.getResourceBundle().getText("offerPriceForBase") + ", ";
 						}
 					}
 					
