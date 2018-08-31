@@ -51,7 +51,8 @@ sap.ui.define([
 					}
 					if(this.TCNumber){
 						this.getView().bindElement({ 
-							path: "/offerHeaderSet('" + this.TCNumber + "')" 
+							path: "/offerHeaderSet('" + this.TCNumber + "')",
+							events: { dataReceived: this.dataReceived.bind(this) }
 						});
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						this.byId("tableApprove").setEnabled(true);
@@ -729,7 +730,6 @@ sap.ui.define([
 				var filterName = select.data("filterName");
 				var filterSelect = this.byId(select.data("filter"));
 				var filter = new Filter(filterName, FilterOperator.EQ, newValue);
-				//console.log(filterSelect.getItems());
 				filterSelect.getBinding("items").filter(filter);
 				this.setSelectDefaultValue(newValue, filterSelect);
 			},

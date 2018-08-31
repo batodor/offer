@@ -53,10 +53,7 @@ sap.ui.define([
 				}catch(err){
 					console.log(err);
 				}
-				// 
-				MessageBox.error(
-					msg,
-					{
+				MessageBox.error(msg,{
 						id : "serviceErrorMessageBox",
 						details: sDetails,
 						styleClass: this._oComponent.getContentDensityClass(),
