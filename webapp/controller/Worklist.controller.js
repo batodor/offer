@@ -37,6 +37,7 @@ sap.ui.define([
 				this.addFragments(fragmentsArr);
 				
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
+				this.isRisk = {};
 			},
 			
 			// After offer loaded, sets the mode Create/Edit
@@ -238,6 +239,9 @@ sap.ui.define([
 				this.checkCountries(input);
 				this.checkLimits(input);
 				this.multi = true;
+				if(oEvent.getSource().getTokens().length === 0){
+					this.setInput(["requestBlacklist", "requestLimit", "requestRisk"], false, "Enabled");
+				}
 			},
 			
 			checkCountries: function(valueHelp){
@@ -251,10 +255,9 @@ sap.ui.define([
 				}
 				if(countries){
 					countries = countries.slice(0,-2);
-					text.setText(countries);
-					text.addStyleClass("red");
+					text.setText(countries).addStyleClass("red");
 				}else{
-					text.removeStyleClass("red");
+					text.setText(this.getResourceBundle().getText("none")).removeStyleClass("red");
 				}
 			},
 			
@@ -937,9 +940,9 @@ sap.ui.define([
 				this.byId("limitTonnage").setText(oResult.Tonnage + " " + oResult.TonnageUoM);
 				
 				if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
-					this.byId("requestLimit").setEnabled(false);
-				}else{
 					this.byId("requestLimit").setEnabled(true);
+				}else{
+					this.byId("requestLimit").setEnabled(false);
 				}
 			},
 			
@@ -956,11 +959,47 @@ sap.ui.define([
 			},
 			
 			// On Compliance Risks list update finished
-			checkRisks: function(oEvent){
+			checkRisk: function(oEvent){
+				var list = oEvent.getSource();
+				var risks = list.getItems();
+				if(risks.length > 0){
+					var type = list.data("type");
+					this.isRisk[type] = false;
+					if(type === "other"){
+						if(risks.length > 0){
+							this.isRisk[type] = true;
+						}
+					}else if(type === "main"){
+						for(var i = 0; i < risks.length; i++){
+							var color = risks[i].getContent()[0].getItems()[0].getColor();
+							if(color === "red" || color === "yellow"){
+								this.isRisk[type] = true;
+							}
+						}
+					}
+					if(this.isRisk.main || this.isRisk.other){
+						this.byId("requestRisk").setEnabled(true);
+					}else{
+						this.byId("requestRisk").setEnabled(false);
+					}
+				}
+			},
+			
+			// On Compliance Risks list update finished
+			checkBlacklist: function(oEvent){
 				var list = oEvent.getSource();
 				var counterparties = list.getItems();
+				var isBlacklist = false;
 				for(var i = 0; i < counterparties.length; i++){
-					var risks = counterparties[i].getContent()[0].getContent()[0].getItems()[2];
+					var blacklist = counterparties[i].getContent()[0].getContent()[0].getItems()[0].getItems()[1].getItems()[1].getText();
+					if(blacklist === "Blacklisted"){
+						isBlacklist = true;
+					}
+				}
+				if(isBlacklist){
+					this.byId("requestBlacklist").setEnabled(true);
+				}else{
+					this.byId("requestBlacklist").setEnabled(false);
 				}
 			}
 		});
