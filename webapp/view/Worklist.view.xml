@@ -82,8 +82,8 @@
 					<Page
 						id="p3"
 						title="{i18n>offerVolumePeriod}">
-						<List noDataText="{i18n>noData}" mode="SingleSelectMaster" id="volumesList" items="{ path: 'ToOfferVolume', templateShareable:true }" 
-							selectionChange="onListSelect">
+						<List noDataText="{i18n>noData}" updateFinished="onListUpdate" mode="SingleSelectMaster" id="volumesList" 
+							items="{ path: 'ToOfferVolume', templateShareable: false }" selectionChange="onListSelect">
 							<headerToolbar>
 								<Toolbar>
 									<Title text="{i18n>volumes}" titleStyle="H3" />

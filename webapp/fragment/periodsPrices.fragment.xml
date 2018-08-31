@@ -52,11 +52,11 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnage} ({i18n>min})" />
-						<Input type="Number" placeholder="0" value="{TonnageMin}" />
+						<Input change="count" custom:divide="true" custom:size="min" type="Number" placeholder="0" value="{TonnageMin}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnage} ({i18n>max})" />
-						<Input type="Number" placeholder="0" value="{TonnageMax}" />
+						<Input change="count" custom:divide="true" custom:size="max" type="Number" placeholder="0" value="{TonnageMax}" />
 					</VBox>
 				</HBox>
 				

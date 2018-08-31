@@ -154,7 +154,6 @@ sap.ui.define([
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
 				if(id === "counterpartyPopup"){
 					var tokens = this.byId("counterparty").getTokens();
-					var countries = "";
 				}
 				for(var i = 0; i < items.length; i++){
 					var item = items[i];
@@ -165,10 +164,8 @@ sap.ui.define([
 							key: data.Code,
 							text: data.Name
 						});
+						token.data("country", data.Country);
 						tokens.push(token);
-						if(data.Country){
-							countries = countries + data.Country + ", ";
-						}
 						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
 						var value = data.hasOwnProperty("Name") ? data.Name : data[key];
@@ -178,12 +175,6 @@ sap.ui.define([
 				}
 				if(id === "counterpartyPopup"){
 					valueHelp.setTokens(tokens);
-					var countriesText = this.byId("countriesSanction");
-					if(countries){
-						countriesText.setText(countries.slice(0,-2)).addStyleClass("red");
-					}else{
-						countriesText.removeStyleClass("red");
-					}
 				}
 				this[id + "Dialog"].close();
 			},
@@ -244,8 +235,27 @@ sap.ui.define([
 				if(this.multi){
 					this.getRisks(input);
 				}
+				this.checkCountries(input);
 				this.checkLimits(input);
 				this.multi = true;
+			},
+			
+			checkCountries: function(valueHelp){
+				var text = this.byId("countriesSanction");
+				var countries = '';
+				var tokens = valueHelp.getTokens();
+				for(var i = 0; i < tokens.length; i++){
+					if(tokens[i].data("country")){
+						countries = countries + tokens[i].data("country") + ", ";
+					}
+				}
+				if(countries){
+					countries = countries.slice(0,-2);
+					text.setText(countries);
+					text.addStyleClass("red");
+				}else{
+					text.removeStyleClass("red");
+				}
 			},
 			
 			// Next page function
@@ -332,6 +342,7 @@ sap.ui.define([
 						TCPosition.setValue("");
 					}
 					list.addItem(clone);
+					list.fireUpdateFinished();
 				}
 				this.checkLimits();
 			},
@@ -826,21 +837,43 @@ sap.ui.define([
 			},
 			
 			openMail: function(oEvent){
-				//var counterParty = oEvent.getSource().data("key");
-				window.open("mailto:");
+				var type = oEvent.getSource().data("type");
+				var oFuncParams = {
+					TCNumber: this.byId("TCNumber").getValue(),
+					RequestType: type
+				};
+				this.getModel().callFunction("/RequestUpdates", {
+					method: "POST",
+					urlParameters: oFuncParams,
+					success: this.onRequestSuccess.bind(this, "RequestUpdates")
+				});
+			},
+			onRequestSuccess: function(link, oData) {
+				var oResult = oData[link];
+				if(oResult.RequestSuccessful){
+					window.open("mailto:?subject=" + oResult.SubjectMail  + "&body=" + oResult.BodyMail);
+				}else{
+					MessageBox.error(oResult.Message);
+				}
 			},
 			
 			count: function(oEvent){
 				var input = oEvent.getSource();
 				var size = input.data("size");
+				var divide = input.data("divide");
 				var vboxArr = size ? input.getParent().getParent().getParent().getItems() : input.getParent().getItems();
 				var shipNumber = vboxArr[3].getValue();
-				var shipMin = vboxArr[4].getItems()[0].getItems()[1].getValue();
-				var shipMax = vboxArr[4].getItems()[1].getItems()[1].getValue();
+				var shipMin = vboxArr[4].getItems()[0].getItems()[1];
+				var shipMax = vboxArr[4].getItems()[1].getItems()[1];
 				var tonMin = vboxArr[6].getItems()[0].getItems()[1];
 				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
-				tonMin.setValue(shipNumber*shipMin);
-				tonMax.setValue(shipNumber*shipMax);
+				if(divide){
+					shipMin.setValue(Math.round(tonMin.getValue()/shipNumber));
+					shipMax.setValue(Math.round(tonMax.getValue()/shipNumber));
+				}else{
+					tonMin.setValue(shipNumber*shipMin.getValue());
+					tonMax.setValue(shipNumber*shipMax.getValue());
+				}
 				this.checkLimits();
 			},
 			
@@ -902,6 +935,33 @@ sap.ui.define([
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition);
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
 				this.byId("limitTonnage").setText(oResult.Tonnage + " " + oResult.TonnageUoM);
+				
+				if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
+					this.byId("requestLimit").setEnabled(false);
+				}else{
+					this.byId("requestLimit").setEnabled(true);
+				}
+			},
+			
+			// On Volumes list update finished
+			// for nullifying tcPosition after copying
+			onListUpdate: function(oEvent){
+				var list = oEvent.getSource();
+				if(!oEvent.getParameters("reason").hasOwnProperty("reason")){
+					var periods = list.getItems()[1].getContent()[0].getContent()[1].getItems();
+					for(var i = 0; i < periods.length; i++){
+						periods[i].getContent()[0].getContent()[0].getItems()[0].setValue("");
+					}
+				}
+			},
+			
+			// On Compliance Risks list update finished
+			checkRisks: function(oEvent){
+				var list = oEvent.getSource();
+				var counterparties = list.getItems();
+				for(var i = 0; i < counterparties.length; i++){
+					var risks = counterparties[i].getContent()[0].getContent()[0].getItems()[2];
+				}
 			}
 		});
 	}

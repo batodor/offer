@@ -7,7 +7,7 @@
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<List noDataText="{i18n>noData}" id="risks" class="listText" items="{ path: 'ToOfferCounterparty', templateShareable: false }">
+			<List noDataText="{i18n>noData}" updateFinished="checkRisks" id="risks" class="listText" items="{ path: 'ToOfferCounterparty', templateShareable: false }">
 				<CustomListItem>
 					<Panel expandable="true" expanded="true" width="auto">
 						<headerToolbar>
@@ -51,7 +51,7 @@
 				<Title text="{i18n>limits}" titleStyle="H3"/>
 			</OverflowToolbar>
 			<VBox id="limits">
-				<Label class="topLabel" text="{i18n>paymentTerms}" />
+				<Label class="topLabel" text="{i18n>paymentCondition}" />
 				<HBox width="100%">
 					<core:Icon class="marginRight" id="limitPaymentConditionIcon" />
 					<Text id="limitPaymentCondition" text="{i18n>none}" />
@@ -90,9 +90,9 @@
 				<Title text="{i18n>requestUpdates}" titleStyle="H3"/>
 			</OverflowToolbar>
 			<HBox alignContent="Center" justifyContent="SpaceBetween" width="100%">
-				<Button text="{i18n>blacklist}" width="100px" press="openMail" />
-				<Button text="{i18n>limits}" width="100px" press="openMail" />
-				<Button text="{i18n>risks}" width="100px" press="openMail" />
+				<Button id="requestBlacklist" text="{i18n>blacklist}" enabled="false" custom:type="B" width="100px" press="openMail" />
+				<Button id="requestLimit" text="{i18n>limits}" enabled="false" custom:type="L" width="100px" press="openMail" />
+				<Button id="requestRisk" text="{i18n>risks}" enabled="false" custom:type="R" width="100px" press="openMail" />
 			</HBox>
 		</content>
 	</Panel>

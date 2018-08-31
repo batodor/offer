@@ -34,7 +34,10 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>status}" />
-						<Input enabled="false" value="{Status}" />
+						<Select custom:name="Status" id="status" selectedKey="{Status}" forceSelection="false" width="100%" enabled="false"
+							items="{ path: '/dictionaryStatusSet', sorter: { path: 'Name' } }">
+							<core:Item key="{Code}" text="{Name}"/>
+						</Select>
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>variantNumber}" />
@@ -55,7 +58,7 @@
 					tokens="{ path: 'ToOfferCounterparty' }"
 					valueHelpRequest="handleValueHelp">
 					<tokens>
-						<Token key="{Code}" text="{Name}" />
+						<Token key="{Code}" text="{Name}" custom:country="{Country}" />
 					</tokens>
 				</MultiInput>
 				<Label required="true" class="topLabel" text="{i18n>productType}" />
