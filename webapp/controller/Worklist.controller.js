@@ -935,7 +935,7 @@ sap.ui.define([
 				this.byId("limitPaymentConditionIcon").setColor(oResult.PaymentExceed ? "red" : "green").setSrc(oResult.PaymentExceed ? 'sap-icon://alert' : 'sap-icon://accept');
 				this.byId("limitPeriodIcon").setColor(oResult.PeriodExceed ? "red" : "green").setSrc(oResult.PeriodExceed ? 'sap-icon://alert' : 'sap-icon://accept');
 				this.byId("limitTonnageIcon").setColor(oResult.TonnageExceed ? "red" : "green").setSrc(oResult.TonnageExceed ? 'sap-icon://alert' : 'sap-icon://accept');
-				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition);
+				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
 				this.byId("limitTonnage").setText(oResult.Tonnage + " " + oResult.TonnageUoM);
 				
@@ -1001,6 +1001,11 @@ sap.ui.define([
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
 				}
+			},
+			
+			gotoLink: function(oEvent){
+				var id = oEvent.getSource().data("id");
+				window.open("/sap/bc/ui2/flp#ZTS_BUSINESS_PARTNER-display&/CounterpartyHeaderSet/" + id);
 			}
 		});
 	}

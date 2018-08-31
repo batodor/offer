@@ -15,6 +15,7 @@
 							<Toolbar height="3rem">
 								<Title text="{Name}" />
 								<ToolbarSpacer />
+								<Link text="{i18n>details}" custom:id="{Code}" press="gotoLink" />
 							</Toolbar>
 						</headerToolbar>
 						<content>
