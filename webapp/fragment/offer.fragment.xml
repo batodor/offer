@@ -86,7 +86,7 @@
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>meansOfTransport}" />
-				<Select custom:key="meansOfTransport" selectedKey="{MeansOfTransport}" forceSelection="false" width="100%"
+				<Select custom:key="meansOfTransport" id="meansOfTransport" selectedKey="{MeansOfTransport}" forceSelection="false" width="100%"
 					items="{ path: '/dictionaryMeansOfTransportSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>

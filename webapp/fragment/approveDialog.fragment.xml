@@ -15,9 +15,7 @@
 						</Select>
 					</VBox>
 				</HBox>
-				
-				
-				<Label class="topLabel" text="{i18n>enterComments}" />
+				<Label class="topLabel noWrapping" text="{i18n>enterComments}" />
 				<TextArea value="{Comment}" id="approveComment" rows="6" width="100%" />
 				<Label class="topLabel" text="{i18n>attachments}" />
 				<Table id="approveUpload" custom:id="approveUpload" select="onAttachmentSelect" mode="MultiSelect" includeItemInSelection="true" 

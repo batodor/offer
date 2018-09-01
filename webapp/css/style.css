@@ -13,6 +13,11 @@
 .heightAuto .sapMLIB{
 	height: auto;
 }
+.noWrapping{
+	white-space: normal;
+	line-height: normal;
+	vertical-align: middle;
+}
 .listText .sapMListNoData{
 	justify-content: start;
 	padding: 0 !important;
