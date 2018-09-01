@@ -83,7 +83,7 @@
 						id="p3"
 						title="{i18n>offerVolumePeriod}">
 						<List noDataText="{i18n>noData}" updateFinished="onListUpdate" mode="SingleSelectMaster" id="volumesList" 
-							items="{ path: 'ToOfferVolume', templateShareable: false }" selectionChange="onListSelect">
+							items="{ path: 'ToOfferVolume', templateShareable: true }" selectionChange="onListSelect">
 							<headerToolbar>
 								<Toolbar>
 									<Title text="{i18n>volumes}" titleStyle="H3" />

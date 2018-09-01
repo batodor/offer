@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Dialog title="{i18n>port}" stretch="true" class="sapUiContentPadding" id="portPopupDialog">
+	<Dialog title="{i18n>deliveryPoint}" stretch="true" class="sapUiContentPadding" id="portPopupDialog">
 		<content>
 			<l:BlockLayout>
 				<l:BlockLayoutRow>

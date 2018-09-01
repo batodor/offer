@@ -21,7 +21,7 @@
 					</VBox>
 				</HBox>
 				
-				<Label class="topLabel" text="{i18n>numberOfShipments}" />
+				<Label required="true" class="topLabel" text="{i18n>numberOfShipments}" />
 				<StepInput change="count" min="0" max="100" custom:key="numberOfShipments" custom:string="true" textAlign="Center" value="{NumberOfShipments}" />
 				
 				<HBox justifyContent="SpaceBetween">
@@ -43,7 +43,7 @@
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>shipmentToleranceUom}" />
 						<Select forceSelection="false" custom:name="ShipmentToleranceUOM" selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }"
-							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable: true }" width="100%">
 							<core:Item key="{Code}" text="{Code}"/>
 						</Select>
 					</VBox>
@@ -68,7 +68,7 @@
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnageToleranceUom}" />
 						<Select forceSelection="false" custom:name="TonnageToleranceUOM" selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }"
-							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable:false }" width="100%">
+							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable: true }" width="100%">
 							<core:Item key="{Code}" text="{Code}"/>
 						</Select>
 					</VBox>
