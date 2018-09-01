@@ -27,7 +27,12 @@
 									</VBox>
 									<VBox class="rightVBoxStyle" width="50%">
 										<Label class="topLabel" text="{i18n>status}" />
-										<Text class="{= ${BlackList} ? 'red' : '' }" text="{= ${BlackList} ? ${i18n>blacklisted} : ${i18n>notBlacklisted} }" />
+										<Text text="{= ${BlackList} ? ${i18n>blacklisted} : ${i18n>notBlacklisted} }">
+											<customData>
+										    	<core:CustomData key="class" value="red"
+											      writeToDom="{BlackList}"/>
+											</customData>
+										</Text>
 									</VBox>
 								</HBox>
 								<Label class="topLabel" text="{i18n>risks}" />

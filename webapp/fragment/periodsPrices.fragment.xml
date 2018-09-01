@@ -22,7 +22,7 @@
 				</HBox>
 				
 				<Label class="topLabel" text="{i18n>numberOfShipments}" />
-				<StepInput change="count" min="0" max="100" custom:string="true" textAlign="Center" value="{NumberOfShipments}" />
+				<StepInput change="count" min="0" max="100" custom:key="numberOfShipments" custom:string="true" textAlign="Center" value="{NumberOfShipments}" />
 				
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">

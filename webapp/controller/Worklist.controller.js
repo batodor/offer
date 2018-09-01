@@ -592,7 +592,7 @@ sap.ui.define([
 						var period = periods[j].getContent()[0].getContent()[0];
 						var periodData = this.getData(period);
 						allVolumeData.ToOfferPeriod.push(periodData);
-						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo"]);
+						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo", "NumberOfShipments"]);
 						if(checkPeriods && oData.check){
 							oData.check = oData.check.slice(0,-1) + " and ";
 						}
@@ -720,8 +720,10 @@ sap.ui.define([
 			checkDataInner: function(oData, keyArr){
 				var check = "";
 				for(var key in oData){
-					if(keyArr.indexOf(key) > -1 && !oData[key]){
-						check = check + key + ",";
+					if(keyArr.indexOf(key) > -1 ){
+						if(!oData[key] || oData[key] === "0" || oData[key] === "0.00"){
+							check = check + key + ",";
+						}
 					}
 				}
 				if(check){
@@ -952,7 +954,7 @@ sap.ui.define([
 				this.byId("limitTonnageIcon").setColor(oResult.TonnageExceed ? "red" : "green").setSrc(oResult.TonnageExceed ? 'sap-icon://alert' : 'sap-icon://accept');
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
-				this.byId("limitTonnage").setText(oResult.Tonnage + " " + oResult.TonnageUoM);
+				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " " + oResult.TonnageUoM);
 				
 				if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
 					this.byId("requestLimit").setEnabled(true);

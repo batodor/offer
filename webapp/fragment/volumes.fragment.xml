@@ -57,7 +57,7 @@
 						visible="{= ${PriceType} ? true : false }" 
 						class="rightVBoxStyle"
 						width="50%">
-						<Label required="true" class="topLabel" text="{i18n>indexFormula}" />
+						<Label required="true" class="topLabel noWrapping" text="{i18n>indexFormula}" />
 						<Input custom:key="indexFormula" value="{IndexFormula}" />
 					</VBox>
 					<VBox 
