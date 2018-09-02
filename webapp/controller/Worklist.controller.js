@@ -76,6 +76,13 @@ sap.ui.define([
 					});
 					if(oEvent.getParameters("data").data){
 						this.byId("navCon").to(this.byId("p2"));
+						var status = oEvent.getParameters("data").data.Status;
+						if(status === "1" || status === "6" || status === "7"){
+							this.setDisabled(["pageOfferDetails", "parameters"]);
+							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
+								"uploadDelete", "uploadHbox"], false, "Visible");
+							this.status = status;
+						}
 					}
 				}
 			},
@@ -197,7 +204,6 @@ sap.ui.define([
 					AttachList: attachList,
 					GlobalTrader: sap.ui.getCore().byId("approveTrader").getSelectedKey()
 				};
-				console.log(oFuncParams);
 				this.getModel().callFunction("/SentOfferToApproval", {
 					method: "POST",
 					urlParameters: oFuncParams,
@@ -208,6 +214,8 @@ sap.ui.define([
 				var oResult = oData[link];
 				if (oResult.ActionSuccessful) {
 					MessageToast.show(oResult.Message);
+					this.getModel().refresh(true);
+					this.approveDialog.close();
 				} else {
 					MessageBox.error(oResult.Message);
 				}
@@ -321,8 +329,11 @@ sap.ui.define([
 						titleValue.setValue(length);
 					}
 					// Adds automatically the period too
+					var periodList = fragmentClone.getContent()[1];
 					var addButton = fragmentClone.getContent()[1].getHeaderToolbar().getContent()[2];
-					addButton.firePress();
+					periodList.attachEventOnce("updateFinished", function(e){
+						addButton.firePress();
+					}, this);
 				}
 				var newItem = new sap.m.CustomListItem();
 				newItem.addContent(fragmentClone);
@@ -347,6 +358,15 @@ sap.ui.define([
 							title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
 							titleValue.setValue(length);
 						}
+						// Nullifying TCPositions in copied volume
+						var periodList = clone.getContent()[0].getContent()[1];
+						periodList.attachEventOnce("updateFinished", function(e){
+							var periods = periodList.getItems();
+							for(var i = 0; i < periods.length; i++){
+								var TCPosition = periods[i].getContent()[0].getContent()[0].getItems()[0];
+								TCPosition.setValue("");
+							}
+						}, this);
 					}
 					if(id === "periodsPrices"){
 						var TCPosition = clone.getContent()[0].getContent()[0].getItems()[0];
@@ -409,7 +429,6 @@ sap.ui.define([
 					}else{
 						check = check +  this.checkKeysInner(input);
 					}
-					
 				}
 				return check;
 			},
@@ -963,18 +982,6 @@ sap.ui.define([
 				}
 			},
 			
-			// On Volumes list update finished
-			// for nullifying tcPosition after copying
-			onListUpdate: function(oEvent){
-				var list = oEvent.getSource();
-				if(!oEvent.getParameters("reason").hasOwnProperty("reason")){
-					var periods = list.getItems()[1].getContent()[0].getContent()[1].getItems();
-					for(var i = 0; i < periods.length; i++){
-						periods[i].getContent()[0].getContent()[0].getItems()[0].setValue("");
-					}
-				}
-			},
-			
 			// On Compliance Risks list update finished
 			checkRisk: function(oEvent){
 				var list = oEvent.getSource();
@@ -1023,6 +1030,43 @@ sap.ui.define([
 			gotoLink: function(oEvent){
 				var id = oEvent.getSource().data("id");
 				window.open("/sap/bc/ui2/flp#ZTS_BUSINESS_PARTNER-display&/CounterpartyHeaderSet/" + id);
+			},
+			
+			// Sets disabled object/array inside inputs
+			setDisabled: function(objArr){
+				var inputs = this.getInputs(objArr);
+				for(var i = 0; i < inputs.length; i++){
+					var input = inputs[i];
+					if(input["sId"].indexOf('hbox') > -1){
+						var vboxes = input.getItems();
+						for(var j = 0; j < vboxes.length; j++){
+							this.setDisabledInner(vboxes[j].getItems()[1]);
+						}
+					}else{
+						this.setDisabledInner(input);
+					}
+					
+				}
+			},
+			
+			setDisabledInner: function(input){
+				for(var i = 0; i < this.typeArr.length; i++){
+					if(input["mBindingInfos"].hasOwnProperty(this.typeArr[i]) || input.hasOwnProperty("_tokenizer")){
+						input.setEnabled(false);
+					}
+				}
+			},
+			
+			onVolumesPeriodsLoaded: function(oEvent){
+				// Disabled volumes and periods if status is defined as 1, 6 or 7
+				if(this.status){
+					var list = oEvent.getSource();
+					var volumes = list.getItems();
+					list.setMode("None");
+					for(var i = 0; i < volumes.length; i++){
+						this.setDisabled(volumes[i].getContent()[0].getContent()[0]);
+					}
+				}
 			}
 		});
 	}

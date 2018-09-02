@@ -41,7 +41,7 @@
 									custom:check="true"
 									custom:edit="true"
 									custom:id="offerIdVbox"
-									press="nextPage" text="{i18n>enter}" />
+									press="nextPage" text="{i18n>open}" />
 							</Toolbar>
 						</footer>
 					</Page>
@@ -82,7 +82,7 @@
 					<Page
 						id="p3"
 						title="{i18n>offerVolumePeriod}">
-						<List noDataText="{i18n>noData}" updateFinished="onListUpdate" mode="SingleSelectMaster" id="volumesList" 
+						<List noDataText="{i18n>noData}" updateFinished="onVolumesPeriodsLoaded" custom:id="volume" mode="SingleSelectMaster" id="volumesList" 
 							items="{ path: 'ToOfferVolume', templateShareable: true }" selectionChange="onListSelect">
 							<headerToolbar>
 								<Toolbar>

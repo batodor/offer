@@ -10,7 +10,9 @@
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label text="{i18n>trader}" />
 						<Select forceSelection="true" id="approveTrader" selectedKey="{Trader}" width="100%" 
-							items="{ path: '/dictionaryTraderSet', sorter: { path: 'Name' } }">
+							items="{ path: '/dictionaryTraderSet',
+									 parameters: { custom: { Type: 'A' } },
+									 sorter: { path: 'Name' } }">
 							<core:Item key="{Code}" text="{Name}"/>
 						</Select>
 					</VBox>
