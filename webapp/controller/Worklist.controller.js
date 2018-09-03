@@ -53,6 +53,9 @@ sap.ui.define([
 							path: "/offerHeaderSet('" + this.TCNumber + "')",
 							events: { dataReceived: this.dataReceived.bind(this) }
 						});
+						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
+						this.byId("tableApprove").setEnabled(true);
+						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox"], true, "Visible");
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -73,10 +76,6 @@ sap.ui.define([
 							that.filterSelect();
 						});
 					}else{
-						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
-						this.byId("tableApprove").setEnabled(true);
-						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox"], true, "Visible");
-						
 						this.byId("navCon").to(this.byId("p2"));
 						var status = oEvent.getParameters("data").data.Status;
 						if(status === "1" || status === "6" || status === "7"){

@@ -7,7 +7,7 @@
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<List noDataText="{i18n>noData}" updateFinished="checkBlacklist" id="risks" class="listText" 
+			<List noDataText="{i18n>none}" updateFinished="checkBlacklist" id="risks" class="listText" 
 				items="{ path: 'ToOfferCounterparty', templateShareable: false }">
 				<CustomListItem>
 					<Panel expandable="true" expanded="true" width="auto">
