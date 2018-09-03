@@ -53,9 +53,6 @@ sap.ui.define([
 							path: "/offerHeaderSet('" + this.TCNumber + "')",
 							events: { dataReceived: this.dataReceived.bind(this) }
 						});
-						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
-						this.byId("tableApprove").setEnabled(true);
-						this.setInput(["uploadDownload", "uploadDelete", "uploadVbox"], true, "Visible");
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -71,10 +68,15 @@ sap.ui.define([
 			dataReceived: function(oEvent){
 				var that = this;
 				if(this.TCNumber){
-					setTimeout(function(){
-						that.filterSelect();
-					});
-					if(oEvent.getParameters("data").data){
+					if(oEvent.getParameters("data").data.results){
+						setTimeout(function(){
+							that.filterSelect();
+						});
+					}else{
+						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
+						this.byId("tableApprove").setEnabled(true);
+						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox"], true, "Visible");
+						
 						this.byId("navCon").to(this.byId("p2"));
 						var status = oEvent.getParameters("data").data.Status;
 						if(status === "1" || status === "6" || status === "7"){
@@ -876,7 +878,9 @@ sap.ui.define([
 			},
 			
 			openMail: function(oEvent){
-				var type = oEvent.getSource().data("type");
+				var button = oEvent.getSource();
+				var type = button.data("type");
+				button.setEnabled(false);
 				var oFuncParams = {
 					TCNumber: this.byId("TCNumber").getValue(),
 					RequestType: type
@@ -1062,9 +1066,16 @@ sap.ui.define([
 				if(this.status){
 					var list = oEvent.getSource();
 					var volumes = list.getItems();
+					var id = list.data("id");
 					list.setMode("None");
 					for(var i = 0; i < volumes.length; i++){
 						this.setDisabled(volumes[i].getContent()[0].getContent()[0]);
+						if(id === "volume"){
+							var toolbar = volumes[i].getContent()[0].getContent()[1].getHeaderToolbar().getContent();
+							for(var j = 0; j < toolbar.length; j++){
+								toolbar[j].setVisible(false);
+							}
+						}
 					}
 				}
 			}

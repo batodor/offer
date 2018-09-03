@@ -65,13 +65,13 @@
 						class="rightVBoxStyle"
 						width="50%">
 						<Label required="true" class="topLabel" text="{i18n>offerPriceForBase}" />
-						<Input custom:key="offerPriceForBase" type="Number" placeholder="0" value="{OfferPriceBaseRoute}" />
+						<Input custom:key="offerPriceForBase" type="Number" placeholder="0"	value="{OfferPriceBaseRoute}" />
 					</VBox>
 				</HBox>
 				<Label class="topLabel" required="true" text="{i18n>offerPrice}" />
 				<Input type="Number" custom:key="offerPrice" value="{FixPrice}" />
 				<HBox justifyContent="SpaceBetween">
-					<VBox class="leftVBoxStyle" width="50%">
+					<VBox class="leftVBoxStyle" width="50%">         
 						<Label class="topLabel" text="{i18n>cv}" />
 						<Input value="{CV}" placeholder="0" type="Number" />
 					</VBox>
