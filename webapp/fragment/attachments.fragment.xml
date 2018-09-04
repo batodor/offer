@@ -25,7 +25,7 @@
 						</u:headerParameters>
 					</u:FileUploader>
 				</VBox>
-				<VBox class="rightVBoxStyle" alignContent="End" justifyContent="Center" visible="false" width="30%">
+				<VBox class="rightVBoxStyle" alignContent="End" justifyContent="Center" width="30%">
 					<Button class="topLabel" id="uploadButton" enabled="false" custom:id="upload" press="upload" width="100%" text="{i18n>upload}" />
 				</VBox>
 			</HBox>
