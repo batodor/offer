@@ -71,11 +71,7 @@ sap.ui.define([
 			dataReceived: function(oEvent){
 				var that = this;
 				if(this.TCNumber){
-					if(oEvent.getParameters("data").data.results){
-						setTimeout(function(){
-							that.filterSelect();
-						});
-					}else{
+					if(oEvent.getParameters("data").data.TCNumber){
 						this.byId("navCon").to(this.byId("p2"));
 						var status = oEvent.getParameters("data").data.Status;
 						if(status === "1" || status === "6" || status === "7"){
@@ -85,6 +81,9 @@ sap.ui.define([
 							this.status = status;
 						}
 					}
+					setTimeout(function(){
+						that.filterSelect();
+					});
 				}
 			},
 			
