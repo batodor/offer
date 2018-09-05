@@ -42,8 +42,9 @@
 					custom:data="{DeliveryPoint}"
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
-					showSuggestion="true"
 					suggest="handleSuggest"
+					showSuggestion="true"
+					suggestionItemSelected="suggestionItemSelected"
 					value="{DeliveryPointName}"
 					suggestionItems="{ path: '/dictionaryDeliveryPointSet', templateShareable:false }">
 					<suggestionItems>

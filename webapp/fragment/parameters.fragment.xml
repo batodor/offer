@@ -32,7 +32,16 @@
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
 					value="{Currency}"
-					placeholder="USD" width="100%" />
+					placeholder="USD" width="100%"
+					suggest="handleSuggest"
+					custom:select="Name"
+					showSuggestion="true"
+					suggestionItemSelected="suggestionItemSelected"
+					suggestionItems="{ path: '/dictionaryCurrencySet', templateShareable:false }">
+					<suggestionItems>
+						<core:Item key="{Code}" text="{Name}" />
+					</suggestionItems>
+				</Input>
 				<Label class="topLabel" text="{i18n>volumeUom}" />
 				<Input 
 					custom:id="volumeUomPopup"

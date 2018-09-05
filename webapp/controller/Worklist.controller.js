@@ -333,11 +333,11 @@ sap.ui.define([
 						titleValue.setValue(length);
 					}
 					// Adds automatically the period too
-					var periodList = fragmentClone.getContent()[1];
-					var addButton = fragmentClone.getContent()[1].getHeaderToolbar().getContent()[2];
-					periodList.attachEventOnce("updateFinished", function(e){
-						addButton.firePress();
-					}, this);
+					// var periodList = fragmentClone.getContent()[1];
+					// var addButton = fragmentClone.getContent()[1].getHeaderToolbar().getContent()[2];
+					// periodList.attachEventOnce("updateFinished", function(e){
+					// 	addButton.firePress();
+					// }, this);
 				}
 				var newItem = new sap.m.CustomListItem();
 				newItem.addContent(fragmentClone);
@@ -552,6 +552,11 @@ sap.ui.define([
 					aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.StartsWith, sTerm));
 				}
 				oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
+			},
+			suggestionItemSelected: function(oEvent){
+				var valueHelp = oEvent.getSource();
+				var item = oEvent.getParameters("selectedItem");
+				valueHelp.setValue(item.getKey());
 			},
 			
 			// Gete inputs from array of ids or directly from object
