@@ -556,7 +556,7 @@ sap.ui.define([
 			suggestionItemSelected: function(oEvent){
 				var valueHelp = oEvent.getSource();
 				var item = oEvent.getParameters("selectedItem");
-				valueHelp.setValue(item.getKey());
+				valueHelp.setValue(item.selectedItem.getText()).data("data", item.selectedItem.getKey());
 			},
 			
 			// Gete inputs from array of ids or directly from object

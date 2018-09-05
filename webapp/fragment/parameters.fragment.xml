@@ -34,7 +34,6 @@
 					value="{Currency}"
 					placeholder="USD" width="100%"
 					suggest="handleSuggest"
-					custom:select="Name"
 					showSuggestion="true"
 					suggestionItemSelected="suggestionItemSelected"
 					suggestionItems="{ path: '/dictionaryCurrencySet', templateShareable:false }">
