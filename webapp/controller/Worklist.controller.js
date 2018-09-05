@@ -197,10 +197,14 @@ sap.ui.define([
 					attachList = attachList + this.getModel().getData(uploadItems[i].getBindingContextPath()).FileGUID + ";";
 				}
 				attachList = attachList.slice(0,-1);
+				var dUTCDate = sap.ui.getCore().byId("approvalValidityDateTime").getDateValue();
+				// Consider selected date as UTC date
+				dUTCDate.setMinutes(dUTCDate.getMinutes() + (-dUTCDate.getTimezoneOffset()));
 				var oFuncParams = { 
 					TCNumber: this.TCNumber,
 					Comment: sap.ui.getCore().byId("approveComment").getValue(),
-					ValidityDate: sap.ui.getCore().byId("approveValidityDate").getDateValue(),
+					ValidityDate: dUTCDate,
+					ValidityTimeZone: sap.ui.getCore().byId("approvalValidityTimeZone").getSelectedKey(),
 					AttachList: attachList,
 					GlobalTrader: sap.ui.getCore().byId("approveTrader").getSelectedKey()
 				};

@@ -3,11 +3,18 @@
 		<content>
 			<VBox>
 				<HBox justifyContent="SpaceBetween">
-					<VBox class="leftVBoxStyle" width="50%">
+					<VBox class="leftVBoxStyle" width="40%">
 						<Label text="{i18n>validityDate}" />
-						<DatePicker dateValue="{ValidityDate}" id="approveValidityDate"  />
+						<DateTimePicker dateValue="{ValidityDate}" id="approvalValidityDateTime"/>
 					</VBox>
-					<VBox class="rightVBoxStyle" width="50%">
+					<VBox class="leftVBoxStyle" width="20%">
+						<Label text="{i18n>validityDateTimeZone}" />
+						<Select forceSelection="true" id="approvalValidityTimeZone" width="100%" 
+							items="{/dictionaryTimeZoneSet}">
+							<core:Item key="{TimeZoneCode}" text="{TimeZoneName}"/>
+						</Select>
+					</VBox>
+					<VBox class="rightVBoxStyle" width="40%">
 						<Label text="{i18n>trader}" />
 						<Select forceSelection="true" id="approveTrader" selectedKey="{Trader}" width="100%" 
 							items="{ path: '/dictionaryTraderSet',
