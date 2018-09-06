@@ -1,0 +1,35 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Dialog title="{i18n>offers}" class="sapUiContentPadding" id="offerPopupDialog">
+		<content>
+			<Table mode="SingleSelectLeft" includeItemInSelection="true" id="offerPopup" custom:id="offerPopup" items="{}" select="onTableSelect" width="500px" 
+				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false"
+				busyIndicatorDelay="{detailView>/lineItemTableDelay}" class="sapUiResponsiveMargin">
+				<headerToolbar>
+					<Toolbar class="white">
+						<SearchField placeholder="{i18n>code}" custom:id="offerPopup" custom:key="Code" showSearchButton="true" 
+							search="triggerSearch" width="100%" id="offerPopupCodeFilter" />
+						<ToolbarSpacer/>
+						<SearchField placeholder="{i18n>name}" custom:id="offerPopup" custom:operator="Contains" custom:key="Name" showSearchButton="true" 
+							search="triggerSearch" width="100%" id="offerPopupNameFilter" />
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column><Text class="black" text="{i18n>code}"/></Column>
+					<Column><Text class="black" text="{i18n>name}"/></Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{TCNumber}"/>
+							<Text text="{PartnerName}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+		<buttons>
+			<Button text="{i18n>cancel}" custom:id="offerPopup" type="Back" press="dialogCancel"/>
+			<Button text="{i18n>select}" custom:id="offerPopup" custom:key="TCNumber" type="Accept" id="offerPopupSelect" enabled="false" press="dialogSelect"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

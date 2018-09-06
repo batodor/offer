@@ -33,7 +33,8 @@ sap.ui.define([
 				this.typeArr = ["value", "dateValue", "selectedKey", "selected", "state", "tokens"];
 				
 				// Add fragments
-				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "volumes", "periodsPrices", "approveDialog" ];
+				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "volumes", "periodsPrices", "approveDialog",
+					"offerPopupDialog"];
 				this.addFragments(fragmentsArr);
 				
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
@@ -93,49 +94,62 @@ sap.ui.define([
 			
 			// Main save offer function, also runned for creating and saving existing offer
 			saveOffer: function(oEvent){
-				var button = oEvent.getSource();
-				var objectsArr = button.data("blocks").split(',');
-				var offerData = this.getData(objectsArr);
-				var volumeDataAndCheck = this.getVolumeData();
-				if(volumeDataAndCheck.check){
-					var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-4);
-					this.alert(msg);
+				if(this.status && this.status === "7"){
+					var oFuncParams = { 
+						TCNumber: this.TCNumber,
+						TextID: "ZCMD",
+						TextLine: this.byId("comment").getValue()
+					};
+					this.getModel().callFunction("/ChangeOfferTexts", {
+						method: "POST",
+						urlParameters: oFuncParams,
+						success: this.onApproveSuccess.bind(this, "ChangeOfferTexts")
+					});
 				}else{
-					this.setInput(["saveOffer1","saveOffer2"], false, "Enabled");
-					var model = button.getModel();
-					var allData = this.mergeObjects(offerData,volumeDataAndCheck.data);
-					var uploader = this.byId("upload");
-					var settings = {};
-					var msg = ''; 
-					var that = this;
-					if(allData.TCNumber === "$$00000001"){
-						msg = that.getResourceBundle().getText("offerCreated");
+					var button = oEvent.getSource();
+					var objectsArr = button.data("blocks").split(',');
+					var offerData = this.getData(objectsArr);
+					var volumeDataAndCheck = this.getVolumeData();
+					if(volumeDataAndCheck.check){
+						var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-4);
+						this.alert(msg);
 					}else{
-						msg = this.getResourceBundle().getText("offerSaved");
-					}
-					console.log(allData);
-					settings.success = function(response){
-						that.alert(msg + " " + response.TCNumber, {
-							actions: [sap.m.MessageBox.Action.CLOSE],
-							onClose: function(sAction){
-								if(allData.TCNumber === "$$00000001"){
-									that.getRouter().navTo("worklist", {
-										TCNumber: response.TCNumber
-									});
-								}
-							} 
-						});
-						if(uploader.getValue()){
-							var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
-							uploader.setUploadUrl(uploadUrl);
-							uploader.upload();
+						this.setInput(["saveOffer1","saveOffer2"], false, "Enabled");
+						var model = button.getModel();
+						var allData = this.mergeObjects(offerData,volumeDataAndCheck.data);
+						var uploader = this.byId("upload");
+						var settings = {};
+						var msg = ''; 
+						var that = this;
+						if(allData.TCNumber === "$$00000001"){
+							msg = that.getResourceBundle().getText("offerCreated");
+						}else{
+							msg = this.getResourceBundle().getText("offerSaved");
 						}
-						that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
-					};
-					settings.error = function(){
-						that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
-					};
-					model.create("/offerHeaderSet", allData, settings);
+						console.log(allData);
+						settings.success = function(response){
+							that.alert(msg + " " + response.TCNumber, {
+								actions: [sap.m.MessageBox.Action.CLOSE],
+								onClose: function(sAction){
+									if(allData.TCNumber === "$$00000001"){
+										that.getRouter().navTo("worklist", {
+											TCNumber: response.TCNumber
+										});
+									}
+								} 
+							});
+							if(uploader.getValue()){
+								var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + response.TCNumber + "')/ToAttachment";
+								uploader.setUploadUrl(uploadUrl);
+								uploader.upload();
+							}
+							that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
+						};
+						settings.error = function(){
+							that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
+						};
+						model.create("/offerHeaderSet", allData, settings);
+					}
 				}
 			},
 			
@@ -297,8 +311,10 @@ sap.ui.define([
 				}
 				if(next){
 					if(button.data("edit")){
+						var input = this.byId("offerId");
+						var TCNumber = input.data("data") ? input.data("data") : input.getValue();
 						this.getRouter().navTo("worklist", {
-							TCNumber: this.byId("offerId").getValue()       
+							TCNumber: TCNumber 
 						});
 					}else{
 						navCon.to(this.byId(next));
@@ -560,7 +576,7 @@ sap.ui.define([
 			suggestionItemSelected: function(oEvent){
 				var valueHelp = oEvent.getSource();
 				var item = oEvent.getParameters("selectedItem");
-				if(item){
+				if(item && item.selectedItem){
 					valueHelp.setValue(item.selectedItem.getText()).data("data", item.selectedItem.getKey());
 				}
 			},

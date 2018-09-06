@@ -31,7 +31,23 @@
 						title="{i18n>enterOfferId}">
 						<VBox id="offerIdVbox" class="paddingRem">
 							<Label required="true" class="topLabel" text="{i18n>offerId}" />
-							<Input custom:key="offerId" id="offerId" value="" width="100%" />
+							<Input id="offerId" value="" width="100%"
+								custom:id="offerPopup"
+								custom:set="dictionarySearchOffer"
+								custom:key="TCNumber"
+								custom:filters="Code,Name"
+								custom:select="PartnerName"
+								custom:name="PartnerName"
+								showValueHelp="true"
+								valueHelpRequest="handleValueHelp"
+								suggest="handleSuggest"
+								showSuggestion="true"
+								suggestionItemSelected="suggestionItemSelected"
+								suggestionItems="{ path: '/dictionarySearchOfferSet', templateShareable:false }">
+								<suggestionItems>
+									<core:Item key="{TCNumber}" text="{TCNumber} - {PartnerName}" />
+								</suggestionItems>
+							</Input>	
 						</VBox>
 						<footer>
 							<Toolbar>
