@@ -80,6 +80,10 @@ sap.ui.define([
 								"uploadDelete", "uploadHbox"], false, "Visible");
 							this.status = status;
 						}
+						if(status === "7"){
+							this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
+							this.byId("comment").setEnabled(true);
+						}
 					}
 					setTimeout(function(){
 						that.filterSelect();
@@ -731,6 +735,7 @@ sap.ui.define([
 			onFileUploaded: function(oEvent){
 				var uploader = oEvent.getSource();
 				uploader.setValue();
+				this.byId("uploadButton").setEnabled(true);
 				this.getModel().refresh(true);
 			},
 			upload: function(oEvent){
@@ -742,6 +747,7 @@ sap.ui.define([
 					var uploadUrl = model.sServiceUrl + "/offerHeaderSet('" + this.TCNumber + "')/ToAttachment";
 					uploader.setUploadUrl(uploadUrl);
 					uploader.upload();
+					button.setEnabled(false);
 				}
 			},
 			
@@ -993,6 +999,9 @@ sap.ui.define([
 				}else{
 					this.byId("requestLimit").setEnabled(false);
 				}
+				if(this.status && this.status === "7"){
+					this.byId("requestLimit").setEnabled(false);
+				}
 			},
 			
 			// On Compliance Risks list update finished
@@ -1019,6 +1028,9 @@ sap.ui.define([
 					}else{
 						this.byId("requestRisk").setEnabled(false);
 					}
+					if(this.status && this.status === "7"){
+						this.byId("requestRisk").setEnabled(false);
+					}
 				}
 			},
 			
@@ -1037,6 +1049,9 @@ sap.ui.define([
 					this.byId("requestBlacklist").setEnabled(true);
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
+				}
+				if(this.status && this.status === "7"){
+					this.byId("requestRisk").setEnabled(false);
 				}
 			},
 			
