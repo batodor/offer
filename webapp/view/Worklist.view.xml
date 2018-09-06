@@ -31,7 +31,7 @@
 						title="{i18n>enterOfferId}">
 						<VBox id="offerIdVbox" class="paddingRem">
 							<Label required="true" class="topLabel" text="{i18n>offerId}" />
-							<Input id="offerId" value="" width="100%"
+							<Input id="offerId" width="100%"
 								custom:id="offerPopup"
 								custom:set="dictionarySearchOffer"
 								custom:key="TCNumber"

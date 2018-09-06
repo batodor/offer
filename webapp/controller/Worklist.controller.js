@@ -569,7 +569,7 @@ sap.ui.define([
 				var filterName = oEvent.getSource().data("select") ? oEvent.getSource().data("select") : "Name";
 				var aFilters = [];
 				if (sTerm) {
-					aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.StartsWith, sTerm));
+					aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.Contains, sTerm));
 				}
 				oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
 			},
