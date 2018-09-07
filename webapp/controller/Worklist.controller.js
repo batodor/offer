@@ -119,6 +119,16 @@ sap.ui.define([
 					var objectsArr = button.data("blocks").split(',');
 					var offerData = this.getData(objectsArr);
 					var volumeDataAndCheck = this.getVolumeData();
+					
+					// if Mode is copy then clear TCPositions
+					if(this.TCNumber && this.Type === "Copy"){
+						for(var i = 0; i < volumeDataAndCheck.data.ToOfferVolume.length; i++){
+							for(var j = 0; j < volumeDataAndCheck.data.ToOfferVolume[i].ToOfferPeriod.length; j++){
+								var period = volumeDataAndCheck.data.ToOfferVolume[i].ToOfferPeriod[j];
+								period.TCPosition = "";
+							}
+						}
+					}
 					if(volumeDataAndCheck.check){
 						var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-4);
 						this.alert(msg);
