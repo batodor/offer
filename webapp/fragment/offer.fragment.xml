@@ -56,10 +56,17 @@
 					tokenChange="onMultiUpdate"
 					enableMultiLineMode="true"
 					tokens="{ path: 'ToOfferCounterparty' }"
-					valueHelpRequest="handleValueHelp">
+					valueHelpRequest="handleValueHelp"
+					suggest="handleSuggest"
+					showSuggestion="true"
+					suggestionItemSelected="suggestionItemSelected"
+					suggestionItems="{ path: '/offerCounterpartySet', templateShareable:false }">
 					<tokens>
 						<Token key="{Code}" text="{Name}" custom:country="{Country}" />
 					</tokens>
+					<suggestionItems>
+						<core:Item key="{Code}" text="{Name}" />
+					</suggestionItems>
 				</MultiInput>
 				<Label required="true" class="topLabel" text="{i18n>productType}" />
 				<Select custom:key="productType" id="productType" change="filterSelect" custom:filter="product" custom:filterName="ProductType" forceSelection="false" 

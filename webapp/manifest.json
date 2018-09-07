@@ -118,7 +118,8 @@
 				{
 					"pattern": [
 						":TCNumber:",
-						"Type/:Type:"
+						"Type/:Type:",
+						"{TCNumber}/:Type:"
 					],
 					"name": "worklist",
 					"target": [

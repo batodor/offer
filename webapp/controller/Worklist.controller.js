@@ -46,7 +46,7 @@ sap.ui.define([
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
 				this.Type = oEvent.getParameter("arguments").Type;
 				this.getModel().metadataLoaded().then( function() {
-					if(this.Type){
+					if(this.Type && !this.TCNumber){
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer2"));
 						this.byId("navCon").to(this.byId("p1"));
 					}else if(this.TCNumber){
@@ -54,9 +54,13 @@ sap.ui.define([
 							path: "/offerHeaderSet('" + this.TCNumber + "')",
 							events: { dataReceived: this.dataReceived.bind(this) }
 						});
-						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
-						this.byId("tableApprove").setEnabled(true);
 						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox"], true, "Visible");
+						if(this.Type === "Copy"){
+							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
+						}else{
+							this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
+							this.byId("tableApprove").setEnabled(true);
+						}
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -71,7 +75,7 @@ sap.ui.define([
 			// Added in Select(Product Type)
 			dataReceived: function(oEvent){
 				var that = this;
-				if(this.TCNumber){
+				if(this.TCNumber && !this.Type){
 					if(oEvent.getParameters("data").data.TCNumber){
 						this.byId("navCon").to(this.byId("p2"));
 						var status = oEvent.getParameters("data").data.Status;
@@ -89,6 +93,11 @@ sap.ui.define([
 					setTimeout(function(){
 						that.filterSelect();
 					});
+				}else if(this.TCNumber && this.Type){
+					this.byId("creationDate").setDateValue(new Date());
+					this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
+					this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
+					this.byId("TCNumber").setValue("$$00000001");
 				}
 			},
 			
@@ -184,18 +193,24 @@ sap.ui.define([
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
 				if(id === "counterpartyPopup"){
 					var tokens = this.byId("counterparty").getTokens();
+					var tokenKeys = [];
+					for(var i = 0; i < tokens.length; i++){
+						tokenKeys.push(tokens[i].getKey());
+					}	
 				}
 				for(var i = 0; i < items.length; i++){
 					var item = items[i];
 					var path = item.getBindingContextPath();
 					var data = item.getModel().getData(path);
 					if(id === "counterpartyPopup"){
-						var token = new sap.m.Token({
-							key: data.Code,
-							text: data.Name
-						});
-						token.data("country", data.Country);
-						tokens.push(token);
+						if(tokenKeys.indexOf(data.Code) === -1){
+							var token = new sap.m.Token({
+								key: data.Code,
+								text: data.Name
+							});
+							token.data("country", data.Country);
+							tokens.push(token);
+						}
 						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
 						var value = data.hasOwnProperty("Name") ? data.Name : data[key];
