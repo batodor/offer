@@ -47,7 +47,7 @@
 				<Label required="true" class="topLabel" text="{i18n>counterparty}" />
 				<Input value="{Counterparty}" id="counterpartyOne" visible="false" />
 				<MultiInput 
-					id="counterparty"
+					id="counterpartyPopupValueHelp"
 					custom:id="counterpartyPopup"
 					custom:set="offerCounterparty"
 					custom:filters="Code,Name"
@@ -55,12 +55,12 @@
 					custom:name="ToOfferCounterparty"
 					tokenChange="onMultiUpdate"
 					enableMultiLineMode="true"
-					tokens="{ path: 'ToOfferCounterparty' }"
+					tokens="{ path: 'ToOfferCounterparty', templateShareable: false }"
 					valueHelpRequest="handleValueHelp"
 					suggest="handleSuggest"
 					showSuggestion="true"
 					suggestionItemSelected="suggestionItemSelected"
-					suggestionItems="{ path: '/offerCounterpartySet', templateShareable:false }">
+					suggestionItems="{ path: '/offerCounterpartySet', templateShareable: false }">
 					<tokens>
 						<Token key="{Code}" text="{Name}" custom:country="{Country}" />
 					</tokens>

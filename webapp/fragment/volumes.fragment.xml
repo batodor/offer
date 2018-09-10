@@ -33,6 +33,7 @@
 				</Select>
 				<Label required="true" class="topLabel" text="{i18n>deliveryPoint}" />
 				<Input
+					id="portPopupValueHelp"
 					custom:id="portPopup"
 					custom:set="dictionaryDeliveryPoint"
 					custom:key="deliveryPoint"
