@@ -16,6 +16,9 @@
 .heightAuto .sapMLIB{
 	height: auto;
 }
+.alignCenter input{
+	text-align: center !important;
+}
 .noWrapping{
 	white-space: normal;
 	line-height: normal;
