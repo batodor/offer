@@ -19,6 +19,9 @@
 .alignCenter input{
 	text-align: center !important;
 }
+.alignLeft input{
+	text-align: left !important;
+}
 .noWrapping{
 	white-space: normal;
 	line-height: normal;

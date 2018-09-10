@@ -485,8 +485,8 @@ sap.ui.define([
 			checkKeysInner: function(input){
 				var check = "";
 				if(input.data("key")){
-					if((input["mProperties"].hasOwnProperty("value") && !input.getValue()) || 
-					(input["mProperties"].hasOwnProperty("selectedKey") && !input.getSelectedKey()) ||
+					if((input["mProperties"].hasOwnProperty("value") && !input.getValue() && !input.hasOwnProperty("_tokenizer")) || 
+					(input["mProperties"].hasOwnProperty("selectedKey") && !input.getSelectedKey() && !input.hasOwnProperty("_tokenizer")) ||
 					(input.hasOwnProperty("_tokenizer") && input.getTokens().length === 0) ||
 					(input.hasOwnProperty("_oMaxDate") && !input.getDateValue())){
 						check = check + " " + this.getModel('i18n').getResourceBundle().getText(input.data("key")) + ", ";
