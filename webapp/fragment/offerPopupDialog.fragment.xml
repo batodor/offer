@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Dialog title="{i18n>offers}" class="sapUiContentPadding" id="offerPopupDialog">
+	<Dialog title="{i18n>offers}" stretch="{device>/system/phone}" class="sapUiContentPadding" id="offerPopupDialog">
 		<content>
 			<Table mode="SingleSelectLeft" includeItemInSelection="true" id="offerPopup" custom:id="offerPopup" items="{}" select="onTableSelect" width="500px" 
 				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false"

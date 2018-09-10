@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Dialog title="{i18n>counterparty}" stretch="true" class="sapUiContentPadding" id="counterpartyPopupDialog">
+	<Dialog title="{i18n>counterparty}" stretch="{device>/system/phone}" class="sapUiContentPadding" id="counterpartyPopupDialog">
 		<content>
 			<l:BlockLayout>
 				<l:BlockLayoutRow>

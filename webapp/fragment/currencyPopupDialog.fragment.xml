@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Dialog title="{i18n>currency}" class="sapUiContentPadding" id="currencyPopupDialog">
+	<Dialog title="{i18n>currency}" stretch="{device>/system/phone}" class="sapUiContentPadding" id="currencyPopupDialog">
 		<content>
 			<Table mode="SingleSelectLeft" includeItemInSelection="true" id="currencyPopup" custom:id="currencyPopup" items="{}" select="onTableSelect" width="500px" 
 				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false"
