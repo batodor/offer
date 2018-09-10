@@ -71,6 +71,11 @@ sap.ui.define([
 				}.bind(this));
 			},
 			
+			onChangeData: function(oEvent){
+				this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
+				this.byId("tableApprove").setEnabled(false);
+			},
+			
 			// This function triggered after bind 
 			// Added in Select(Product Type)
 			dataReceived: function(oEvent){
@@ -150,11 +155,13 @@ sap.ui.define([
 							that.alert(msg + " " + response.TCNumber, {
 								actions: [sap.m.MessageBox.Action.CLOSE],
 								onClose: function(sAction){
-									if(allData.TCNumber === "$$00000001"){
-										that.getRouter().navTo("worklist", {
-											TCNumber: response.TCNumber
-										});
-									}
+									that.getRouter().navTo("worklist", {
+										TCNumber: response.TCNumber
+									});
+									
+									// Disable save buttons and enable approve if no changes(on init)
+									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
+									that.byId("tableApprove").setEnabled(true);
 								} 
 							});
 							if(uploader.getValue()){
@@ -560,6 +567,9 @@ sap.ui.define([
 							}
 						}
 						oData[name] = value;
+						
+						// Bind for each input event for change
+						input.attachChange(this.onChangeData, this);
 					}
 				}
 				return oData;
@@ -1127,7 +1137,7 @@ sap.ui.define([
 			},
 			
 			onVolumesPeriodsLoaded: function(oEvent){
-				// Disabled volumes and periods if status is defined as 1, 6 or 7
+				// Set Disabled volumes and periods if status is defined as 1, 6 or 7
 				if(this.status){
 					var list = oEvent.getSource();
 					var volumes = list.getItems();
@@ -1142,6 +1152,13 @@ sap.ui.define([
 							}
 						}
 					}
+				}
+				
+				// Call get data functions to bind each input the onChangeData event function
+				if(oEvent.getParameters("reason").reason === "Refresh" && oEvent.getSource().data("id") === "period"){
+					this.getData(["pageOfferDetails", "parameters"]);
+					this.getVolumeData();
+					this.isOnChangeBinded = true;
 				}
 			}
 		});

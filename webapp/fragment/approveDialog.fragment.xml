@@ -15,7 +15,7 @@
 						</Select>
 					</VBox>
 				</HBox>
-				<Label text="{i18n>trader}" />
+				<Label text="{i18n>trader}" class="topLabel" />
 				<Select forceSelection="true" id="approveTrader" selectedKey="{Trader}" width="100%" 
 					items="{ path: '/dictionaryTraderSet',
 							 parameters: { custom: { Type: 'A' } },
