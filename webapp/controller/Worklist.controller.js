@@ -39,6 +39,7 @@ sap.ui.define([
 				
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 				this.isRisk = {};
+				this.isChanged = false;
 			},
 			
 			// After offer loaded, sets the mode Create/Edit
@@ -75,8 +76,11 @@ sap.ui.define([
 			},
 			
 			onChangeData: function(oEvent){
-				this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
-				this.byId("tableApprove").setEnabled(false);
+				if(!this.isChanged){
+					this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
+					this.byId("tableApprove").setEnabled(false);
+					this.isChanged = true;
+				}
 			},
 			
 			// This function triggered after bind 
@@ -165,6 +169,7 @@ sap.ui.define([
 									// Disable save buttons and enable approve after save
 									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 									that.byId("tableApprove").setEnabled(true);
+									that.isChanged = false;
 								} 
 							});
 							if(uploader.getValue()){
@@ -241,6 +246,7 @@ sap.ui.define([
 				if(id === "counterpartyPopup"){
 					valueHelp.setTokens(tokens);
 				}
+				valueHelp.fireChange();
 				this[id + "Dialog"].close();
 			},
 			dialogApprove: function(oEvent){
@@ -617,6 +623,7 @@ sap.ui.define([
 				if(item && item.selectedItem){
 					valueHelp.setValue(item.selectedItem.getText()).data("data", item.selectedItem.getKey());
 				}
+				valueHelp.fireChange();
 			},
 			
 			// Gete inputs from array of ids or directly from object
@@ -1161,7 +1168,6 @@ sap.ui.define([
 				if(oEvent.getParameters("reason").reason === "Refresh" && oEvent.getSource().data("id") === "period"){
 					this.getData(["pageOfferDetails", "parameters"]);
 					this.getVolumeData();
-					this.isOnChangeBinded = true;
 				}
 			}
 		});

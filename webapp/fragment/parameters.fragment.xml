@@ -28,6 +28,7 @@
 					custom:set="dictionaryCurrency"
 					custom:filters="Code,Name"
 					custom:name="Currency"
+					custom:select="Code"
 					id="currencyPopupValueHelp"
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
@@ -46,11 +47,21 @@
 					custom:id="volumeUomPopup"
 					custom:set="dictionaryVolumeUOM"
 					custom:filters="Code,Name"
+					custom:name="VolumeUOM"
+					custom:select="Code"
 					id="volumeUomPopupValueHelp"
 					showValueHelp="true"
 					valueHelpRequest="handleValueHelp"
 					value="{VolumeUOM}" 
-					placeholder="TO" width="100%" />
+					placeholder="TO" width="100%" 
+					suggest="handleSuggest"
+					showSuggestion="true"
+					suggestionItemSelected="suggestionItemSelected"
+					suggestionItems="{ path: '/dictionaryVolumeUOMSet', templateShareable:false }">
+					<suggestionItems>
+						<core:Item key="{Code}" text="{Name}" />
+					</suggestionItems>
+				</Input>
 			</VBox>
 		</content>
 	</Panel>
