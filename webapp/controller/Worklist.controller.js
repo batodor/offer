@@ -61,6 +61,9 @@ sap.ui.define([
 							this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 							this.byId("tableApprove").setEnabled(true);
 						}
+						// Disable save buttons and enable approve if no changes(on init)
+						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
+						this.byId("tableApprove").setEnabled(true);
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -159,7 +162,7 @@ sap.ui.define([
 										TCNumber: response.TCNumber
 									});
 									
-									// Disable save buttons and enable approve if no changes(on init)
+									// Disable save buttons and enable approve after save
 									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 									that.byId("tableApprove").setEnabled(true);
 								} 
