@@ -213,7 +213,8 @@ sap.ui.define([
 				var button = oEvent.getSource();
 				var id = button.data("id");
 				var key = button.data("key");
-				var valueHelp = this.byId(id + "ValueHelp") || sap.ui.getCore().byId(id + "ValueHelp");
+				var dynamicId = button.data("dynamicId");
+				var valueHelp = dynamicId ? sap.ui.getCore().byId(dynamicId) : this.byId(id + "ValueHelp") || sap.ui.getCore().byId(id + "ValueHelp");
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
 				if(id === "counterpartyPopup"){
 					var tokens = valueHelp.getTokens();
@@ -917,6 +918,7 @@ sap.ui.define([
 			handleValueHelp: function(oEvent){
 				var button = oEvent.getSource();
 				var id = button.data("id");
+				var dynamicId = button.getId();
 				var bindSet = button.data("set") ? "/" + button.data("set") + 'Set' : "/" + id + 'Set';
 				var filters = button.data("filters");
 				var table = sap.ui.getCore().byId(id);
@@ -945,7 +947,7 @@ sap.ui.define([
 						}
 					}
 				}
-				
+				sap.ui.getCore().byId(id + "Select").data("dynamicId", dynamicId);
 				this[id + "Dialog"].getButtons()[1].setEnabled(false);
 				this[id + "Dialog"].open();
 			},
