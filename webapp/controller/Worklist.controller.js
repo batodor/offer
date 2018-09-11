@@ -992,7 +992,25 @@ sap.ui.define([
 					tonMin.setValue(shipNumber*shipMin.getValue());
 					tonMax.setValue(shipNumber*shipMax.getValue());
 				}
+				if(shipMin.getValue() > shipMax.getValue()){
+					shipMin.setValueState("Error").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
+					shipMax.setValueState("Error").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
+				}else{
+					shipMin.setValueState("None");
+					shipMax.setValueState("None")
+				}
 				this.checkLimits();
+			},
+			
+			setTolerance: function(oEvent){
+				var input = oEvent.getSource();
+				var key = input.getSelectedKey();
+				var tolerance = input.getParent().getParent().getItems()[0].getItems()[1];
+				if(key === "%"){
+					tolerance.setMax(100);
+				}else{
+					tolerance.setMax(999999999999);
+				}
 			},
 			
 			collectLimitsData: function(){
@@ -1053,6 +1071,14 @@ sap.ui.define([
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
 				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " " + oResult.TonnageUoM);
+				if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
+					this.byId("requestLimit").setEnabled(true);
+				}else{
+					this.byId("requestLimit").setEnabled(false);
+				}
+				if(this.status && this.status === "7"){
+					this.byId("requestLimit").setEnabled(false);
+				}
 			},
 			
 			// On Compliance Risks list update finished
@@ -1158,6 +1184,8 @@ sap.ui.define([
 				if(oEvent.getParameters("reason").reason === "Refresh" && oEvent.getSource().data("id") === "period"){
 					this.getData(["pageOfferDetails", "parameters"]);
 					this.getVolumeData();
+					
+					this.checkLimits();
 				}
 			}
 		});

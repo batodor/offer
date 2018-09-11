@@ -42,7 +42,8 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>shipmentToleranceUom}" />
-						<Select forceSelection="false" custom:name="ShipmentToleranceUOM" selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }"
+						<Select change="setTolerance" forceSelection="false" custom:name="ShipmentToleranceUOM" 
+							selectedKey="{= ${ShipmentToleranceUOM} ? ${ShipmentToleranceUOM} : '%' }"
 							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable: true }" width="100%">
 							<core:Item key="{Code}" text="{Code}"/>
 						</Select>
@@ -67,7 +68,8 @@
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnageToleranceUom}" />
-						<Select forceSelection="false" custom:name="TonnageToleranceUOM" selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }"
+						<Select change="setTolerance" forceSelection="false" custom:name="TonnageToleranceUOM" 
+							selectedKey="{= ${TonnageToleranceUOM} ? ${TonnageToleranceUOM} : '%' }"
 							items="{ path: '/dictionaryToleranceUOMSet', sorter: { path: 'Code' }, templateShareable: true }" width="100%">
 							<core:Item key="{Code}" text="{Code}"/>
 						</Select>
