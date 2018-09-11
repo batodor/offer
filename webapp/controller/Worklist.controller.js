@@ -78,7 +78,7 @@ sap.ui.define([
 			onChangeData: function(oEvent){
 				if(!this.isChanged){
 					this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
-					this.byId("tableApprove").setEnabled(false);
+					this.setInput(["tableApprove","requestBlacklist", "requestLimit", "requestRisk"], false, "Enabled");
 					this.isChanged = true;
 				}
 			},
@@ -309,13 +309,11 @@ sap.ui.define([
 				var input = oEvent.getSource();
 				if(this.multi){
 					this.getRisks(input);
-					this.checkLimits(input);
+					this.checkLimits();
+					// this.checkRisks();
 				}
 				this.checkCountries(input);
 				this.multi = true;
-				if(oEvent.getSource().getTokens().length === 0){
-					this.setInput(["requestBlacklist", "requestLimit", "requestRisk"], false, "Enabled");
-				}
 			},
 			
 			checkCountries: function(valueHelp){
@@ -1053,19 +1051,10 @@ sap.ui.define([
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
 				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " " + oResult.TonnageUoM);
-				
-				if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
-					this.byId("requestLimit").setEnabled(true);
-				}else{
-					this.byId("requestLimit").setEnabled(false);
-				}
-				if(this.status && this.status === "7"){
-					this.byId("requestLimit").setEnabled(false);
-				}
 			},
 			
 			// On Compliance Risks list update finished
-			checkRisk: function(oEvent){
+			checkRisks: function(oEvent){
 				var list = oEvent.getSource();
 				var risks = list.getItems();
 				if(risks.length > 0){
@@ -1110,8 +1099,8 @@ sap.ui.define([
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
 				}
-				if(this.status && this.status === "7"){
-					this.byId("requestRisk").setEnabled(false);
+				if((this.status && this.status === "7") || this.isChanged){
+					this.byId("requestBlacklist").setEnabled(false);
 				}
 			},
 			
@@ -1167,8 +1156,6 @@ sap.ui.define([
 				if(oEvent.getParameters("reason").reason === "Refresh" && oEvent.getSource().data("id") === "period"){
 					this.getData(["pageOfferDetails", "parameters"]);
 					this.getVolumeData();
-					
-					this.checkLimits();
 				}
 			}
 		});
