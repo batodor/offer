@@ -18,7 +18,7 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label required="true" class="topLabel" text="{i18n>offerType}" />
-						<Select id="type" custom:name="OfferType" selectedKey="{OfferType}" custom:key="offerType" 
+						<Select id="type" change="onChangeType" custom:name="OfferType" selectedKey="{OfferType}" custom:key="offerType" 
 							forceSelection="false" width="100%" items="{ path: '/dictionaryOfferTypeSet', sorter: { path: 'Name' } }">
 							<core:Item key="{Code}" text="{Name}"/>
 						</Select>

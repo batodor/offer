@@ -311,7 +311,6 @@ sap.ui.define([
 				if(this.multi){
 					this.getRisks(input);
 					this.checkLimits();
-					// this.checkRisks();
 				}
 				this.checkCountries(input);
 				this.multi = true;
@@ -1052,6 +1051,7 @@ sap.ui.define([
 				oData.Period = Period;
 				oData.Tonnage = Tonnage;
 				oData.TCNumber = this.byId("TCNumber").getValue();
+				oData.OfferType = this.byId("type").getSelectedKey();
 				return oData;
 			},
 			
@@ -1187,6 +1187,10 @@ sap.ui.define([
 					
 					this.checkLimits();
 				}
+			},
+			
+			onChangeType: function(oEvent){
+				this.checkLimits();
 			}
 		});
 	}
