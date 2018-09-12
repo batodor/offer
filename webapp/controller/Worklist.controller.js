@@ -991,12 +991,12 @@ sap.ui.define([
 					tonMin.setValue(shipNumber*shipMin.getValue());
 					tonMax.setValue(shipNumber*shipMax.getValue());
 				}
-				if(shipMin.getValue() > shipMax.getValue()){
+				if(parseFloat(shipMin.getValue()) > parseFloat(shipMax.getValue())){
 					shipMin.setValueState("Error").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
 					shipMax.setValueState("Error").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
 				}else{
 					shipMin.setValueState("None");
-					shipMax.setValueState("None")
+					shipMax.setValueState("None");
 				}
 				this.checkLimits();
 			},
