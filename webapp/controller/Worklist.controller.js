@@ -104,12 +104,7 @@ sap.ui.define([
 						}
 						
 						//Filter branch offices
-						var companyBranch = this.byId("companyBranch");
-						companyBranch.bindItems({
-							path: "/dictionaryCompanyBranchSet",
-							template: companyBranch['mBindingInfos'].items.template.clone(),
-							parameters: { custom: { OfferType: this.data.OfferType } }
-						});
+						this.filterByType(this.data.OfferType);
 					}
 					setTimeout(function(){
 						that.filterSelect();
@@ -1192,13 +1187,23 @@ sap.ui.define([
 				}else{
 					this.setInput(["purchaseGroup", "purchaseGroupLabel"], false, "Visible");
 				}
+				this.filterByType(offerType);
+				this.checkLimits();
+			},
+			
+			filterByType: function(offerType){
 				var companyBranch = this.byId("companyBranch");
 				companyBranch.bindItems({
 					path: "/dictionaryCompanyBranchSet",
 					template: companyBranch['mBindingInfos'].items.template.clone(),
 					parameters: { custom: { OfferType: offerType } }
 				});
-				this.checkLimits();
+				var counterparty = sap.ui.getCore().byId("counterpartyPopup");
+				counterparty.bindItems({
+					path: "/offerCounterpartySet",
+					template: counterparty['mBindingInfos'].items.template.clone(),
+					parameters: { custom: { OfferType: offerType } }
+				});
 			}
 		});
 	}
