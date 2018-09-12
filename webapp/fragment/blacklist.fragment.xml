@@ -106,8 +106,8 @@
 			</OverflowToolbar>
 			<HBox alignContent="Center" justifyContent="SpaceBetween" width="100%">
 				<Button id="requestBlacklist" text="{i18n>blacklist}" enabled="false" custom:type="B" width="100px" press="openMail" />
-				<Button id="requestLimit" text="{i18n>limits}" enabled="{LimitsRequired}" custom:type="L" width="100px" press="openMail" />
-				<Button id="requestRisk" text="{i18n>risks}" enabled="{RisksRequired}" custom:type="R" width="100px" press="openMail" />
+				<Button id="requestLimit" text="{i18n>limits}" enabled="false" custom:type="L" width="100px" press="openMail" />
+				<Button id="requestRisk" text="{i18n>risks}" enabled="false" custom:type="R" width="100px" press="openMail" />
 			</HBox>
 		</content>
 	</Panel>

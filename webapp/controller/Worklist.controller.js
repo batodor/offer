@@ -1076,7 +1076,7 @@ sap.ui.define([
 				}else{
 					this.byId("requestLimit").setEnabled(false);
 				}
-				if(this.status && this.status === "7"){
+				if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
 					this.byId("requestLimit").setEnabled(false);
 				}
 			},
@@ -1105,7 +1105,7 @@ sap.ui.define([
 					}else{
 						this.byId("requestRisk").setEnabled(false);
 					}
-					if(this.status && this.status === "7"){
+					if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
 						this.byId("requestRisk").setEnabled(false);
 					}
 				}
@@ -1127,7 +1127,7 @@ sap.ui.define([
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
 				}
-				if((this.status && this.status === "7") || this.isChanged){
+				if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
 					this.byId("requestBlacklist").setEnabled(false);
 				}
 			},
