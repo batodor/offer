@@ -71,7 +71,7 @@
 								</l:BlockLayoutCell>
 								<l:BlockLayoutCell width="1">
 									<core:Fragment fragmentName="fragment.offer" type="XML"></core:Fragment>
-									<core:Fragment fragmentName="fragment.routes" type="XML"></core:Fragment>
+									<!--<core:Fragment fragmentName="fragment.routes" type="XML"></core:Fragment>-->
 								</l:BlockLayoutCell>
 								<l:BlockLayoutCell width="1">
 									<core:Fragment fragmentName="fragment.blacklist" type="XML"></core:Fragment>
