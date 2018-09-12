@@ -178,8 +178,8 @@ sap.ui.define([
 									// Disable save buttons and enable approve after save
 									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 									that.byId("tableApprove").setEnabled(true);
-									that.checkLimits();
 									that.isChanged = false;
+									that.getModel().refresh(true);
 								} 
 							});
 							if(uploader.getValue()){
@@ -849,6 +849,7 @@ sap.ui.define([
 					var id = data.d.Product;
 					select.setSelectedKey(id);
 				});
+				select.setEnabled(true);
 			},
 			
 			// Default alert message
