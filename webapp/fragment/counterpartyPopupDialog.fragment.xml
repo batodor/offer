@@ -13,9 +13,9 @@
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
-			<Table mode="MultiSelect" includeItemInSelection="true" id="counterpartyPopup" custom:id="counterpartyPopup" items="{}" select="onTableSelect"
-				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false"
-				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+			<Table mode="MultiSelect" includeItemInSelection="true" id="counterpartyPopup" custom:id="counterpartyPopup" items="{ path: '/offerCounterpartySet' }" 
+				select="onTableSelect" updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" 
+				growingScrollToLoad="false" busyIndicatorDelay="{detailView>/lineItemTableDelay}">
 				<columns>
 					<Column><Text class="black" text="{i18n>name}"/></Column>
 					<Column><Text class="black" text="{i18n>code}"/></Column>

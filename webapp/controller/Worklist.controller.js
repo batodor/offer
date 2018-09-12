@@ -88,9 +88,10 @@ sap.ui.define([
 			dataReceived: function(oEvent){
 				var that = this;
 				if(this.TCNumber && !this.Type){
-					if(oEvent.getParameters("data").data.TCNumber){
+					if(oEvent.getParameters("data") && oEvent.getParameters("data").data.TCNumber){
 						this.byId("navCon").to(this.byId("p2"));
-						var status = oEvent.getParameters("data").data.Status;
+						this.data = oEvent.getParameters("data").data;
+						var status = this.data.Status;
 						if(status === "1" || status === "6" || status === "7"){
 							this.setDisabled(["pageOfferDetails", "parameters"]);
 							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
@@ -101,6 +102,14 @@ sap.ui.define([
 							this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
 							this.byId("comment").setEnabled(true);
 						}
+						
+						//Filter branch offices
+						var companyBranch = this.byId("companyBranch");
+						companyBranch.bindItems({
+							path: "/dictionaryCompanyBranchSet",
+							template: companyBranch['mBindingInfos'].items.template.clone(),
+							parameters: { custom: { OfferType: this.data.OfferType } }
+						});
 					}
 					setTimeout(function(){
 						that.filterSelect();
@@ -169,6 +178,7 @@ sap.ui.define([
 									// Disable save buttons and enable approve after save
 									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 									that.byId("tableApprove").setEnabled(true);
+									that.checkLimits();
 									that.isChanged = false;
 								} 
 							});
@@ -390,12 +400,6 @@ sap.ui.define([
 						title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
 						titleValue.setValue(length);
 					}
-					// Adds automatically the period too
-					// var periodList = fragmentClone.getContent()[1];
-					// var addButton = fragmentClone.getContent()[1].getHeaderToolbar().getContent()[2];
-					// periodList.attachEventOnce("updateFinished", function(e){
-					// 	addButton.firePress();
-					// }, this);
 				}
 				var newItem = new sap.m.CustomListItem();
 				newItem.addContent(fragmentClone);
@@ -918,20 +922,10 @@ sap.ui.define([
 				var button = oEvent.getSource();
 				var id = button.data("id");
 				var dynamicId = button.getId();
-				var bindSet = button.data("set") ? "/" + button.data("set") + 'Set' : "/" + id + 'Set';
 				var filters = button.data("filters");
-				var table = sap.ui.getCore().byId(id);
-				var settings = {
-					path: bindSet,
-					template: table['mBindingInfos'].items.template.clone()
-				};
 				if(id === "portPopup"){
-					var filter = [];
-					filter.push(new Filter("MeansOfTransport", FilterOperator.EQ, this.byId("meansOfTransport").getSelectedKey()));
-					settings.filters = filter;
-				}
-				if(table.getItems().length === 0){
-					table.bindItems(settings);
+					var table = sap.ui.getCore().byId(id);
+					table.getBinding("items").filter([new Filter("MeansOfTransport", FilterOperator.EQ, this.byId("meansOfTransport").getSelectedKey())]);
 				}
 				this.search = {}; // nullify search object
 				if(filters){
@@ -1190,6 +1184,19 @@ sap.ui.define([
 			},
 			
 			onChangeType: function(oEvent){
+				var offerType = oEvent.getSource().getSelectedKey();
+				if(offerType === "ZPO1"){
+					this.setInput(["purchaseGroup", "purchaseGroupLabel"], true, "Visible");
+					this.byId("parametersPanel").setExpanded(true);
+				}else{
+					this.setInput(["purchaseGroup", "purchaseGroupLabel"], false, "Visible");
+				}
+				var companyBranch = this.byId("companyBranch");
+				companyBranch.bindItems({
+					path: "/dictionaryCompanyBranchSet",
+					template: companyBranch['mBindingInfos'].items.template.clone(),
+					parameters: { custom: { OfferType: offerType } }
+				});
 				this.checkLimits();
 			}
 		});

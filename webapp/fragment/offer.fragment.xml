@@ -49,10 +49,7 @@
 				<MultiInput 
 					id="counterpartyPopupValueHelp"
 					custom:id="counterpartyPopup"
-					custom:set="offerCounterparty"
 					custom:filters="Code,Name"
-					custom:key="counterparty"
-					custom:name="ToOfferCounterparty"
 					tokenChange="onMultiUpdate"
 					enableMultiLineMode="true"
 					tokens="{ path: 'ToOfferCounterparty', templateShareable: false }"

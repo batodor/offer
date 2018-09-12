@@ -17,9 +17,9 @@
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
-			<Table mode="SingleSelectMaster" includeItemInSelection="true" custom:id="portPopup" id="portPopup" items="{}" select="onTableSelect" 
-				updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" growingScrollToLoad="false" 
-				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+			<Table mode="SingleSelectMaster" includeItemInSelection="true" custom:id="portPopup" id="portPopup" items="{ path: '/dictionaryDeliveryPointSet' }" 
+				select="onTableSelect" updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" growingThreshold="10" growing="true" 
+				growingScrollToLoad="false" busyIndicatorDelay="{detailView>/lineItemTableDelay}">
 				<columns>
 					<Column><Text class="black" text="{i18n>country}"/></Column>
 					<Column><Text class="black" text="{i18n>portCode}"/></Column>

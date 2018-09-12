@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns:l="sap.ui.layout" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
-	<Panel expandable="true" expanded="false" width="auto">
+	<Panel id="parametersPanel" expandable="true" expanded="{= ${OfferType} === 'ZPO1' ? true : false}" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
 				<Title text="{i18n>parameters}" />
@@ -11,6 +11,11 @@
 				<Label class="topLabel" text="{i18n>companyBranch}" />
 				<Select id="companyBranch" custom:name="CompanyBranch" forceSelection="true" selectedKey="{= ${CompanyBranch} ? ${CompanyBranch} : '7100' }" width="100%" 
 					items="{ path: '/dictionaryCompanyBranchSet', sorter: { path: 'Code' } }">
+					<core:Item key="{Code}" text="{Code} - {Name}"/>
+				</Select>
+				<Label class="topLabel" id="purchaseGroupLabel" visible="false" text="{i18n>purchaseGroup}" />
+				<Select id="purchaseGroup" forceSelection="true" visible="false" selectedKey="{PurchaseGroup}" width="100%" 
+					items="{ path: '/dictionaryPurchaseGroupSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
 				<Label class="topLabel" text="{i18n>trader}" />

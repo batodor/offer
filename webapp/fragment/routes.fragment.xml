@@ -1,0 +1,9 @@
+<core:FragmentDefinition 
+	xmlns:vbm="sap.ui.vbm" 
+	xmlns="sap.m" 
+	xmlns:core="sap.ui.core" 
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<Panel expandable="true" expanded="false" width="auto">
+		<vbm:GeoMap id="GeoMap" width="100%" height="100%"/>
+	</Panel>
+</core:FragmentDefinition>
