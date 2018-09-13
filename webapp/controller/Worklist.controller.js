@@ -70,7 +70,6 @@ sap.ui.define([
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.setInput(["uploadDownload", "uploadDelete"], false, "Visible");
-						this.byId("volumeAddButton").firePress();
 					}
 				}.bind(this));
 			},
@@ -135,6 +134,7 @@ sap.ui.define([
 					var objectsArr = button.data("blocks").split(',');
 					var offerData = this.getData(objectsArr, true);
 					var volumeDataAndCheck = this.getVolumeData(true);
+					var bCheckAlert = this.checkKeys(["pageOfferDetails"]);
 					
 					// if Mode is copy then clear TCPositions
 					if(this.TCNumber && this.Type === "Copy"){
@@ -145,8 +145,16 @@ sap.ui.define([
 							}
 						}
 					}
-					if(volumeDataAndCheck.check){
-						var msg = this.getResourceBundle().getText("plsEnter") + " " + volumeDataAndCheck.check.slice(0,-4);
+					
+					if(volumeDataAndCheck.check || bCheckAlert){
+						var msg = this.getResourceBundle().getText("plsEnter") + " ";
+						if(volumeDataAndCheck.check && bCheckAlert){
+							msg = msg + volumeDataAndCheck.check.slice(0,-4) + " " + bCheckAlert.slice(0, -2);
+						}else if(volumeDataAndCheck.check){
+							msg = msg + volumeDataAndCheck.check.slice(0,-4);
+						}else{
+							msg = msg + bCheckAlert.slice(0, -2);
+						}
 						this.alert(msg);
 					}else{
 						this.setInput(["saveOffer1","saveOffer2"], false, "Enabled");
@@ -194,8 +202,22 @@ sap.ui.define([
 			
 			// Actually opens the approve dialog
 			tableApprove: function(oEvent){
-				var id = oEvent.getSource().data("id");
-				this[id + "Dialog"].open();
+				var checkArr = ["tradingPurpose", "product", "paymentMethod", "meansOfTransport"];
+				var check = "";
+				for(var i = 0; i < checkArr.length; i++){
+					var input = this.byId(checkArr[i]) || sap.ui.getCore().byId(checkArr[i]);
+					check = check + this.checkKeysInner(input, checkArr[i]);
+				}
+				if(this.byId("volumesList").getItems().length === 0){
+					check = check + this.getModel('i18n').getResourceBundle().getText("volume") + ", ";
+				}
+				if(check){
+					var msg = this.getModel('i18n').getResourceBundle().getText("plsEnter") + " " + check.slice(0, -2);
+					this.alert(msg);
+				}else{
+					var id = oEvent.getSource().data("id");
+					this[id + "Dialog"].open();
+				}
 			},
 			
 			// Event on selection of table items
@@ -239,7 +261,6 @@ sap.ui.define([
 								key: data.Code,
 								text: data.Name
 							});
-							token.data("country", data.Country);
 							newTokens.push(token);
 						}
 					}else{
@@ -491,24 +512,28 @@ sap.ui.define([
 					if(input["sId"].indexOf('hbox') > -1){
 						var vboxes = input.getItems();
 						for(var j = 0; j < vboxes.length; j++){
-							check = check + this.checkKeysInner(vboxes[j].getItems()[1]);
+							var vboxInput = vboxes[j].getItems()[1];
+							if(vboxInput.data("key")){
+								check = check + this.checkKeysInner(vboxInput);
+							}
 						}
 					}else{
-						check = check +  this.checkKeysInner(input);
+						if(input.data("key")){
+							check = check + this.checkKeysInner(input);
+						}
 					}
 				}
 				return check;
 			},
 			// Created to check hboxes too
-			checkKeysInner: function(input){
+			checkKeysInner: function(input, id){
 				var check = "";
-				if(input.data("key")){
-					if((input["mProperties"].hasOwnProperty("value") && !input.getValue() && !input.hasOwnProperty("_tokenizer")) || 
-					(input["mProperties"].hasOwnProperty("selectedKey") && !input.getSelectedKey() && !input.hasOwnProperty("_tokenizer")) ||
-					(input.hasOwnProperty("_tokenizer") && input.getTokens().length === 0) ||
-					(input.hasOwnProperty("_oMaxDate") && !input.getDateValue())){
-						check = check + " " + this.getModel('i18n').getResourceBundle().getText(input.data("key")) + ", ";
-					}
+				if((input["mProperties"].hasOwnProperty("value") && !input.getValue() && !input.hasOwnProperty("_tokenizer")) || 
+				(input["mProperties"].hasOwnProperty("selectedKey") && !input.getSelectedKey() && !input.hasOwnProperty("_tokenizer")) ||
+				(input.hasOwnProperty("_tokenizer") && input.getTokens().length === 0) ||
+				(input.hasOwnProperty("_oMaxDate") && !input.getDateValue())){
+					var textId = input.data("key") ? input.data("key") : id;
+					check = check + " " + this.getModel('i18n').getResourceBundle().getText(textId) + ", ";
 				}
 				return check;
 			},
@@ -1072,11 +1097,11 @@ sap.ui.define([
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
 				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " " + oResult.TonnageUoM);
-				if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
-					this.byId("requestLimit").setEnabled(true);
-				}else{
-					this.byId("requestLimit").setEnabled(false);
-				}
+				// if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
+				// 	this.byId("requestLimit").setEnabled(true);
+				// }else{
+				// 	this.byId("requestLimit").setEnabled(false);
+				// }
 				if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
 					this.byId("requestLimit").setEnabled(false);
 				}
@@ -1101,11 +1126,11 @@ sap.ui.define([
 							}
 						}
 					}
-					if(this.isRisk.main || this.isRisk.other){
-						this.byId("requestRisk").setEnabled(true);
-					}else{
-						this.byId("requestRisk").setEnabled(false);
-					}
+					// if(this.isRisk.main || this.isRisk.other){
+					// 	this.byId("requestRisk").setEnabled(true);
+					// }else{
+					// 	this.byId("requestRisk").setEnabled(false);
+					// }
 					if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
 						this.byId("requestRisk").setEnabled(false);
 					}

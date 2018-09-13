@@ -24,8 +24,8 @@
 						</Select>
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
-						<Label required="true" class="topLabel" text="{i18n>tradingPurpose}" />
-						<Select selectedKey="{TradingPurpose}" id="sales" custom:key="tradingPurpose" width="100%" forceSelection="false" 
+						<Label class="topLabel" text="{i18n>tradingPurpose}" />
+						<Select selectedKey="{TradingPurpose}" id="tradingPurpose" width="100%" forceSelection="false" 
 							items="{ path: '/dictionaryTradingPurposeSet', sorter: { path: 'Name' } }">
 							<core:Item key="{Code}" text="{Name}"/>
 						</Select>
@@ -50,6 +50,7 @@
 					id="counterpartyPopupValueHelp"
 					custom:id="counterpartyPopup"
 					custom:filters="Code,Name"
+					custom:key="counterparty"
 					tokenUpdate="onMultiUpdate"
 					enableMultiLineMode="true"
 					tokens="{ path: 'ToOfferCounterparty', templateShareable: false }"
@@ -67,7 +68,7 @@
 					</suggestionItems>
 				</MultiInput>
 				<Label required="true" class="topLabel" text="{i18n>productType}" />
-				<Select custom:key="productType" id="productType" change="filterSelect" custom:filter="product" custom:filterName="ProductType" forceSelection="false" 
+				<Select id="productType" change="filterSelect" custom:key="productType" custom:filter="product" custom:filterName="ProductType" forceSelection="false" 
 					selectedKey="{ProductType}" width="100%" items="{ 
 						path: '/dictionaryProductTypeSet', 
 						sorter: { path: 'Code' },
@@ -75,23 +76,23 @@
 					}">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
-				<Label required="true" class="topLabel" text="{i18n>product}" />
-				<Select custom:key="product" id="product" selectedKey="{Product}" width="100%" forceSelection="false" enabled="false" 
+				<Label class="topLabel" text="{i18n>product}" />
+				<Select id="product" selectedKey="{Product}" width="100%" forceSelection="false" enabled="false" 
 					items="{ path: '/dictionaryProductSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
-				<Label required="true" class="topLabel" text="{i18n>paymentMethod}"/>
-				<Select change="checkLimits" id="paymentMethod" selectedKey="{PaymentMethod}" custom:key="paymentMethod"
+				<Label class="topLabel" text="{i18n>paymentMethod}"/>
+				<Select change="checkLimits" id="paymentMethod" selectedKey="{PaymentMethod}" 
 					width="100%" forceSelection="false" items="{ path: '/dictionaryPaymentMethodSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
-				<Label required="true" class="topLabel" text="{i18n>paymentTerms}"/>
-				<Select change="checkLimits" id="paymentTerms" selectedKey="{PaymentTerm}" custom:key="paymentTerms" width="100%" forceSelection="false" 
+				<Label class="topLabel" text="{i18n>paymentTerms}"/>
+				<Select change="checkLimits" id="paymentTerms" selectedKey="{PaymentTerm}" width="100%" forceSelection="false" 
 					items="{ path: '/dictionaryPaymentTermSet', sorter: { path: 'Name' }}">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
-				<Label required="true" class="topLabel" text="{i18n>meansOfTransport}" />
-				<Select custom:key="meansOfTransport" id="meansOfTransport" selectedKey="{MeansOfTransport}" forceSelection="false" width="100%"
+				<Label class="topLabel" text="{i18n>meansOfTransport}" />
+				<Select id="meansOfTransport" selectedKey="{MeansOfTransport}" forceSelection="false" width="100%"
 					items="{ path: '/dictionaryMeansOfTransportSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
