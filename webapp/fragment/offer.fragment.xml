@@ -50,12 +50,13 @@
 					id="counterpartyPopupValueHelp"
 					custom:id="counterpartyPopup"
 					custom:filters="Code,Name"
-					tokenChange="onMultiUpdate"
+					tokenUpdate="onMultiUpdate"
 					enableMultiLineMode="true"
 					tokens="{ path: 'ToOfferCounterparty', templateShareable: false }"
 					valueHelpRequest="handleValueHelp"
 					suggest="handleSuggest"
 					showSuggestion="true"
+					maxTokens="3"
 					suggestionItemSelected="suggestionItemSelected"
 					suggestionItems="{ path: '/offerCounterpartySet', templateShareable: false }">
 					<tokens>

@@ -7,9 +7,9 @@
 			</Toolbar>
 		</headerToolbar>
 		<content>
-			<List noDataText="{i18n>none}" updateFinished="checkBlacklist" id="risks" class="listText" 
+			<List noDataText="{i18n>none}" updateFinished="checkCounterparties" id="risks" class="listText" 
 				items="{ path: 'ToOfferCounterparty', templateShareable: false }">
-				<CustomListItem>
+				<CustomListItem custom:country="{Country}">
 					<Panel expandable="true" expanded="true" width="auto">
 						<headerToolbar>
 							<Toolbar height="3rem">

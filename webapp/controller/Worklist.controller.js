@@ -75,7 +75,7 @@ sap.ui.define([
 				}.bind(this));
 			},
 			
-			onChangeData: function(oEvent){
+			onChangeData: function(){
 				if(!this.isChanged){
 					this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
 					this.setInput(["tableApprove","requestBlacklist", "requestLimit", "requestRisk"], false, "Enabled");
@@ -104,7 +104,7 @@ sap.ui.define([
 						}
 						
 						//Filter branch offices
-						this.filterByType(this.data.OfferType);
+						this.filterByType(this.data.OfferType, true);
 					}
 					setTimeout(function(){
 						that.filterSelect();
@@ -133,8 +133,8 @@ sap.ui.define([
 				}else{
 					var button = oEvent.getSource();
 					var objectsArr = button.data("blocks").split(',');
-					var offerData = this.getData(objectsArr);
-					var volumeDataAndCheck = this.getVolumeData();
+					var offerData = this.getData(objectsArr, true);
+					var volumeDataAndCheck = this.getVolumeData(true);
 					
 					// if Mode is copy then clear TCPositions
 					if(this.TCNumber && this.Type === "Copy"){
@@ -224,8 +224,9 @@ sap.ui.define([
 				if(id === "counterpartyPopup"){
 					var tokens = valueHelp.getTokens();
 					var tokenKeys = [];
-					for(var i = 0; i < tokens.length; i++){
-						tokenKeys.push(tokens[i].getKey());
+					var newTokens = tokens.slice();
+					for(var i = 0; i < newTokens.length; i++){
+						tokenKeys.push(newTokens[i].getKey());
 					}	
 				}
 				for(var i = 0; i < items.length; i++){
@@ -239,19 +240,29 @@ sap.ui.define([
 								text: data.Name
 							});
 							token.data("country", data.Country);
-							tokens.push(token);
+							newTokens.push(token);
 						}
 						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
 						var value = data.hasOwnProperty("Name") ? data.Name : data[key];
 						valueHelp.data("data", data[key]);
 						valueHelp.setValue(value);
+						this.onChangeData();
 					}
 				}
 				if(id === "counterpartyPopup"){
-					valueHelp.setTokens(tokens);
+					valueHelp.setTokens(newTokens);
+					if(newTokens.length > 3){
+						this.alert(this.getResourceBundle().getText("plsSelect3"));
+						return true;
+					}else{
+						if(tokens.length !== newTokens.length){
+							this.getRisks(valueHelp);
+							this.checkLimits();
+							this.onChangeData();
+						}
+					}
 				}
-				valueHelp.fireChange();
 				this[id + "Dialog"].close();
 			},
 			dialogApprove: function(oEvent){
@@ -290,13 +301,20 @@ sap.ui.define([
 			},
 			
 			// Get Risks on select of Counterparties
-			getRisks: function(valueHelp){
+			getRisks: function(valueHelp, removedKeys){
 				var tokens = valueHelp.getTokens();
 				var risks = this.byId("risks");
 				risks.removeAllItems();
 				var filters = [];
 				for(var i = 0; i < tokens.length; i++){
-					filters.push(new Filter({path: "Code", operator: FilterOperator.EQ, value1: tokens[i].getKey() }));
+					var key = tokens[i].getKey();
+					if(removedKeys){
+						if(removedKeys.indexOf(key) === -1){
+							filters.push(new Filter({path: "Code", operator: FilterOperator.EQ, value1: key }));
+						}
+					}else{
+						filters.push(new Filter({path: "Code", operator: FilterOperator.EQ, value1: key }));
+					}
 				}
 				if(filters.length > 0){
 					var partnersFilter = new Filter({ filters: filters, and: false });
@@ -310,32 +328,17 @@ sap.ui.define([
 				}
 			},
 			
-			// On multi input tokens update
+			// On multi input tokens remove
 			onMultiUpdate: function(oEvent){
 				var input = oEvent.getSource();
-				if(this.multi){
-					this.getRisks(input);
-					this.checkLimits();
+				var removedTokens = oEvent.getParameters("removedTokens").removedTokens;
+				var removedTokensKeys = [];
+				for(var i = 0; i < removedTokens.length; i++){
+					removedTokensKeys.push(removedTokens[i].getKey());
 				}
-				this.checkCountries(input);
-				this.multi = true;
-			},
-			
-			checkCountries: function(valueHelp){
-				var text = this.byId("countriesSanction");
-				var countries = '';
-				var tokens = valueHelp.getTokens();
-				for(var i = 0; i < tokens.length; i++){
-					if(tokens[i].data("country")){
-						countries = countries + tokens[i].data("country") + ", ";
-					}
-				}
-				if(countries){
-					countries = countries.slice(0,-2);
-					text.setText(countries).addStyleClass("red");
-				}else{
-					text.setText(this.getResourceBundle().getText("none")).removeStyleClass("red");
-				}
+				this.getRisks(input, removedTokensKeys);
+				this.checkLimits();
+				this.onChangeData();
 			},
 			
 			// Next page function
@@ -399,6 +402,7 @@ sap.ui.define([
 				var newItem = new sap.m.CustomListItem();
 				newItem.addContent(fragmentClone);
 				list.addItem(newItem);
+				this.onChangeData();
 			},
 			copy: function(oEvent){
 				var button = oEvent.getSource();
@@ -436,6 +440,7 @@ sap.ui.define([
 					list.addItem(clone);
 					list.fireUpdateFinished();
 				}
+				this.onChangeData();
 				this.checkLimits();
 			},
 			delete: function(oEvent){
@@ -451,6 +456,7 @@ sap.ui.define([
 								for(var i=0; i<selectedItems.length; i++){
 									list.removeItem(selectedItems[i]);
 								}
+								this.onChangeData();
 							} else {
 								MessageToast.show("Delete canceled!");
 							}
@@ -508,7 +514,7 @@ sap.ui.define([
 			},
 		
 			// Set odata from any dialog, argument object = any object / return object inputs Data
-			getData: function(object){
+			getData: function(object, isSave){
 				var oData = {};
 				var inputs = this.getInputs(object);
 				for(var i = 0; i < inputs.length; i++){
@@ -516,15 +522,15 @@ sap.ui.define([
 					if(input["sId"].indexOf('hbox') > -1){
 						var vboxes = input.getItems();
 						for(var j = 0; j < vboxes.length; j++){
-							oData = this.mergeObjects(oData, this.getDataInner(vboxes[j].getItems()[1]));
+							oData = this.mergeObjects(oData, this.getDataInner(vboxes[j].getItems()[1], isSave));
 						}
 					}else{
-						oData = this.mergeObjects(oData, this.getDataInner(input));
+						oData = this.mergeObjects(oData, this.getDataInner(input, isSave));
 					}
 				}
 				return oData;
 			},
-			getDataInner: function(input){
+			getDataInner: function(input, isSave){
 				var oData = {};
 				for(var j = 0; j < this.typeArr.length; j++){
 					var type = this.typeArr[j];
@@ -566,7 +572,9 @@ sap.ui.define([
 						if(input.hasOwnProperty("_oMaxDate")){
 							value = input.getDateValue();
 							if(value) {
-								value.setMinutes(-value.getTimezoneOffset());
+								if(isSave){
+									value.setMinutes(-value.getTimezoneOffset());
+								}
 							} else { 
 								value = null;
 							}
@@ -709,13 +717,16 @@ sap.ui.define([
 				var dp2,date2;
 				if(type === "dateFrom"){
 					dp2 = dp.getParent().getParent().getItems()[1].getItems()[1];
+					if(dp.getDateValue() && dp2.getDateValue() && dp.getDateValue() > dp2.getDateValue()){
+						this.alert(this.getResourceBundle().getText("wrongDates"));
+						return true;
+					}
 					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
 					title.setText(date + " - " + date2);
 				}else{
 					dp2 = dp.getParent().getParent().getItems()[0].getItems()[1];
 					if(dp.getDateValue() && dp2.getDateValue() && dp.getDateValue() < dp2.getDateValue()){
-						var msg = this.getResourceBundle().getText("wrongDates");
-						this.alert(msg);
+						this.alert(this.getResourceBundle().getText("wrongDates"));
 						return true;
 					}
 					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
@@ -1102,6 +1113,11 @@ sap.ui.define([
 			},
 			
 			// On Compliance Risks list update finished
+			checkCounterparties: function(oEvent){
+				this.checkBlacklist(oEvent);
+				this.checkCountries(oEvent);
+			},
+			
 			checkBlacklist: function(oEvent){
 				var list = oEvent.getSource();
 				var counterparties = list.getItems();
@@ -1119,6 +1135,23 @@ sap.ui.define([
 				}
 				if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
 					this.byId("requestBlacklist").setEnabled(false);
+				}
+			},
+			
+			checkCountries: function(oEvent){
+				var text = this.byId("countriesSanction");
+				var countries = '';
+				var items = oEvent.getSource().getItems();
+				for(var i = 0; i < items.length; i++){
+					if(items[i].data("country")){
+						countries = countries + items[i].data("country") + ", ";
+					}
+				}
+				if(countries){
+					countries = countries.slice(0,-2);
+					text.setText(countries).addStyleClass("red");
+				}else{
+					text.setText(this.getResourceBundle().getText("none")).removeStyleClass("red");
 				}
 			},
 			
@@ -1187,23 +1220,32 @@ sap.ui.define([
 				}else{
 					this.setInput(["purchaseGroup", "purchaseGroupLabel"], false, "Visible");
 				}
+				this.byId("counterpartyPopupValueHelp").removeAllTokens();
 				this.filterByType(offerType);
 				this.checkLimits();
 			},
 			
-			filterByType: function(offerType){
+			filterByType: function(offerType, isCompany){
 				var companyBranch = this.byId("companyBranch");
 				companyBranch.bindItems({
 					path: "/dictionaryCompanyBranchSet",
 					template: companyBranch['mBindingInfos'].items.template.clone(),
 					parameters: { custom: { OfferType: offerType } }
 				});
-				var counterparty = sap.ui.getCore().byId("counterpartyPopup");
-				counterparty.bindItems({
-					path: "/offerCounterpartySet",
-					template: counterparty['mBindingInfos'].items.template.clone(),
-					parameters: { custom: { OfferType: offerType } }
-				});
+				if(!isCompany){
+					var counterpartyPopup = sap.ui.getCore().byId("counterpartyPopup");
+					var counterpartyValueHelp = this.byId("counterpartyPopupValueHelp");
+					counterpartyPopup.bindItems({
+						path: "/offerCounterpartySet",
+						template: counterpartyPopup['mBindingInfos'].items.template.clone(),
+						parameters: { custom: { OfferType: offerType } }
+					});
+					counterpartyValueHelp.bindAggregation("suggestionItems", {
+						path: "/offerCounterpartySet",
+						template: counterpartyValueHelp['mBindingInfos'].suggestionItems.template.clone(),
+						parameters: { custom: { OfferType: offerType } }
+					});
+				}
 			}
 		});
 	}
