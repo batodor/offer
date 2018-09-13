@@ -88,7 +88,7 @@ sap.ui.define([
 			dataReceived: function(oEvent){
 				var that = this;
 				if(this.TCNumber && !this.Type){
-					if(oEvent.getParameters("data") && oEvent.getParameters("data").data.TCNumber){
+					if(oEvent.getParameters("data") && oEvent.getParameters("data").data && oEvent.getParameters("data").data.TCNumber){
 						this.byId("navCon").to(this.byId("p2"));
 						this.data = oEvent.getParameters("data").data;
 						var status = this.data.Status;
@@ -242,7 +242,6 @@ sap.ui.define([
 							token.data("country", data.Country);
 							newTokens.push(token);
 						}
-						this.byId("counterpartyOne").setValue(data.Code);
 					}else{
 						var value = data.hasOwnProperty("Name") ? data.Name : data[key];
 						valueHelp.data("data", data[key]);
@@ -252,6 +251,7 @@ sap.ui.define([
 				}
 				if(id === "counterpartyPopup"){
 					valueHelp.setTokens(newTokens);
+					this.byId("counterpartyOne").setValue(newTokens[0].Code);
 					if(newTokens.length > 3){
 						this.alert(this.getResourceBundle().getText("plsSelect3"));
 						return true;
@@ -337,8 +337,8 @@ sap.ui.define([
 					removedTokensKeys.push(removedTokens[i].getKey());
 				}
 				this.getRisks(input, removedTokensKeys);
-				this.checkLimits();
 				this.onChangeData();
+				this.checkLimits();
 			},
 			
 			// Next page function
@@ -645,7 +645,7 @@ sap.ui.define([
 				return inputs;
 			},
 			
-			getVolumeData: function(){
+			getVolumeData: function(isSave){
 				var oData = {};
 				oData.data = {};
 				oData.check = "";
@@ -653,8 +653,8 @@ sap.ui.define([
 				var volumes = list.getItems();
 				oData.data.ToOfferVolume = [];
 				for(var i = 0; i < volumes.length; i++){
-					var volumeName = this.getData(volumes[i].getContent()[0].getHeaderToolbar());
-					var volumeData = this.getData(volumes[i].getContent()[0].getContent()[0]);
+					var volumeName = this.getData(volumes[i].getContent()[0].getHeaderToolbar(), isSave);
+					var volumeData = this.getData(volumes[i].getContent()[0].getContent()[0], isSave);
 					var allVolumeData = this.mergeObjects(volumeName, volumeData);
 					
 					var volumeCheck = this.checkDataInner(allVolumeData, ["Incoterms", "DeliveryPoint", "FixPrice"]);
@@ -689,7 +689,7 @@ sap.ui.define([
 					allVolumeData.ToOfferPeriod = [];
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
-						var periodData = this.getData(period);
+						var periodData = this.getData(period, isSave);
 						allVolumeData.ToOfferPeriod.push(periodData);
 						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo", "NumberOfShipments"]);
 						if(checkPeriods && oData.check){
@@ -1207,7 +1207,6 @@ sap.ui.define([
 				if(oEvent.getParameters("reason").reason === "Refresh" && oEvent.getSource().data("id") === "period"){
 					this.getData(["pageOfferDetails", "parameters"]);
 					this.getVolumeData();
-					
 					this.checkLimits();
 				}
 			},
