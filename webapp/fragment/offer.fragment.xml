@@ -85,8 +85,8 @@
 					width="100%" forceSelection="false" items="{ path: '/dictionaryPaymentMethodSet', sorter: { path: 'Name' } }">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>
-				<Label class="topLabel" text="{i18n>paymentTerms}"/>
-				<Select change="checkLimits" id="paymentTerms" selectedKey="{PaymentTerm}" width="100%" forceSelection="false" 
+				<Label class="topLabel" text="{i18n>paymentTerm}"/>
+				<Select change="checkLimits" id="paymentTerm" selectedKey="{PaymentTerm}" width="100%" forceSelection="false" 
 					items="{ path: '/dictionaryPaymentTermSet', sorter: { path: 'Name' }}">
 					<core:Item key="{Code}" text="{Name}"/>
 				</Select>

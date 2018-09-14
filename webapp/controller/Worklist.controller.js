@@ -206,7 +206,7 @@ sap.ui.define([
 			
 			// Actually opens the approve dialog
 			tableApprove: function(oEvent){
-				var checkArr = ["tradingPurpose", "product", "paymentMethod", "meansOfTransport"];
+				var checkArr = ["tradingPurpose", "product", "paymentMethod", "paymentTerm", "meansOfTransport"];
 				var check = "";
 				for(var i = 0; i < checkArr.length; i++){
 					var input = this.byId(checkArr[i]) || sap.ui.getCore().byId(checkArr[i]);
