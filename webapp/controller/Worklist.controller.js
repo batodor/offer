@@ -50,6 +50,10 @@ sap.ui.define([
 					if(this.Type && !this.TCNumber){
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer2"));
 						this.byId("navCon").to(this.byId("p1"));
+						var that = this;
+						this.byId("offerId").onsapenter = function(e) {
+					        that.byId("openOfferButton").firePress();
+					    };
 					}else if(this.TCNumber){
 						this.getView().bindElement({ 
 							path: "/offerHeaderSet('" + this.TCNumber + "')",
@@ -640,11 +644,21 @@ sap.ui.define([
 			handleSuggest: function(oEvent) {
 				var sTerm = oEvent.getParameter("suggestValue");
 				var filterName = oEvent.getSource().data("select") ? oEvent.getSource().data("select") : "Name";
+				if(filterName.indexOf(';') > -1){
+					var filtersArr = filterName.split(';');
+				}
 				var aFilters = [];
 				if (sTerm) {
-					aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.Contains, sTerm));
+					if(filtersArr){
+						for(var i = 0; i < filtersArr.length; i++){
+							aFilters.push(new Filter(filtersArr[i], sap.ui.model.FilterOperator.Contains, sTerm));
+						}
+					}else{
+						aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.Contains, sTerm));
+					}
 				}
-				oEvent.getSource().getBinding("suggestionItems").filter(aFilters);
+				var filter = new Filter({filters: aFilters, and: false});
+				oEvent.getSource().getBinding("suggestionItems").filter(filter);
 			},
 			suggestionItemSelected: function(oEvent){
 				var valueHelp = oEvent.getSource();

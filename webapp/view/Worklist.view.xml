@@ -36,7 +36,7 @@
 								custom:set="dictionarySearchOffer"
 								custom:key="TCNumber"
 								custom:filters="Code,Name"
-								custom:select="PartnerName"
+								custom:select="PartnerName;TCNumber"
 								custom:name="PartnerName"
 								showValueHelp="true"
 								valueHelpRequest="handleValueHelp"
@@ -57,6 +57,7 @@
 									custom:check="true"
 									custom:edit="true"
 									custom:id="offerIdVbox"
+									id="openOfferButton"
 									press="nextPage" text="{i18n>open}" />
 							</Toolbar>
 						</footer>
