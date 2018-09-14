@@ -232,6 +232,8 @@ sap.ui.define([
 				var select = this.byId(id + "Select") || sap.ui.getCore().byId(id + "Select");
 				if (selectedCount > 0) {
 					select.setEnabled(true);
+				}else{
+					select.setEnabled(false);
 				}
 			},
 			
@@ -894,7 +896,10 @@ sap.ui.define([
 					var id = data.d.Product;
 					select.setSelectedKey(id);
 				});
-				select.setEnabled(true);
+				var status = this.data.Status;
+				if(!(status === "1" || status === "6" || status === "7")){
+					select.setEnabled(true);
+				}
 			},
 			
 			// Default alert message
@@ -969,8 +974,9 @@ sap.ui.define([
 				var id = button.data("id");
 				var dynamicId = button.getId();
 				var filters = button.data("filters");
+				var table = sap.ui.getCore().byId(id);
+				var select = sap.ui.getCore().byId(id + "Select");
 				if(id === "portPopup"){
-					var table = sap.ui.getCore().byId(id);
 					table.getBinding("items").filter([new Filter("MeansOfTransport", FilterOperator.EQ, this.byId("meansOfTransport").getSelectedKey())]);
 				}
 				this.search = {}; // nullify search object
@@ -986,8 +992,10 @@ sap.ui.define([
 						}
 					}
 				}
-				sap.ui.getCore().byId(id + "Select").data("dynamicId", dynamicId);
-				this[id + "Dialog"].getButtons()[1].setEnabled(false);
+				select.data("dynamicId", dynamicId);
+				if(table.getSelectedItems().length === 0){
+					select.setEnabled(false);
+				}
 				this[id + "Dialog"].open();
 			},
 			
