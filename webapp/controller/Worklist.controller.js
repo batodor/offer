@@ -69,8 +69,11 @@ sap.ui.define([
 						// Disable save buttons and enable approve if no changes(on init)
 						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 						this.byId("tableApprove").setEnabled(true);
+						this.isBlacklist = false;
 					}else{
-						this.byId("creationDate").setDateValue(new Date());
+						var now = new Date();
+						var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+						this.byId("creationDate").setDateValue(utc);
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.setInput(["uploadDownload", "uploadDelete"], false, "Visible");
@@ -207,7 +210,7 @@ sap.ui.define([
 			// Actually opens the approve dialog
 			tableApprove: function(oEvent){
 				var checkArr = ["tradingPurpose", "product", "paymentMethod", "paymentTerm", "meansOfTransport"];
-				var check = "";
+				var check = this.getVolumeData().check;
 				for(var i = 0; i < checkArr.length; i++){
 					var input = this.byId(checkArr[i]) || sap.ui.getCore().byId(checkArr[i]);
 					check = check + this.checkKeysInner(input, checkArr[i]);
@@ -215,9 +218,17 @@ sap.ui.define([
 				if(this.byId("volumesList").getItems().length === 0){
 					check = check + this.getModel('i18n').getResourceBundle().getText("volume") + ", ";
 				}
-				if(check){
-					var msg = this.getModel('i18n').getResourceBundle().getText("plsEnter") + " " + check.slice(0, -2);
-					this.alert(msg);
+				if(check || this.isBlacklist){
+					if(check){
+						check = this.getResourceBundle().getText("plsFillIn") + " \n\n " + check.slice(0,-2);
+						if(this.isBlacklist){
+							check = check + "\n" + this.getResourceBundle().getText("counterpartyBlacklisted");
+						}
+					}else{
+						check = this.getResourceBundle().getText("counterpartyBlacklisted");
+					}
+					this.alert(check);
+					return true;
 				}else{
 					var id = oEvent.getSource().data("id");
 					this[id + "Dialog"].open();
@@ -1168,14 +1179,13 @@ sap.ui.define([
 			checkBlacklist: function(oEvent){
 				var list = oEvent.getSource();
 				var counterparties = list.getItems();
-				var isBlacklist = false;
 				for(var i = 0; i < counterparties.length; i++){
 					var blacklist = counterparties[i].getContent()[0].getContent()[0].getItems()[0].getItems()[1].getItems()[1].getText();
 					if(blacklist === "Blacklisted"){
-						isBlacklist = true;
+						this.isBlacklist = true;
 					}
 				}
-				if(isBlacklist){
+				if(this.isBlacklist){
 					this.byId("requestBlacklist").setEnabled(true);
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
