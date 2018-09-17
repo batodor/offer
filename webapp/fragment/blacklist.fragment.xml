@@ -13,9 +13,11 @@
 					<Panel expandable="true" expanded="true" width="auto">
 						<headerToolbar>
 							<Toolbar height="3rem">
-								<Title text="{Name}" />
+								<Link class="sapMTitleStyleH6" text="{Name}" target="_blank"
+									href="/sap/bc/ui2/flp#ZTS_BUSINESS_PARTNER-display&amp;/CounterpartyHeaderSet/{Code}" />
 								<ToolbarSpacer />
-								<Link text="{i18n>details}" custom:id="{Code}" press="gotoLink" />
+								<Title titleStyle="H6" text="{Code}" />
+								<!--<Link text="{i18n>details}" custom:id="{Code}" press="gotoLink" />-->
 							</Toolbar>
 						</headerToolbar>
 						<content>

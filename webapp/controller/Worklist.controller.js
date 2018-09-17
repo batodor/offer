@@ -656,6 +656,9 @@ sap.ui.define([
 				var input = oEvent.getSource();
 				var sTerm = oEvent.getParameter("suggestValue");
 				var filterName = input.data("select") ? input.data("select") : "Name";
+				var customParameter = input.data("customParameter");
+				var customSet = input.data("set");
+				
 				if(filterName.indexOf(';') > -1){
 					var filtersArr = filterName.split(';');
 				}
@@ -669,16 +672,32 @@ sap.ui.define([
 					}else{
 						aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.Contains, sTerm));
 					}
-					if(input.data("id") === "portPopup"){
-						var transport = this.byId("meansOfTransport").getSelectedKey();
-						if(transport){
-							aFilters.push(new Filter("MeansOfTransport", sap.ui.model.FilterOperator.EQ, transport));
-							isAnd = true;
-						}
-					}
 				}
 				var filter = new Filter({filters: aFilters, and: isAnd});
-				oEvent.getSource().getBinding("suggestionItems").filter(filter);
+				
+				if(customParameter && !input.getBinding("suggestionItems").sCustomParams){
+					var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
+					for(var k = 0; k < this.typeArr.length; k++){
+						var customType = this.typeArr[k]; 
+						if(customInput["mProperties"].hasOwnProperty(customType)){
+							var customCall = "get" + customType.charAt(0).toUpperCase() + customType.substr(1) + "()";
+							var customStr = "customInput." + customCall;
+							var customValue = eval(customStr);
+							var parameters = {};
+							parameters.custom = {};
+							parameters.custom[customParameter] = customValue;
+							input.bindAggregation("suggestionItems", {
+								path: "/" + customSet + "Set",
+								template: input['mBindingInfos'].suggestionItems.template.clone(),
+								parameters: parameters,
+								filters: filter
+							});
+						}
+					}
+				}else{
+					input.getBinding("suggestionItems").filter(filter);
+				}
+				
 			},
 			suggestionItemSelected: function(oEvent){
 				var valueHelp = oEvent.getSource();
@@ -993,8 +1012,26 @@ sap.ui.define([
 				var filters = button.data("filters");
 				var table = sap.ui.getCore().byId(id);
 				var select = sap.ui.getCore().byId(id + "Select");
-				if(id === "portPopup"){
-					table.getBinding("items").filter([new Filter("MeansOfTransport", FilterOperator.EQ, this.byId("meansOfTransport").getSelectedKey())]);
+				var customParameter = button.data("customParameter");
+				var customSet = button.data("set");
+				if(customParameter){
+					var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
+					for(var k = 0; k < this.typeArr.length; k++){
+						var customType = this.typeArr[k]; 
+						if(customInput["mProperties"].hasOwnProperty(customType)){
+							var customCall = "get" + customType.charAt(0).toUpperCase() + customType.substr(1) + "()";
+							var customStr = "customInput." + customCall;
+							var customValue = eval(customStr);
+							var parameters = {};
+							parameters.custom = {};
+							parameters.custom[customParameter] = customValue;
+							table.bindItems({
+								path: "/" + customSet +"Set",
+								template: table['mBindingInfos'].items.template.clone(),
+								parameters: parameters
+							});
+						}
+					}
 				}
 				this.search = {}; // nullify search object
 				if(filters){
@@ -1135,7 +1172,7 @@ sap.ui.define([
 				this.byId("limitTonnageIcon").setColor(oResult.TonnageExceed ? "red" : "green").setSrc(oResult.TonnageExceed ? 'sap-icon://alert' : 'sap-icon://accept');
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
-				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + " " + oResult.TonnageUoM);
+				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + oResult.TonnageUoM);
 				// if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
 				// 	this.byId("requestLimit").setEnabled(true);
 				// }else{

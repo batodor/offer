@@ -37,7 +37,7 @@
 					custom:set="dictionaryDeliveryPoint"
 					custom:key="deliveryPoint"
 					custom:select="Name"
-					custom:filters="Country,Code,Name"
+					custom:customParameter="meansOfTransport"
 					custom:name="DeliveryPoint"
 					custom:data="{DeliveryPoint}"
 					showValueHelp="true"
