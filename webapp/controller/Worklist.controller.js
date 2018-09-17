@@ -71,9 +71,7 @@ sap.ui.define([
 						this.byId("tableApprove").setEnabled(true);
 						this.isBlacklist = false;
 					}else{
-						var now = new Date();
-						var utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-						this.byId("creationDate").setDateValue(utc);
+						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.setInput(["uploadDownload", "uploadDelete"], false, "Visible");
@@ -655,11 +653,13 @@ sap.ui.define([
 			},
 
 			handleSuggest: function(oEvent) {
+				var input = oEvent.getSource();
 				var sTerm = oEvent.getParameter("suggestValue");
-				var filterName = oEvent.getSource().data("select") ? oEvent.getSource().data("select") : "Name";
+				var filterName = input.data("select") ? input.data("select") : "Name";
 				if(filterName.indexOf(';') > -1){
 					var filtersArr = filterName.split(';');
 				}
+				var isAnd = false;
 				var aFilters = [];
 				if (sTerm) {
 					if(filtersArr){
@@ -669,8 +669,15 @@ sap.ui.define([
 					}else{
 						aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.Contains, sTerm));
 					}
+					if(input.data("id") === "portPopup"){
+						var transport = this.byId("meansOfTransport").getSelectedKey();
+						if(transport){
+							aFilters.push(new Filter("MeansOfTransport", sap.ui.model.FilterOperator.EQ, transport));
+							isAnd = true;
+						}
+					}
 				}
-				var filter = new Filter({filters: aFilters, and: false});
+				var filter = new Filter({filters: aFilters, and: isAnd});
 				oEvent.getSource().getBinding("suggestionItems").filter(filter);
 			},
 			suggestionItemSelected: function(oEvent){
@@ -907,8 +914,7 @@ sap.ui.define([
 					var id = data.d.Product;
 					select.setSelectedKey(id);
 				});
-				var status = this.data.Status;
-				if(!(status === "1" || status === "6" || status === "7")){
+				if(!((this.data && this.data.Status === "1") || (this.data && this.data.Status === "6") || (this.data && this.data.Status === "7")) || !this.TCNumber){
 					select.setEnabled(true);
 				}
 			},
