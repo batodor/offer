@@ -59,7 +59,7 @@ sap.ui.define([
 							path: "/offerHeaderSet('" + this.TCNumber + "')",
 							events: { dataReceived: this.dataReceived.bind(this) }
 						});
-						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox"], true, "Visible");
+						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox", "uploadButton"], true, "Visible");
 						if(this.Type === "Copy"){
 							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
 						}else{
@@ -74,7 +74,7 @@ sap.ui.define([
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
-						this.setInput(["uploadDownload", "uploadDelete"], false, "Visible");
+						this.setInput(["uploadDownload", "uploadDelete", "uploadButton"], false, "Visible");
 					}
 				}.bind(this));
 			},
@@ -302,28 +302,34 @@ sap.ui.define([
 				this[id + "Dialog"].close();
 			},
 			dialogApprove: function(oEvent){
-				var uploadItems = sap.ui.getCore().byId("approveUpload").getSelectedItems();
-				var attachList = '';
-				for(var i = 0; i < uploadItems.length; i++){
-					attachList = attachList + this.getModel().getData(uploadItems[i].getBindingContextPath()).FileGUID + ";";
+				var validityDate = sap.ui.getCore().byId("approvalValidityDateTime").getDateValue();
+				if(validityDate && validityDate instanceof Date){
+					validityDate.setMinutes(validityDate.getMinutes() + (-validityDate.getTimezoneOffset()));
+					var uploadItems = sap.ui.getCore().byId("approveUpload").getSelectedItems();
+					var attachList = '';
+					for(var i = 0; i < uploadItems.length; i++){
+						attachList = attachList + this.getModel().getData(uploadItems[i].getBindingContextPath()).FileGUID + ";";
+					}
+					attachList = attachList.slice(0,-1);
+					
+					// Consider selected date as UTC date
+					
+					var oFuncParams = { 
+						TCNumber: this.TCNumber,
+						Comment: sap.ui.getCore().byId("approveComment").getValue(),
+						ValidityDate: validityDate,
+						ValidityTimeZone: sap.ui.getCore().byId("approvalValidityTimeZone").getSelectedKey(),
+						AttachList: attachList,
+						GlobalTrader: sap.ui.getCore().byId("approveTrader").getSelectedKey()
+					};
+					this.getModel().callFunction("/SentOfferToApproval", {
+						method: "POST",
+						urlParameters: oFuncParams,
+						success: this.onApproveSuccess.bind(this, "SentOfferToApproval")
+					});
+				}else{
+					this.alert(this.getResourceBundle().getText("plsEnter") + " " + this.getResourceBundle().getText("validityDate"));
 				}
-				attachList = attachList.slice(0,-1);
-				var dUTCDate = sap.ui.getCore().byId("approvalValidityDateTime").getDateValue();
-				// Consider selected date as UTC date
-				dUTCDate.setMinutes(dUTCDate.getMinutes() + (-dUTCDate.getTimezoneOffset()));
-				var oFuncParams = { 
-					TCNumber: this.TCNumber,
-					Comment: sap.ui.getCore().byId("approveComment").getValue(),
-					ValidityDate: dUTCDate,
-					ValidityTimeZone: sap.ui.getCore().byId("approvalValidityTimeZone").getSelectedKey(),
-					AttachList: attachList,
-					GlobalTrader: sap.ui.getCore().byId("approveTrader").getSelectedKey()
-				};
-				this.getModel().callFunction("/SentOfferToApproval", {
-					method: "POST",
-					urlParameters: oFuncParams,
-					success: this.onApproveSuccess.bind(this, "SentOfferToApproval")
-				});
 			},
 			onApproveSuccess: function(link, oData) {
 				var oResult = oData[link];
