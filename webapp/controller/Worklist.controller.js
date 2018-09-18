@@ -40,7 +40,9 @@ sap.ui.define([
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 				this.isRisk = {};
 				this.isChanged = false;
-				
+				this.isLimitsChanged = false;
+				this.isRisksChanged = false;
+				this.isBlacklistChanged = false;
 				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
 			},
 			
@@ -84,7 +86,7 @@ sap.ui.define([
 			onChangeData: function(){
 				if(!this.isChanged){
 					this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
-					this.setInput(["tableApprove","requestBlacklist", "requestLimit", "requestRisk"], false, "Enabled");
+					this.setInput(["tableApprove"], false, "Enabled");
 					this.isChanged = true;
 				}
 			},
@@ -99,16 +101,15 @@ sap.ui.define([
 						this.data = oEvent.getParameters("data").data;
 						var status = this.data.Status;
 						if(status === "1" || status === "6" || status === "7"){
-							this.setDisabled(["pageOfferDetails", "parameters"]);
+							this.setEnabled(["pageOfferDetails", "parameters"], false);
 							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
 								"uploadDelete", "uploadHbox"], false, "Visible");
 							this.status = status;
+							if(status === "7"){
+								this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
+								this.byId("comment").setEnabled(true);
+							}
 						}
-						if(status === "7"){
-							this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
-							this.byId("comment").setEnabled(true);
-						}
-						
 						//Filter branch offices
 						this.filterByType(this.data.OfferType, true);
 					}
@@ -686,24 +687,19 @@ sap.ui.define([
 				}
 				var filter = new Filter({filters: aFilters, and: isAnd});
 				
-				if(customParameter && !input.getBinding("suggestionItems").sCustomParams){
+				if(customParameter){
 					var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
-					for(var k = 0; k < this.typeArr.length; k++){
-						var customType = this.typeArr[k]; 
-						if(customInput["mProperties"].hasOwnProperty(customType)){
-							var customCall = "get" + customType.charAt(0).toUpperCase() + customType.substr(1) + "()";
-							var customStr = "customInput." + customCall;
-							var customValue = eval(customStr);
-							var parameters = {};
-							parameters.custom = {};
-							parameters.custom[customParameter] = customValue;
-							input.bindAggregation("suggestionItems", {
-								path: "/" + customSet + "Set",
-								template: input['mBindingInfos'].suggestionItems.template.clone(),
-								parameters: parameters,
-								filters: filter
-							});
-						}
+					var customValue = customInput.getSelectedKey();
+					if(input.getBinding("suggestionItems").sCustomParams !== customParameter + "=" + customValue){
+						var parameters = {};
+						parameters.custom = {};
+						parameters.custom[customParameter] = customValue;
+						input.bindAggregation("suggestionItems", {
+							path: "/" + customSet + "Set",
+							template: input['mBindingInfos'].suggestionItems.template.clone(),
+							parameters: parameters,
+							filters: filter
+						});
 					}
 				}else{
 					input.getBinding("suggestionItems").filter(filter);
@@ -1069,19 +1065,23 @@ sap.ui.define([
 				this[id + "Dialog"].open();
 			},
 			
-			openMail: function(oEvent){
+			callRequest: function(oEvent){
 				var button = oEvent.getSource();
 				var type = button.data("type");
-				button.setEnabled(false);
-				var oFuncParams = {
-					TCNumber: this.byId("TCNumber").getValue(),
-					RequestType: type
-				};
-				this.getModel().callFunction("/RequestUpdates", {
-					method: "POST",
-					urlParameters: oFuncParams,
-					success: this.onRequestSuccess.bind(this, "RequestUpdates")
-				});
+				if((type === "L" && this.isLimitsChanged) || (type === "R" && this.isRisksChanged) || (type === "B" && this.isBlacklistChanged)){
+					this.alert(this.getResourceBundle().getText("plsSaveOffer"));
+				}else{
+					button.setEnabled(false);
+					var oFuncParams = {
+						TCNumber: this.byId("TCNumber").getValue(),
+						RequestType: type
+					};
+					this.getModel().callFunction("/RequestUpdates", {
+						method: "POST",
+						urlParameters: oFuncParams,
+						success: this.onRequestSuccess.bind(this, "RequestUpdates")
+					});
+				}
 			},
 			onRequestSuccess: function(link, oData) {
 				var oResult = oData[link];
@@ -1276,45 +1276,45 @@ sap.ui.define([
 				window.open("/sap/bc/ui2/flp#ZTS_BUSINESS_PARTNER-display&/CounterpartyHeaderSet/" + id);
 			},
 			
-			// Sets disabled object/array inside inputs
-			setDisabled: function(objArr){
+			// Sets disabled/enabled object/array inside inputs
+			setEnabled: function(objArr, flag){
 				var inputs = this.getInputs(objArr);
 				for(var i = 0; i < inputs.length; i++){
 					var input = inputs[i];
 					if(input["sId"].indexOf('hbox') > -1){
 						var vboxes = input.getItems();
 						for(var j = 0; j < vboxes.length; j++){
-							this.setDisabledInner(vboxes[j].getItems()[1]);
+							this.setEnabledInner(vboxes[j].getItems()[1], flag);
 						}
 					}else{
-						this.setDisabledInner(input);
+						this.setEnabledInner(input, flag);
 					}
 					
 				}
 			},
 			
-			setDisabledInner: function(input){
+			setEnabledInner: function(input, flag){
 				for(var i = 0; i < this.typeArr.length; i++){
 					if(input["mBindingInfos"].hasOwnProperty(this.typeArr[i]) || input.hasOwnProperty("_tokenizer")){
-						input.setEnabled(false);
+						input.setEnabled(flag);
 					}
 				}
 			},
 			
 			onVolumesPeriodsLoaded: function(oEvent){
 				// Set Disabled volumes and periods if status is defined as 1, 6 or 7
-				if(this.status){
-					var list = oEvent.getSource();
-					var volumes = list.getItems();
-					var id = list.data("id");
-					list.setMode("None");
-					for(var i = 0; i < volumes.length; i++){
-						this.setDisabled(volumes[i].getContent()[0].getContent()[0]);
-						if(id === "volume"){
-							var toolbar = volumes[i].getContent()[0].getContent()[1].getHeaderToolbar().getContent();
-							for(var j = 0; j < toolbar.length; j++){
-								toolbar[j].setVisible(false);
-							}
+				var flag = this.status ? false : true;
+				var mode = this.status ? "None" : "SingleSelectMaster";
+				var list = oEvent.getSource();
+				var volumes = list.getItems();
+				var id = list.data("id");
+				list.setMode(mode);
+				for(var i = 0; i < volumes.length; i++){
+					this.setEnabled(volumes[i].getContent()[0].getContent()[0], flag);
+					if(id === "volume"){
+						var toolbar = volumes[i].getContent()[0].getContent()[1].getHeaderToolbar().getContent();
+						for(var j = 0; j < toolbar.length; j++){
+							toolbar[j].setVisible(flag);
 						}
 					}
 				}

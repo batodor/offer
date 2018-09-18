@@ -107,9 +107,9 @@
 				<Title text="{i18n>requestUpdates}" titleStyle="H3"/>
 			</OverflowToolbar>
 			<HBox alignContent="Center" justifyContent="SpaceBetween" width="100%">
-				<Button id="requestBlacklist" text="{i18n>blacklist}" enabled="false" custom:type="B" width="100px" press="openMail" />
-				<Button id="requestLimit" text="{i18n>limits}" enabled="{ApprLimitsRequired}" custom:type="L" width="100px" press="openMail" />
-				<Button id="requestRisk" text="{i18n>risks}" enabled="{ApprRisksRequired}" custom:type="R" width="100px" press="openMail" />
+				<Button id="requestBlacklist" text="{i18n>blacklist}" enabled="false" custom:type="B" width="100px" press="callRequest" />
+				<Button id="requestLimit" text="{i18n>limits}" enabled="{ApprLimitsRequired}" custom:type="L" width="100px" press="callRequest" />
+				<Button id="requestRisk" text="{i18n>risks}" enabled="{ApprRisksRequired}" custom:type="R" width="100px" press="callRequest" />
 			</HBox>
 		</content>
 	</Panel>
