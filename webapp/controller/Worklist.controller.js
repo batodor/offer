@@ -40,6 +40,8 @@ sap.ui.define([
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 				this.isRisk = {};
 				this.isChanged = false;
+				
+				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
 			},
 			
 			// After offer loaded, sets the mode Create/Edit
@@ -800,7 +802,7 @@ sap.ui.define([
 				var dp = oEvent.getSource();
 				var type = dp.data("key");
 				var title = dp.getParent().getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
-				var date = dp.getDateValue() ? dp.getDateValue().toLocaleDateString("en-US") : '';
+				var date = dp.getDateValue();
 				var dp2,date2;
 				if(type === "dateFrom"){
 					dp2 = dp.getParent().getParent().getItems()[1].getItems()[1];
@@ -808,18 +810,23 @@ sap.ui.define([
 						this.alert(this.getResourceBundle().getText("wrongDates"));
 						return true;
 					}
-					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString("en-US") : '';
-					title.setText(date + " - " + date2);
+					date2 = dp2.getDateValue();
+					title.setText(this.formatDate(date) + " - " + this.formatDate(date2));
 				}else{
 					dp2 = dp.getParent().getParent().getItems()[0].getItems()[1];
 					if(dp.getDateValue() && dp2.getDateValue() && dp.getDateValue() < dp2.getDateValue()){
 						this.alert(this.getResourceBundle().getText("wrongDates"));
 						return true;
 					}
-					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString("en-US") : '';
-					title.setText(date2 + " - " + date);
+					date2 = dp2.getDateValue();
+					title.setText(this.formatDate(date2) + " - " + this.formatDate(date));
 				}
 				this.checkLimits();
+			},
+			
+			formatDate: function(date){
+				var newDate = date ? date.toLocaleDateString("ru-RU") : "";
+				return newDate;
 			},
 			
 			// On select item in Attachments table
