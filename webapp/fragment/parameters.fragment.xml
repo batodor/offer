@@ -44,7 +44,7 @@
 					suggestionItemSelected="suggestionItemSelected"
 					suggestionItems="{ path: '/dictionaryCurrencySet', templateShareable:false }">
 					<suggestionItems>
-						<core:Item key="{Code}" text="{Name}" />
+						<core:Item key="{Code}" text="{Code}" />
 					</suggestionItems>
 				</Input>
 				<Label class="topLabel" text="{i18n>volumeUom}" />
@@ -64,7 +64,7 @@
 					suggestionItemSelected="suggestionItemSelected"
 					suggestionItems="{ path: '/dictionaryVolumeUOMSet', templateShareable:false }">
 					<suggestionItems>
-						<core:Item key="{Code}" text="{Name}" />
+						<core:Item key="{Code}" text="{Code}" />
 					</suggestionItems>
 				</Input>
 			</VBox>

@@ -279,12 +279,12 @@ sap.ui.define([
 							newTokens.push(token);
 						}
 					}else{
-						var value = data.hasOwnProperty("Name") ? data.Name : data[key];
+						var value = data.hasOwnProperty("Name") && !(id === "currencyPopup" || id === "volumeUomPopup" ) ? data.Name : data[key];
 						valueHelp.data("data", data[key]);
 						valueHelp.setValue(value);
 						this.onChangeData();
 						if(id === "portPopup" && data.SanctionCountry){
-							this.checkPorts(data.SanctionCountry);
+							// this.checkPorts(data.SanctionCountry);
 						}
 					}
 				}
@@ -597,7 +597,7 @@ sap.ui.define([
 						}else{
 							value = input.getProperty(type);
 						}
-						if(input.data("data")){
+						if(input.data("data") && type !== "tokens"){
 							value = input.data("data");
 						}
 						
@@ -800,7 +800,7 @@ sap.ui.define([
 				var dp = oEvent.getSource();
 				var type = dp.data("key");
 				var title = dp.getParent().getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
-				var date = dp.getDateValue() ? dp.getDateValue().toLocaleDateString() : '';
+				var date = dp.getDateValue() ? dp.getDateValue().toLocaleDateString("en-US") : '';
 				var dp2,date2;
 				if(type === "dateFrom"){
 					dp2 = dp.getParent().getParent().getItems()[1].getItems()[1];
@@ -808,7 +808,7 @@ sap.ui.define([
 						this.alert(this.getResourceBundle().getText("wrongDates"));
 						return true;
 					}
-					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
+					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString("en-US") : '';
 					title.setText(date + " - " + date2);
 				}else{
 					dp2 = dp.getParent().getParent().getItems()[0].getItems()[1];
@@ -816,7 +816,7 @@ sap.ui.define([
 						this.alert(this.getResourceBundle().getText("wrongDates"));
 						return true;
 					}
-					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString() : '';
+					date2 = dp2.getDateValue() ? dp2.getDateValue().toLocaleDateString("en-US") : '';
 					title.setText(date2 + " - " + date);
 				}
 				this.checkLimits();
