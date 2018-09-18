@@ -121,6 +121,11 @@ sap.ui.define([
 					this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 					this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
 					this.byId("TCNumber").setValue("$$00000001");
+					if(this.Type === "Copy"){
+						this.byId("status").setSelectedKey("");
+						
+							this.filterSelect();
+					}
 				}
 			},
 			
