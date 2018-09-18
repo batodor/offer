@@ -283,6 +283,9 @@ sap.ui.define([
 						valueHelp.data("data", data[key]);
 						valueHelp.setValue(value);
 						this.onChangeData();
+						if(id === "portPopup" && data.SanctionCountry){
+							this.checkPorts(data.SanctionCountry);
+						}
 					}
 				}
 				if(id === "counterpartyPopup"){
@@ -1250,11 +1253,11 @@ sap.ui.define([
 				var items = oEvent.getSource().getItems();
 				for(var i = 0; i < items.length; i++){
 					if(items[i].data("country")){
-						countries = countries + items[i].data("country") + ", ";
+						countries = countries + items[i].data("country") + ",";
 					}
 				}
 				if(countries){
-					countries = countries.slice(0,-2);
+					countries = countries.slice(0,-1);
 					text.setText(countries).addStyleClass("red");
 				}else{
 					text.setText(this.getResourceBundle().getText("none")).removeStyleClass("red");
@@ -1326,6 +1329,9 @@ sap.ui.define([
 					this.setInput(["purchaseGroup", "purchaseGroupLabel"], false, "Visible");
 				}
 				this.byId("counterpartyPopupValueHelp").removeAllTokens();
+				if(this.byId("risks").getItems().length > 0){
+					this.byId("risks").removeAllItems();
+				}
 				this.filterByType(offerType);
 				this.checkLimits();
 			},
@@ -1350,6 +1356,24 @@ sap.ui.define([
 						template: counterpartyValueHelp['mBindingInfos'].suggestionItems.template.clone(),
 						parameters: { custom: { OfferType: offerType } }
 					});
+				}
+			},
+			
+			checkPorts: function(country){
+				var countriesInput = this.byId("countriesSanction");
+				var countries = countriesInput.getText();
+				if(countries !== "None"){
+					var newCountries = "";
+					var countriesArr = countries.split(',');
+					for(var i = 0; i < countriesArr.length; i++){
+						if(countriesArr[i].indexOf(country) === -1){
+							newCountries = newCountries + countriesArr[i] + ",";
+						}
+						newCountries = newCountries + country;
+					}
+					countriesInput.setText(newCountries);
+				}else{
+					countriesInput.setText(country);
 				}
 			}
 		});
