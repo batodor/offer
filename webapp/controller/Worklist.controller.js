@@ -237,6 +237,7 @@ sap.ui.define([
 					return true;
 				}else{
 					var id = oEvent.getSource().data("id");
+					sap.ui.getCore().byId(id + "Upload").selectAll();
 					this[id + "Dialog"].open();
 				}
 			},
