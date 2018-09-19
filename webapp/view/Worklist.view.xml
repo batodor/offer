@@ -112,7 +112,7 @@
 								</Toolbar>
 							</headerToolbar>
 							<items>
-								<CustomListItem>
+								<CustomListItem custom:number="{VolumeNumber}">
 									<core:Fragment fragmentName="fragment.volumes" type="XML"></core:Fragment>
 								</CustomListItem>
 							</items>

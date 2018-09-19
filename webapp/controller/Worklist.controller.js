@@ -43,6 +43,7 @@ sap.ui.define([
 				this.isLimitsChanged = false;
 				this.isRisksChanged = false;
 				this.isBlacklistChanged = false;
+				this.deleteCounter = 0;
 				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
 			},
 			
@@ -77,7 +78,7 @@ sap.ui.define([
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
-						this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
+						this.byId("createdBy").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						this.setInput(["uploadDownload", "uploadDelete", "uploadButton"], false, "Visible");
 					}
 				}.bind(this));
@@ -238,6 +239,7 @@ sap.ui.define([
 				}else{
 					var id = oEvent.getSource().data("id");
 					sap.ui.getCore().byId(id + "Upload").selectAll();
+					sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("UTC" + (new Date().getTimezoneOffset() / 60));
 					this[id + "Dialog"].open();
 				}
 			},
@@ -444,17 +446,16 @@ sap.ui.define([
 				if(id === "volumes"){
 					var title = fragmentClone.getHeaderToolbar().getContent()[0];
 					var titleValue = fragmentClone.getHeaderToolbar().getContent()[2];
-					var length = list.getItems().length + 1;
-					if(length < 10){
-						title.setText('0' + length + " / " + this.getResourceBundle().getText("fixed"));
-						titleValue.setValue('0' + length);
-					}else{
-						title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
-						titleValue.setValue(length);
-					}
+					var length = list.getItems().length + 1 + this.deleteCounter;
+					length = length < 10 ? '0' + length : length;
+					title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
+					titleValue.setValue(length);
 				}
 				var newItem = new sap.m.CustomListItem();
 				newItem.addContent(fragmentClone);
+				if(length){
+					newItem.data("number", length);
+				}
 				list.addItem(newItem);
 				this.onChangeData();
 			},
@@ -510,7 +511,8 @@ sap.ui.define([
 								for(var i=0; i<selectedItems.length; i++){
 									list.removeItem(selectedItems[i]);
 								}
-								this.onChangeData();
+								that.deleteCounter++;
+								that.onChangeData();
 							} else {
 								MessageToast.show("Delete canceled!");
 							}
@@ -804,6 +806,7 @@ sap.ui.define([
 				var dp = oEvent.getSource();
 				var type = dp.data("key");
 				var title = dp.getParent().getParent().getParent().getParent().getHeaderToolbar().getContent()[0];
+				var volumeNumber = dp.getParent().getParent().getParent().getParent().getParent().getParent().getParent().getParent().data("number");
 				var date = dp.getDateValue();
 				var dp2,date2;
 				if(type === "dateFrom"){
@@ -813,7 +816,7 @@ sap.ui.define([
 						return true;
 					}
 					date2 = dp2.getDateValue();
-					title.setText(this.formatDate(date) + " - " + this.formatDate(date2));
+					title.setText(volumeNumber + " / " + this.formatDate(date) + " - " + this.formatDate(date2));
 				}else{
 					dp2 = dp.getParent().getParent().getItems()[0].getItems()[1];
 					if(dp.getDateValue() && dp2.getDateValue() && dp.getDateValue() < dp2.getDateValue()){
@@ -821,7 +824,7 @@ sap.ui.define([
 						return true;
 					}
 					date2 = dp2.getDateValue();
-					title.setText(this.formatDate(date2) + " - " + this.formatDate(date));
+					title.setText(volumeNumber + " / " + this.formatDate(date2) + " - " + this.formatDate(date));
 				}
 				this.checkLimits();
 			},

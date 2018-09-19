@@ -2,7 +2,7 @@
 	<Panel expandable="true" expanded="true" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="{ path: 'DateFrom', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }
+				<Title text="{VolumeNumber}{= ${DateFrom} ? ' / ' : ''}{ path: 'DateFrom', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }
 					{= ${DateFrom} ? ' - ' : '' } { path: 'DateTo', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy' } }" />
 				<ToolbarSpacer />
 			</Toolbar>
