@@ -60,7 +60,7 @@
 					suggestionItemSelected="suggestionItemSelected"
 					suggestionItems="{ path: '/offerCounterpartySet', templateShareable: false }">
 					<tokens>
-						<Token key="{Code}" text="{Name}" custom:country="{Country}" />
+						<Token key="{Code}" text="{Name}" custom:country="{Country}" custom:blacklist="{BlackList}" />
 					</tokens>
 					<suggestionItems>
 						<core:Item key="{Code}" text="{Name}" />

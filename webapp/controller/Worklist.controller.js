@@ -40,9 +40,6 @@ sap.ui.define([
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 				this.isRisk = {};
 				this.isChanged = false;
-				this.isLimitsChanged = false;
-				this.isRisksChanged = false;
-				this.isBlacklistChanged = false;
 				this.deleteCounter = 0;
 				this.isBlacklist = false;
 				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
@@ -194,8 +191,6 @@ sap.ui.define([
 									// Disable save buttons and enable approve after save
 									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 									that.byId("tableApprove").setEnabled(true);
-									that.isChanged = false;
-									that.isBlacklist = false;
 									that.getModel().refresh(true);
 								} 
 							});
@@ -204,7 +199,12 @@ sap.ui.define([
 								uploader.setUploadUrl(uploadUrl);
 								uploader.upload();
 							}
-							that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
+							// Return flags to its positions
+							that.isChanged = false;
+							that.isBlacklist = false;
+							that.isLimitsChanged = false;
+							that.isRisksChanged = false;
+							that.isBlacklistChanged = false;
 						};
 						settings.error = function(){
 							that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
@@ -287,6 +287,7 @@ sap.ui.define([
 								key: data.Code,
 								text: data.Name
 							});
+							token.data("blacklist", data.BlackList);
 							newTokens.push(token);
 						}
 					}else{
@@ -1083,7 +1084,8 @@ sap.ui.define([
 					button.setEnabled(false);
 					var oFuncParams = {
 						TCNumber: this.byId("TCNumber").getValue(),
-						RequestType: type
+						RequestType: type,
+						Partners: type === "B" ? this.getPartnerList(true) : ""
 					};
 					this.getModel().callFunction("/RequestUpdates", {
 						method: "POST",
@@ -1144,14 +1146,7 @@ sap.ui.define([
 				var oData = {};
 				var offerData = this.getData(["pageOfferDetails","parameters"]);
 				var volumeData = this.getVolumeData();
-				oData.Partners = '';
-				var partnersList = this.byId("counterpartyPopupValueHelp").getTokens();
-				for(var i = 0; i < partnersList.length; i++){
-					oData.Partners = oData.Partners + partnersList[i].getKey() + ";";
-				}
-				if(oData.Partners){
-					oData.Partners = oData.Partners.slice(0, -1);
-				}
+				oData.Partners = this.getPartnerList();
 				oData.CompanyCode = offerData.CompanyBranch;
 				oData.PaymentMethod = offerData.PaymentMethod;
 				oData.PaymentTerm = offerData.PaymentTerm;
@@ -1183,6 +1178,24 @@ sap.ui.define([
 				return oData;
 			},
 			
+			getPartnerList: function(blacklist){
+				var partnersList = '';
+				var tokens = this.byId("counterpartyPopupValueHelp").getTokens();
+				for(var i = 0; i < tokens.length; i++){
+					if(blacklist){
+						if(tokens[i].data("blacklist")){
+							partnersList = partnersList + tokens[i].getKey() + ";";
+						}
+					}else{
+						partnersList = partnersList + tokens[i].getKey() + ";";
+					}
+				}
+				if(partnersList){
+					partnersList = partnersList.slice(0, -1);
+				}
+				return partnersList;
+			},
+			
 			checkLimits: function(){
 				var oFuncParams = this.collectLimitsData();
 				this.getModel().callFunction("/CheckValidityLimits", {
@@ -1199,13 +1212,11 @@ sap.ui.define([
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
 				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + oResult.TonnageUoM);
-				// if(oResult.PaymentExceed || oResult.PeriodExceed || oResult.TonnageExceed){
-				// 	this.byId("requestLimit").setEnabled(true);
-				// }else{
-				// 	this.byId("requestLimit").setEnabled(false);
-				// }
-				if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
+				if(this.status && this.status === "7"){
 					this.byId("requestLimit").setEnabled(false);
+				}
+				if(this.isChanged){
+					this.isLimitsChanged = true;
 				}
 			},
 			
@@ -1228,13 +1239,11 @@ sap.ui.define([
 							}
 						}
 					}
-					// if(this.isRisk.main || this.isRisk.other){
-					// 	this.byId("requestRisk").setEnabled(true);
-					// }else{
-					// 	this.byId("requestRisk").setEnabled(false);
-					// }
-					if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
+					if(this.status && this.status === "7"){
 						this.byId("requestRisk").setEnabled(false);
+					}
+					if(this.isChanged){
+						this.isRisksChanged = true;  
 					}
 				}
 			},
@@ -1259,8 +1268,11 @@ sap.ui.define([
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
 				}
-				if((this.status && this.status === "7") || (this.isChanged && this.TCNumber)){
+				if(this.status && this.status === "7"){
 					this.byId("requestBlacklist").setEnabled(false);
+				}
+				if(this.isChanged){
+					this.isBlacklistChanged = true;  
 				}
 			},
 			
