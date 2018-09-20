@@ -1274,12 +1274,12 @@ sap.ui.define([
 						this.isBlacklist = true;
 					}
 				}
-				if(this.isBlacklist){
+				if(this.isBlacklist && this.data.AgentIsTrader){
 					this.byId("requestBlacklist").setEnabled(true);
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
 				}
-				if(this.status && this.status === "7" || (this.data && this.data.AgentIsTrader)){
+				if(this.status && this.status === "7"){
 					this.byId("requestBlacklist").setEnabled(false);
 				}
 				if(this.isChanged){
