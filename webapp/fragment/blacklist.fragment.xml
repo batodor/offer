@@ -17,7 +17,6 @@
 									href="/sap/bc/ui2/flp#ZTS_BUSINESS_PARTNER-display&amp;/CounterpartyHeaderSet/{Code}" />
 								<ToolbarSpacer />
 								<Title titleStyle="H6" text="{Code}" />
-								<!--<Link text="{i18n>details}" custom:id="{Code}" press="gotoLink" />-->
 							</Toolbar>
 						</headerToolbar>
 						<content>
@@ -38,12 +37,12 @@
 									</VBox>
 								</HBox>
 								<Label class="topLabel" text="{i18n>risks}" />
-								<List noDataText="{i18n>noData}" updateFinished="checkRisks" custom:type="main" class="listText" 
+								<List noDataText="{i18n>none}" updateFinished="checkRisks" custom:type="main" class="listText" 
 									items="{ path: 'ToComplianceRisk', templateShareable: false }">
 									<CustomListItem>
 										<HBox width="100%">
 											<core:Icon 
-												src="{= ${Color} === 'red' ? 'sap-icon://alert' : '' }{= ${Color} === 'yellow' ? 'sap-icon://message-warning' : '' }{= ${Color} === 'green' ? 'sap-icon://accept' : '' }" 
+												src="{= ${Color} === 'red' ? 'sap-icon://alert' : '' }{= ${Color} === 'orange' ? 'sap-icon://message-warning' : '' }{= ${Color} === 'green' ? 'sap-icon://accept' : '' }" 
 												class="size1 marginRight" 
 												color="{Color}"
 												visible="{= ${Color} ? true : false }" />

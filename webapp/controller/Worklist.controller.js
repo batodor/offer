@@ -1206,9 +1206,9 @@ sap.ui.define([
 			},
 			onCheckLimitsSuccess: function(link, oData) {
 				var oResult = oData[link];
-				this.byId("limitPaymentConditionIcon").setColor(oResult.PaymentExceed ? "red" : "green").setSrc(oResult.PaymentExceed ? 'sap-icon://alert' : 'sap-icon://accept');
-				this.byId("limitPeriodIcon").setColor(oResult.PeriodExceed ? "red" : "green").setSrc(oResult.PeriodExceed ? 'sap-icon://alert' : 'sap-icon://accept');
-				this.byId("limitTonnageIcon").setColor(oResult.TonnageExceed ? "red" : "green").setSrc(oResult.TonnageExceed ? 'sap-icon://alert' : 'sap-icon://accept');
+				this.byId("limitPaymentConditionIcon").setColor(oResult.PaymentIcon).setSrc(this.setIcon(oResult.PaymentIcon));
+				this.byId("limitPeriodIcon").setColor(oResult.PeriodIcon).setSrc(this.setIcon(oResult.PeriodIcon));
+				this.byId("limitTonnageIcon").setColor(oResult.TonnageIcon).setSrc(this.setIcon(oResult.TonnageIcon));
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
 				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + oResult.TonnageUoM);
@@ -1218,6 +1218,17 @@ sap.ui.define([
 				if(this.isChanged){
 					this.isLimitsChanged = true;
 				}
+			},
+			
+			// Sets the icons depending on its color
+			setIcon: function(color){
+				var icon = "sap-icon://accept";
+				if(color === "orange"){
+					icon = "sap-icon://message-warning";
+				}else if(color === "red"){
+					icon = "sap-icon://alert";
+				}
+				return icon;
 			},
 			
 			// On Compliance Risks list update finished
