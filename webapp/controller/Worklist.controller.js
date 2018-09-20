@@ -44,6 +44,7 @@ sap.ui.define([
 				this.isRisksChanged = false;
 				this.isBlacklistChanged = false;
 				this.deleteCounter = 0;
+				this.isBlacklist = false;
 				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
 			},
 			
@@ -74,7 +75,6 @@ sap.ui.define([
 						// Disable save buttons and enable approve if no changes(on init)
 						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 						this.byId("tableApprove").setEnabled(true);
-						this.isBlacklist = false;
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -124,8 +124,7 @@ sap.ui.define([
 					this.byId("TCNumber").setValue("$$00000001");
 					if(this.Type === "Copy"){
 						this.byId("status").setSelectedKey("");
-						
-							this.filterSelect();
+						this.filterSelect();
 					}
 				}
 			},
@@ -196,6 +195,7 @@ sap.ui.define([
 									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 									that.byId("tableApprove").setEnabled(true);
 									that.isChanged = false;
+									that.isBlacklist = false;
 									that.getModel().refresh(true);
 								} 
 							});
@@ -1111,6 +1111,13 @@ sap.ui.define([
 				var shipMax = vboxArr[4].getItems()[1].getItems()[1];
 				var tonMin = vboxArr[6].getItems()[0].getItems()[1];
 				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
+				if(parseFloat(shipMin.getValue()) > parseFloat(shipMax.getValue())){
+					shipMin.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin")).setValue(shipMax.getValue());
+					shipMax.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
+				}else{
+					shipMin.setValueState("None");
+					shipMax.setValueState("None");
+				}
 				if(divide){
 					shipMin.setValue(Math.round(tonMin.getValue()/shipNumber));
 					shipMax.setValue(Math.round(tonMax.getValue()/shipNumber));
@@ -1118,13 +1125,7 @@ sap.ui.define([
 					tonMin.setValue(shipNumber*shipMin.getValue());
 					tonMax.setValue(shipNumber*shipMax.getValue());
 				}
-				if(parseFloat(shipMin.getValue()) > parseFloat(shipMax.getValue())){
-					shipMin.setValueState("Error").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
-					shipMax.setValueState("Error").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
-				}else{
-					shipMin.setValueState("None");
-					shipMax.setValueState("None");
-				}
+				
 				this.checkLimits();
 			},
 			
