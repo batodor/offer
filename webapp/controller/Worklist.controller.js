@@ -651,10 +651,22 @@ sap.ui.define([
 			
 			checkValue: function(oEvent){
 				var input = oEvent.getSource();
-				var maxValue = input.data("max") ? parseInt(input) : 100;
-				var value = parseInt(oEvent.getParameter('newValue'));
-				var valueState = isNaN(value) ? "Error" : value > maxValue ? "Error" : "Success";
+				var maxValue = input.data("max") ? parseInt(input.data("max")) : input["mProperties"].hasOwnProperty("max") ? input.getMax() : 100;
+				var minValue = input.data("min") ? parseInt(input.data("min")) : input["mProperties"].hasOwnProperty("min") ? input.getMin() : 0;
+				var value = parseInt(oEvent.getParameter('newValue') ? oEvent.getParameter('newValue') : oEvent.getParameter('value'));
+				var valueState = isNaN(value) ? "Warning" : value > maxValue ? "Warning" : "Success";
 				input.setValueState(valueState);
+				if(value > maxValue){
+					input.setValue(maxValue);
+					if(valueState === "Warning"){
+						input.setValueStateText(this.getResourceBundle().getText("valueNotBigger", [maxValue]));
+					}
+				}else if(value < minValue){
+					input.setValue(minValue);
+					if(valueState === "Warning"){
+						input.setValueStateText(this.getResourceBundle().getText("valueNotLess", [minValue]));
+					}
+				}
 			},
 			
 			onSwitch: function(oEvent){
@@ -926,7 +938,8 @@ sap.ui.define([
 				for(var key in oData){
 					if(keyArr.indexOf(key) > -1 ){
 						if(!oData[key] || oData[key] === "0" || oData[key] === "0.00"){
-							check = check + key + ",";
+							var text = this.getResourceBundle().getText(key) ? this.getResourceBundle().getText(key) : key;
+							check = check + text + ",";
 						}
 					}
 				}
@@ -1137,6 +1150,9 @@ sap.ui.define([
 				var tolerance = input.getParent().getParent().getItems()[0].getItems()[1];
 				if(key === "%"){
 					tolerance.setMax(100);
+					if(tolerance.getValue() > 100){
+						tolerance.setValue(100).setValueState("Warning").setValueStateText(this.getResourceBundle().getText("valueNotBigger", [100]));
+					}
 				}else{
 					tolerance.setMax(999999999999);
 				}
