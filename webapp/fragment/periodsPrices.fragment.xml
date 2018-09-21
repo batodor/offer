@@ -38,7 +38,8 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>shipmentTolerance}" />
-						<StepInput min="0" change="checkValue" max="100" class="alignLeft" custom:string="true" textAlign="Center" value="{ShipmentTolerance}" />
+						<StepInput min="0" change="checkValue" max="{= ${ShipmentToleranceUOM} === '%' ? 100 : 99999999999999999 }" class="alignLeft" custom:string="true" 
+							textAlign="Center" value="{ShipmentTolerance}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>shipmentToleranceUom}" />
@@ -64,7 +65,8 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnageTolerance}" />
-						<StepInput min="0" change="checkValue" max="100" class="alignLeft" custom:string="true" textAlign="Center" value="{TonnageTolerance}" />
+						<StepInput min="0" change="checkValue" max="{= ${TonnageToleranceUOM} === '%' ? 100 : 99999999999999999 }" class="alignLeft" custom:string="true" 
+							textAlign="Center" value="{TonnageTolerance}" />
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnageToleranceUom}" />

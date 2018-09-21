@@ -295,8 +295,8 @@ sap.ui.define([
 						valueHelp.data("data", data[key]);
 						valueHelp.setValue(value);
 						this.onChangeData();
-						if(id === "portPopup" && data.SanctionCountry){
-							// this.checkPorts(data.SanctionCountry);
+						if(id === "portPopup"){
+							this.checkSanctionCountries();
 						}
 					}
 				}
@@ -1278,7 +1278,7 @@ sap.ui.define([
 			// On Compliance Risks list update finished
 			checkCounterparties: function(oEvent){
 				this.checkBlacklist(oEvent);
-				this.checkCountries(oEvent);
+				this.checkSanctionCountries();
 			},
 			
 			checkBlacklist: function(oEvent){
@@ -1300,23 +1300,6 @@ sap.ui.define([
 				}
 				if(this.isChanged){
 					this.isBlacklistChanged = true;  
-				}
-			},
-			
-			checkCountries: function(oEvent){
-				var text = this.byId("countriesSanction");
-				var countries = '';
-				var items = oEvent.getSource().getItems();
-				for(var i = 0; i < items.length; i++){
-					if(items[i].data("country")){
-						countries = countries + items[i].data("country") + ",";
-					}
-				}
-				if(countries){
-					countries = countries.slice(0,-1);
-					text.setText(countries).addStyleClass("red");
-				}else{
-					text.setText(this.getResourceBundle().getText("none")).removeStyleClass("red");
 				}
 			},
 			
@@ -1415,21 +1398,35 @@ sap.ui.define([
 				}
 			},
 			
-			checkPorts: function(country){
-				var countriesInput = this.byId("countriesSanction");
-				var countries = countriesInput.getText();
-				if(countries !== "None"){
-					var newCountries = "";
-					var countriesArr = countries.split(',');
-					for(var i = 0; i < countriesArr.length; i++){
-						if(countriesArr[i].indexOf(country) === -1){
-							newCountries = newCountries + countriesArr[i] + ",";
-						}
-						newCountries = newCountries + country;
-					}
-					countriesInput.setText(newCountries);
+			// Checks the ports that are under sanctions
+			checkSanctionCountries: function(){
+				var volumeData = this.getVolumeData().data.ToOfferVolume;
+				var ports = "";
+				for(var i = 0; i < volumeData.length; i++){
+					ports = ports + volumeData[i].DeliveryPoint + ";";
+				}
+				if(ports){
+					ports = ports.slice(0,-1);
+				}
+				var partners = this.getPartnerList();
+				var oFuncParams = {
+					Partners: partners,
+					DeliveryPorts: ports
+				};
+				this.getModel().callFunction("/GetSanctionCountries", {
+					method: "GET",
+					urlParameters: oFuncParams,
+					success: this.onCheckPortsSuccess.bind(this, "GetSanctionCountries")
+				});
+			},
+			
+			onCheckPortsSuccess: function(link, oData) {
+				var oResult = oData[link];
+				var text = this.byId("countriesSanction");
+				if(oResult.SanctionCountries){
+					text.setText(oResult.SanctionCountries).addStyleClass("red");
 				}else{
-					countriesInput.setText(country);
+					text.setText(this.getResourceBundle().getText("none")).removeStyleClass("red");
 				}
 			}
 		});
