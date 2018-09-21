@@ -501,6 +501,7 @@ sap.ui.define([
 			},
 			delete: function(oEvent){
 				var button = oEvent.getSource();
+				var id = button.data("id");
 				var list = button.getParent().getParent();
 				var selectedItems = list.getSelectedItems();
 				if(selectedItems.length > 0){
@@ -514,6 +515,9 @@ sap.ui.define([
 								}
 								that.deleteCounter++;
 								that.onChangeData();
+								if(id === "volumes"){
+									that.checkSanctionCountries();
+								}
 							} else {
 								MessageToast.show("Delete canceled!");
 							}
