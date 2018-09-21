@@ -783,7 +783,7 @@ sap.ui.define([
 							oData.check = oData.check + this.getResourceBundle().getText("indexFormula") + ", ";
 						}
 					}else{
-						var volumePriceForBase = this.checkDataInner(allVolumeData, ["OfferPriceForBase"]);
+						var volumePriceForBase = this.checkDataInner(allVolumeData, ["OfferPriceBaseRoute"]);
 						if(volumePriceForBase){
 							oData.check = oData.check + this.getResourceBundle().getText("offerPriceForBase") + ", ";
 						}
