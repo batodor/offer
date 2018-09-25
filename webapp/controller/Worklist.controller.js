@@ -63,6 +63,7 @@ sap.ui.define([
 							events: { dataReceived: this.dataReceived.bind(this) }
 						});
 						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox", "uploadButton"], true, "Visible");
+						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						
 						// Disable save buttons and enable approve if no changes(on init)
 						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
@@ -1212,7 +1213,8 @@ sap.ui.define([
 							partnersList = partnersList + tokens[i].getKey() + ";";
 						}
 					}else{
-						if((removedTokens && removedTokens.indexOf(tokens[i].getKey()) === -1) || !removedTokens){
+						if((removedTokens && Array.isArray(removedTokens) && removedTokens.indexOf(tokens[i].getKey()) === -1) || !removedTokens 
+							|| typeof removedTokens === "object"){
 							partnersList = partnersList + tokens[i].getKey() + ";";
 						}
 					}
