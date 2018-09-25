@@ -946,7 +946,7 @@ sap.ui.define([
 				var check = "";
 				for(var key in oData){
 					if(keyArr.indexOf(key) > -1 ){
-						if(!oData[key] || oData[key] === "0" || oData[key] === "0.00"){
+						if(!oData[key] || oData[key] === "0" || oData[key] === "0.00" || oData[key] === 0){
 							var text = this.getResourceBundle().getText(key) ? this.getResourceBundle().getText(key) : key;
 							check = check + text + ",";
 						}
