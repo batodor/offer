@@ -63,15 +63,16 @@ sap.ui.define([
 							events: { dataReceived: this.dataReceived.bind(this) }
 						});
 						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox", "uploadButton"], true, "Visible");
-						if(this.Type === "Copy"){
-							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
-						}else{
-							this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
-							this.byId("tableApprove").setEnabled(true);
-						}
+						
 						// Disable save buttons and enable approve if no changes(on init)
 						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 						this.byId("tableApprove").setEnabled(true);
+						
+						if(this.Type === "Copy"){
+							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
+							this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
+							this.byId("tableApprove").setEnabled(false);
+						}
 					}else{
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
@@ -94,7 +95,7 @@ sap.ui.define([
 			dataReceived: function(oEvent){
 				var that = this;
 				if(this.TCNumber && !this.Type){
-					if(oEvent.getParameters("data") && oEvent.getParameters("data").data && oEvent.getParameters("data").data.TCNumber){
+					if(oEvent.getParameter("data") && oEvent.getParameter("data").TCNumber){
 						this.byId("navCon").to(this.byId("p2"));
 						this.data = oEvent.getParameters("data").data;
 						var status = this.data.Status;
@@ -114,15 +115,13 @@ sap.ui.define([
 					setTimeout(function(){
 						that.filterSelect();
 					});
-				}else if(this.TCNumber && this.Type){
+				}else if(this.TCNumber && this.Type && this.Type === "Copy"){
 					this.byId("creationDate").setDateValue(new Date());
 					this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
-					this.byId("createdBy").setValue(sap.ushell.Container.getService("UserInfo").getUser().getId());
+					this.byId("createdBy").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 					this.byId("TCNumber").setValue("$$00000001");
-					if(this.Type === "Copy"){
-						this.byId("status").setSelectedKey("");
-						this.filterSelect();
-					}
+					this.byId("status").setSelectedKey("");
+					this.filterSelect();
 				}
 			},
 			
@@ -320,15 +319,13 @@ sap.ui.define([
 				var validityDate = sap.ui.getCore().byId("approvalValidityDateTime").getDateValue();
 				if(validityDate && validityDate instanceof Date){
 					validityDate.setMinutes(validityDate.getMinutes() + (-validityDate.getTimezoneOffset()));
+					validityDate = new Date(new Date(validityDate.setMinutes(0)).setSeconds(0));
 					var uploadItems = sap.ui.getCore().byId("approveUpload").getSelectedItems();
 					var attachList = '';
 					for(var i = 0; i < uploadItems.length; i++){
 						attachList = attachList + this.getModel().getData(uploadItems[i].getBindingContextPath()).FileGUID + ";";
 					}
 					attachList = attachList.slice(0,-1);
-					
-					// Consider selected date as UTC date
-					
 					var oFuncParams = { 
 						TCNumber: this.TCNumber,
 						Comment: sap.ui.getCore().byId("approveComment").getValue(),
@@ -388,14 +385,14 @@ sap.ui.define([
 			// On multi input tokens remove
 			onMultiUpdate: function(oEvent){
 				var input = oEvent.getSource();
-				var removedTokens = oEvent.getParameters("removedTokens").removedTokens;
+				var removedTokens = oEvent.getParameter("removedTokens");
 				var removedTokensKeys = [];
 				for(var i = 0; i < removedTokens.length; i++){
 					removedTokensKeys.push(removedTokens[i].getKey());
 				}
 				this.getRisks(input, removedTokensKeys);
 				this.onChangeData();
-				this.checkLimits();
+				this.checkLimits(removedTokensKeys);
 			},
 			
 			// Next page function
@@ -451,6 +448,11 @@ sap.ui.define([
 					length = length < 10 ? '0' + length : length;
 					title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
 					titleValue.setValue(length);
+					// Automatically add period
+					var addPeriod = fragmentClone.getContent()[1].getHeaderToolbar().getContent()[2];
+					setTimeout(function(){
+						addPeriod.firePress();
+					}, 700);
 				}
 				var newItem = new sap.m.CustomListItem();
 				newItem.addContent(fragmentClone);
@@ -738,6 +740,9 @@ sap.ui.define([
 					valueHelp.setValue(item.selectedItem.getText()).data("data", item.selectedItem.getKey());
 				}
 				valueHelp.fireChange();
+				if(oEvent.getSource().data("key") === "counterparty"){
+					this.checkLimits();
+				}
 			},
 			
 			// Gete inputs from array of ids or directly from object
@@ -1162,11 +1167,11 @@ sap.ui.define([
 				}
 			},
 			
-			collectLimitsData: function(){
+			collectLimitsData: function(removedTokens){
 				var oData = {};
 				var offerData = this.getData(["pageOfferDetails","parameters"]);
 				var volumeData = this.getVolumeData();
-				oData.Partners = this.getPartnerList();
+				oData.Partners = this.getPartnerList(null, removedTokens);
 				oData.CompanyCode = offerData.CompanyBranch;
 				oData.PaymentMethod = offerData.PaymentMethod;
 				oData.PaymentTerm = offerData.PaymentTerm;
@@ -1198,7 +1203,7 @@ sap.ui.define([
 				return oData;
 			},
 			
-			getPartnerList: function(blacklist){
+			getPartnerList: function(blacklist, removedTokens){
 				var partnersList = '';
 				var tokens = this.byId("counterpartyPopupValueHelp").getTokens();
 				for(var i = 0; i < tokens.length; i++){
@@ -1207,7 +1212,9 @@ sap.ui.define([
 							partnersList = partnersList + tokens[i].getKey() + ";";
 						}
 					}else{
-						partnersList = partnersList + tokens[i].getKey() + ";";
+						if((removedTokens && removedTokens.indexOf(tokens[i].getKey()) === -1) || !removedTokens){
+							partnersList = partnersList + tokens[i].getKey() + ";";
+						}
 					}
 				}
 				if(partnersList){
@@ -1216,8 +1223,8 @@ sap.ui.define([
 				return partnersList;
 			},
 			
-			checkLimits: function(){
-				var oFuncParams = this.collectLimitsData();
+			checkLimits: function(removedTokens){
+				var oFuncParams = this.collectLimitsData(removedTokens);
 				this.getModel().callFunction("/CheckValidityLimits", {
 					method: "GET",
 					urlParameters: oFuncParams,
@@ -1294,7 +1301,7 @@ sap.ui.define([
 						this.isBlacklist = true;
 					}
 				}
-				if(this.isBlacklist && this.data.AgentIsTrader){
+				if(this.isBlacklist && (this.data && this.data.AgentIsTrader)){
 					this.byId("requestBlacklist").setEnabled(true);
 				}else{
 					this.byId("requestBlacklist").setEnabled(false);
@@ -1338,8 +1345,7 @@ sap.ui.define([
 			},
 			
 			onVolumesPeriodsLoaded: function(oEvent){
-				// Set Disabled volumes and periods if status is defined as 1, 6 or 7
-				var flag = this.status ? false : true;
+				var flag = this.status ? false : true; // Set Disabled volumes and periods if status is defined (as 1, 6 or 7)
 				var mode = this.status ? "None" : "SingleSelectMaster";
 				var list = oEvent.getSource();
 				var volumes = list.getItems();
@@ -1356,7 +1362,7 @@ sap.ui.define([
 				}
 				
 				// Call get data functions to bind each input the onChangeData event function
-				if(oEvent.getParameters("reason").reason === "Refresh" && oEvent.getSource().data("id") === "period"){
+				if(oEvent.getParameter("reason") === "Refresh" && oEvent.getSource().data("id") === "period"){
 					this.getData(["pageOfferDetails", "parameters"]);
 					this.getVolumeData();
 					this.checkLimits();

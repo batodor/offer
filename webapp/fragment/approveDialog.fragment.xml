@@ -16,7 +16,7 @@
 					</VBox>
 				</HBox>
 				<Label text="{i18n>chiefTrader}" class="topLabel" />
-				<Select forceSelection="true" id="approveTrader" selectedKey="{Trader}" width="100%" 
+				<Select forceSelection="true" id="approveTrader" selectedKey="{= ${AgentIsApprover} ? ${Trader} : '' }" width="100%" 
 					items="{ path: '/dictionaryTraderSet',
 							 parameters: { custom: { Type: 'A' } },
 							 sorter: { path: 'Name' } }">

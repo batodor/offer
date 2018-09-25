@@ -88,10 +88,10 @@
 				</HBox>
 			</VBox>
 			<List noDataText="{i18n>noData}" mode="SingleSelectMaster" updateFinished="onVolumesPeriodsLoaded" custom:id="period" 
-				items="{ path: 'ToOfferPeriod', templateShareable: true }" selectionChange="onListSelect">
+				items="{ path: 'ToOfferPeriod', templateShareable: false }" selectionChange="onListSelect">
 				<headerToolbar>
 					<Toolbar>
-						<Title text="{i18n>periods}" titleStyle="H3" />
+						<Title text="{i18n>deliveryPeriods}" titleStyle="H3" />
 						<ToolbarSpacer />
 						<Button type="Accept" custom:id="periodsPrices" text="{i18n>add}" press="add" />
 						<Button type="Emphasized" custom:id="periodsPrices" text="{i18n>copy}" press="copy" enabled="false" />

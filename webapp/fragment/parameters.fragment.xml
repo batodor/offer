@@ -13,8 +13,8 @@
 					items="{ path: '/dictionaryCompanyBranchSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>
-				<Label class="topLabel" id="purchaseGroupLabel" visible="false" text="{i18n>purchaseGroup}" />
-				<Select id="purchaseGroup" forceSelection="true" visible="false" selectedKey="{PurchaseGroup}" width="100%" 
+				<Label class="topLabel" id="purchaseGroupLabel" visible="{= ${OfferType} === 'ZPO1' ? true : false }" text="{i18n>purchaseGroup}" />
+				<Select id="purchaseGroup" forceSelection="true" visible="{= ${OfferType} === 'ZPO1' ? true : false }" selectedKey="{PurchaseGroup}" width="100%" 
 					items="{ path: '/dictionaryPurchaseGroupSet', sorter: { path: 'Code' } }">
 					<core:Item key="{Code}" text="{Code} - {Name}"/>
 				</Select>

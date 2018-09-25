@@ -6,7 +6,7 @@
 				growing="true" growingScrollToLoad="false" busyIndicatorDelay="{detailView>/lineItemTableDelay}" class="sapUiResponsiveMargin">
 				<headerToolbar>
 					<Toolbar class="white">
-						<SearchField placeholder="{i18n>code}" custom:id="offerPopup" custom:key="TCNumber" showSearchButton="true" 
+						<SearchField placeholder="{i18n>code}" custom:id="offerPopup" custom:operator="Contains" custom:key="TCNumber" showSearchButton="true" 
 							search="triggerSearch" width="100%" id="offerPopupCodeFilter" />
 						<ToolbarSpacer/>
 						<SearchField placeholder="{i18n>name}" custom:id="offerPopup" custom:operator="Contains" custom:key="PartnerName" showSearchButton="true" 
