@@ -1238,7 +1238,7 @@ sap.ui.define([
 				this.byId("limitTonnageIcon").setColor(oResult.TonnageIcon).setSrc(this.setIcon(oResult.TonnageIcon));
 				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
 				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
-				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + oResult.TonnageUoM);
+				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " " + oResult.TonnageUoM);
 				if(this.status && this.status === "7"){
 					this.byId("requestLimit").setEnabled(false);
 				}
