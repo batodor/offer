@@ -26,10 +26,11 @@
 				<Label class="topLabel" text="{i18n>createDate}" />
 				<DateTimePicker enabled="false" id="creationDate" dateValue="{CreationDate}" />
 				<Label class="topLabel" text="{i18n>createdBy}" />
-				<Select forceSelection="true" id="createdBy" enabled="false" selectedKey="{CreatedBy}" width="100%" 
-					items="{ path: '/dictionaryTraderSet', sorter: { path: 'Name' } }">
-					<core:Item key="{Code}" text="{Name}"/>
-				</Select>
+				<!--<Select forceSelection="true" id="createdBy" enabled="false" selectedKey="{CreatedBy}" width="100%" -->
+				<!--	items="{ path: '/dictionaryTraderSet', sorter: { path: 'Name' } }">-->
+				<!--	<core:Item key="{Code}" text="{Name}"/>-->
+				<!--</Select>-->
+				<Input value="{CreatedByName}" id="createdBy" custom:name="CreatedBy" custom:data="{CreatedBy}" enabled="false" width="100%" />
 				<Label class="topLabel" text="{i18n>currency}" />
 				<Input 
 					custom:id="currencyPopup"

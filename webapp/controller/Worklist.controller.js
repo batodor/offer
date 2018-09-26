@@ -75,9 +75,10 @@ sap.ui.define([
 							this.byId("tableApprove").setEnabled(false);
 						}
 					}else{
+						var user = sap.ushell.Container.getService("UserInfo").getUser();
 						this.byId("creationDate").setDateValue(new Date());
-						this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
-						this.byId("createdBy").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
+						this.byId("trader").setSelectedKey(user.getId());
+						this.byId("createdBy").data("data", user.getId()).setValue(user.getFullName());
 						this.setInput(["uploadDownload", "uploadDelete", "uploadButton"], false, "Visible");
 					}
 				}.bind(this));
@@ -144,7 +145,7 @@ sap.ui.define([
 					var objectsArr = button.data("blocks").split(',');
 					var offerData = this.getData(objectsArr, true);
 					var volumeDataAndCheck = this.getVolumeData(true);
-					var bCheckAlert = this.checkKeys(["pageOfferDetails"]);
+					var offerCheck = this.checkKeys(["pageOfferDetails"]);
 					
 					// if Mode is copy then clear TCPositions
 					if(this.TCNumber && this.Type === "Copy"){
@@ -156,15 +157,13 @@ sap.ui.define([
 						}
 					}
 					
-					if(volumeDataAndCheck.check || bCheckAlert){
-						var msg = this.getResourceBundle().getText("plsEnter") + " ";
-						if(volumeDataAndCheck.check && bCheckAlert){
-							msg = msg + volumeDataAndCheck.check.slice(0,-4) + " " + bCheckAlert.slice(0, -2);
-						}else if(volumeDataAndCheck.check){
-							msg = msg + volumeDataAndCheck.check.slice(0,-4);
-						}else{
-							msg = msg + bCheckAlert.slice(0, -2);
-						}
+					volumeDataAndCheck.check = volumeDataAndCheck.check ? volumeDataAndCheck.check.slice(0,-4) : volumeDataAndCheck.check.slice(0,-4);
+					offerCheck = offerCheck ? offerCheck.slice(0, -1) : offerCheck;
+					var space = volumeDataAndCheck.check && offerCheck ? "\n\n" : "";
+					var check = offerCheck + space + volumeDataAndCheck.check;
+					
+					if(check){
+						var msg = this.getResourceBundle().getText("plsFillIn") + "\n\n" + check;
 						this.alert(msg);
 					}else{
 						this.setInput(["saveOffer1","saveOffer2"], false, "Enabled");
@@ -217,14 +216,17 @@ sap.ui.define([
 			// Actually opens the approve dialog
 			tableApprove: function(oEvent){
 				var checkArr = ["tradingPurpose", "product", "paymentMethod", "paymentTerm", "meansOfTransport"];
-				var check = this.getVolumeData().check;
+				var check = "";
 				for(var i = 0; i < checkArr.length; i++){
 					var input = this.byId(checkArr[i]) || sap.ui.getCore().byId(checkArr[i]);
 					check = check + this.checkKeysInner(input, checkArr[i]);
 				}
 				if(this.byId("volumesList").getItems().length === 0){
-					check = check + this.getModel('i18n').getResourceBundle().getText("volume") + ", ";
+					check = check + this.getModel('i18n').getResourceBundle().getText("volume") + "\n";
 				}
+				var volumeCheck = this.checkVolumeData();
+				var space = volumeCheck ? "\n" : "";
+				check = check + space + volumeCheck;
 				if(check || this.isBlacklist){
 					if(check){
 						check = this.getResourceBundle().getText("plsFillIn") + " \n\n " + check.slice(0,-2);
@@ -403,9 +405,9 @@ sap.ui.define([
 				var next = button.data("next");
 				if(button.data("check")){
 					var page = this.byId(button.data("id"));
-					var bCheckAlert = this.checkKeys(page);
-					if(bCheckAlert){
-						var msg = this.getModel('i18n').getResourceBundle().getText("plsEnter") + " " + bCheckAlert.slice(0, -2);
+					var check = this.checkKeys(page);
+					if(check){
+						var msg = this.getModel('i18n').getResourceBundle().getText("plsFillIn") + "\n\n" + check.slice(0, -1);
 						this.alert(msg);
 						return true;
 					}
@@ -576,7 +578,7 @@ sap.ui.define([
 				(input.hasOwnProperty("_tokenizer") && input.getTokens().length === 0) ||
 				(input.hasOwnProperty("_oMaxDate") && !input.getDateValue())){
 					var textId = input.data("key") ? input.data("key") : id;
-					check = check + " " + this.getModel('i18n').getResourceBundle().getText(textId) + ", ";
+					check = check + " " + this.getModel('i18n').getResourceBundle().getText(textId) + "\n";
 				}
 				return check;
 			},
@@ -773,48 +775,32 @@ sap.ui.define([
 					var volumeData = this.getData(volumes[i].getContent()[0].getContent()[0], isSave);
 					var allVolumeData = this.mergeObjects(volumeName, volumeData);
 					
-					var volumeCheck = this.checkDataInner(allVolumeData, ["Incoterms", "DeliveryPoint", "FixPrice"]);
-					if(volumeCheck){
-						oData.check = oData.check + volumeCheck + ", ";
-					}
-					if(allVolumeData.VolumeType){
-						var volumeTypeCheck = this.checkDataInner(allVolumeData, ["VolumeOwner"]);
-						if(volumeTypeCheck){
-							oData.check = oData.check + volumeTypeCheck + ", ";
-						}
-					}
-					if(allVolumeData.PriceType){
-						var volumeIndexFormula = this.checkDataInner(allVolumeData, ["IndexFormula"]);
-						if(volumeIndexFormula){
-							oData.check = oData.check + this.getResourceBundle().getText("indexFormula") + ", ";
-						}
-					}else{
-						var volumePriceForBase = this.checkDataInner(allVolumeData, ["OfferPriceBaseRoute"]);
-						if(volumePriceForBase){
-							oData.check = oData.check + this.getResourceBundle().getText("offerPriceForBase") + ", ";
-						}
-					}
-					
 					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
-					if(periods.length === 0){
-						if(oData.check){
-							oData.check = oData.check.slice(0,-2);
-						}
-						oData.check = oData.check + " and Periods";
-					}
 					allVolumeData.ToOfferPeriod = [];
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
 						var periodData = this.getData(period, isSave);
 						allVolumeData.ToOfferPeriod.push(periodData);
-						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo", "NumberOfShipments"]);
+						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo"]);
 						if(checkPeriods && oData.check){
-							oData.check = oData.check.slice(0,-1) + " and ";
+							oData.check = oData.check.slice(0,-1) + " and \n\n";
 						}
 						oData.check = oData.check + checkPeriods;
 						
-						if(checkPeriods){
-							oData.check = oData.check + " for Period " + (j + 1) + " ";
+						if(allVolumeData.OfferPriceBaseRoute > 0){
+							if(periodData.NumberOfShipments === "0"){
+								oData.check = oData.check + this.getResourceBundle().getText("NumberOfShipments") + "\n";
+							}
+							if(periodData.ShipmentSizeMin === "0"){
+								oData.check = oData.check + this.getResourceBundle().getText("shipmentMin") + "\n";
+							}
+							if(periodData.ShipmentSizeMax === "0"){
+								oData.check = oData.check + this.getResourceBundle().getText("shipmentMax") + "\n";
+							}
+						}
+						
+						if(oData.check){
+							oData.check = oData.check + "\n for Period " + (j + 1) + " ";
 						}
 					}
 					oData.data.ToOfferVolume.push(allVolumeData);
@@ -823,6 +809,60 @@ sap.ui.define([
 					}
 				}
 				return oData;
+			},
+			
+			checkVolumeData: function(){
+				var check = "";
+				var list = this.byId("volumesList");
+				var volumes = list.getItems();
+				for(var i = 0; i < volumes.length; i++){
+					var volumeName = this.getData(volumes[i].getContent()[0].getHeaderToolbar());
+					var volumeData = this.getData(volumes[i].getContent()[0].getContent()[0]);
+					var allVolumeData = this.mergeObjects(volumeName, volumeData);
+					
+					var volumeCheck = this.checkDataInner(allVolumeData, ["Incoterms", "DeliveryPoint", "FixPrice"]);
+					if(volumeCheck){
+						check = check + volumeCheck;
+					}
+					if(allVolumeData.VolumeType){
+						var volumeTypeCheck = this.checkDataInner(allVolumeData, ["VolumeOwner"]);
+						if(volumeTypeCheck){
+							check = check + volumeTypeCheck + "\n";
+						}
+					}
+					if(allVolumeData.PriceType){
+						var volumeIndexFormula = this.checkDataInner(allVolumeData, ["IndexFormula"]);
+						if(volumeIndexFormula){
+							check = check + this.getResourceBundle().getText("indexFormula") + "\n";
+						}
+					}else{
+						var volumePriceForBase = this.checkDataInner(allVolumeData, ["OfferPriceBaseRoute"]);
+						if(volumePriceForBase){
+							check = check + this.getResourceBundle().getText("offerPriceForBase") + "\n";
+						}
+					}
+					
+					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
+					allVolumeData.ToOfferPeriod = [];
+					for(var j = 0; j < periods.length; j++){
+						var period = periods[j].getContent()[0].getContent()[0];
+						var periodData = this.getData(period);
+						allVolumeData.ToOfferPeriod.push(periodData);
+						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo", "NumberOfShipments", "ShipmentSizeMin", "ShipmentSizeMax"]);
+						if(checkPeriods && check){
+							check = check.slice(0,-1) + "\n\n";
+						}
+						check = check + checkPeriods;
+						
+						if(check){
+							check = check + "\n for Period " + (j + 1) + " ";
+						}
+					}
+					if(check){
+						check = check + " in Volume " + allVolumeData.VolumeNumber + " \n\n ";
+					}
+				}
+				return check;
 			},
 			
 			onDateChange: function(oEvent){
@@ -949,12 +989,9 @@ sap.ui.define([
 					if(keyArr.indexOf(key) > -1 ){
 						if(!oData[key] || oData[key] === "0" || oData[key] === "0.00" || oData[key] === 0){
 							var text = this.getResourceBundle().getText(key) ? this.getResourceBundle().getText(key) : key;
-							check = check + text + ",";
+							check = check + text + "\n";
 						}
 					}
-				}
-				if(check){
-					check = check.slice(0,-1);
 				}
 				return check;
 			},
@@ -1136,12 +1173,19 @@ sap.ui.define([
 				var shipMax = vboxArr[4].getItems()[1].getItems()[1];
 				var tonMin = vboxArr[6].getItems()[0].getItems()[1];
 				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
-				if(parseFloat(shipMin.getValue()) > parseFloat(shipMax.getValue())){
+				if(shipMin.getValue() > shipMax.getValue()){
 					shipMin.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin")).setValue(shipMax.getValue());
 					shipMax.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
 				}else{
 					shipMin.setValueState("None");
 					shipMax.setValueState("None");
+				}
+				if(tonMin.getValue() > tonMax.getValue()){
+					tonMin.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin")).setValue(tonMax.getValue());
+					tonMax.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
+				}else{
+					tonMin.setValueState("None");
+					tonMax.setValueState("None");
 				}
 				if(divide){
 					shipMin.setValue(Math.round(tonMin.getValue()/shipNumber));
