@@ -43,6 +43,9 @@ sap.ui.define([
 				this.deleteCounter = 0;
 				this.isBlacklist = false;
 				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
+				
+				sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("UTC" + (new Date().getTimezoneOffset() / 60));
+				sap.ui.getCore().byId("approvalValidityDateTime").setInitialFocusedDateValue(new Date(new Date(new Date().setMinutes(0)).setSeconds(0)));
 			},
 			
 			// After offer loaded, sets the mode Create/Edit
@@ -241,7 +244,6 @@ sap.ui.define([
 				}else{
 					var id = oEvent.getSource().data("id");
 					sap.ui.getCore().byId(id + "Upload").selectAll();
-					sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("UTC" + (new Date().getTimezoneOffset() / 60));
 					this[id + "Dialog"].open();
 				}
 			},
@@ -322,7 +324,6 @@ sap.ui.define([
 				var validityDate = sap.ui.getCore().byId("approvalValidityDateTime").getDateValue();
 				if(validityDate && validityDate instanceof Date){
 					validityDate.setMinutes(validityDate.getMinutes() + (-validityDate.getTimezoneOffset()));
-					validityDate = new Date(new Date(validityDate.setMinutes(0)).setSeconds(0));
 					var uploadItems = sap.ui.getCore().byId("approveUpload").getSelectedItems();
 					var attachList = '';
 					for(var i = 0; i < uploadItems.length; i++){

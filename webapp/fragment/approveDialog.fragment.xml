@@ -5,7 +5,7 @@
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label text="{i18n>validityDate}" />
-						<DateTimePicker dateValue="{ValidityDate}" id="approvalValidityDateTime"/>
+						<DateTimePicker dateValue="{ValidityDate}" id="approvalValidityDateTime" minutesStep="30" secondsStep="60"/>
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label text="{i18n>validityDateTimeZone}" />

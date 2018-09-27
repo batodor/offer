@@ -64,7 +64,7 @@
 			"id": "app"
 		},
 		"dependencies": {
-			"minUI5Version": "1.42.0",
+			"minUI5Version": "1.46.0",
 			"libs": {
 				"sap.collaboration": {
 					"lazy": true
