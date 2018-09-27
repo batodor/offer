@@ -45,7 +45,7 @@ sap.ui.define([
 				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
 				
 				sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("UTC" + (new Date().getTimezoneOffset() / 60));
-				sap.ui.getCore().byId("approvalValidityDateTime").setInitialFocusedDateValue(new Date(new Date(new Date().setMinutes(0)).setSeconds(0)));
+				//sap.ui.getCore().byId("approvalValidityDateTime").setInitialFocusedDateValue(new Date(new Date(new Date().setMinutes(0)).setSeconds(0)));
 			},
 			
 			// After offer loaded, sets the mode Create/Edit
@@ -116,10 +116,16 @@ sap.ui.define([
 						}
 						//Filter branch offices
 						this.filterByType(this.data.OfferType, true);
+						
+						// Set Chief Trader
+						if(this.dat.AgentIsApprover){
+							sap.ui.getCore().byId("approvalTrader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
+						}
 					}
 					setTimeout(function(){
 						that.filterSelect();
 					});
+					
 				}else if(this.TCNumber && this.Type && this.Type === "Copy"){
 					this.byId("creationDate").setDateValue(new Date());
 					this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
