@@ -102,7 +102,7 @@ sap.ui.define([
 				if(this.TCNumber && !this.Type){
 					if(oEvent.getParameter("data") && oEvent.getParameter("data").TCNumber){
 						this.byId("navCon").to(this.byId("p2"));
-						this.data = oEvent.getParameters("data").data;
+						this.data = oEvent.getParameter("data");
 						var status = this.data.Status;
 						if(status === "1" || status === "6" || status === "7"){
 							this.setEnabled(["pageOfferDetails", "parameters"], false);
@@ -118,7 +118,7 @@ sap.ui.define([
 						this.filterByType(this.data.OfferType, true);
 						
 						// Set Chief Trader
-						if(this.dat.AgentIsApprover){
+						if(this.data && this.datа.AgentIsApprover){
 							sap.ui.getCore().byId("approvalTrader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 						}
 					}
@@ -1264,8 +1264,7 @@ sap.ui.define([
 							partnersList = partnersList + tokens[i].getKey() + ";";
 						}
 					}else{
-						if((removedTokens && Array.isArray(removedTokens) && removedTokens.indexOf(tokens[i].getKey()) === -1) || !removedTokens 
-							|| typeof removedTokens === "object"){
+						if((removedTokens && removedTokens.indexOf(tokens[i].getKey()) === -1) || !removedTokens){
 							partnersList = partnersList + tokens[i].getKey() + ";";
 						}
 					}
@@ -1277,7 +1276,8 @@ sap.ui.define([
 			},
 			
 			checkLimits: function(removedTokens){
-				var oFuncParams = this.collectLimitsData(removedTokens);
+				var args = Array.isArray(removedTokens) ? removedTokens : null;
+				var oFuncParams = this.collectLimitsData(args);
 				this.getModel().callFunction("/CheckValidityLimits", {
 					method: "GET",
 					urlParameters: oFuncParams,
