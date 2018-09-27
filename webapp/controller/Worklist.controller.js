@@ -403,6 +403,7 @@ sap.ui.define([
 				this.getRisks(input, removedTokensKeys);
 				this.onChangeData();
 				this.checkLimits(removedTokensKeys);
+				this.checkSanctionCountries(removedTokensKeys);                     
 			},
 			
 			// Next page function
@@ -1286,12 +1287,17 @@ sap.ui.define([
 			},
 			onCheckLimitsSuccess: function(link, oData) {
 				var oResult = oData[link];
-				this.byId("limitPaymentConditionIcon").setColor(oResult.PaymentIcon).setSrc(this.setIcon(oResult.PaymentIcon));
-				this.byId("limitPeriodIcon").setColor(oResult.PeriodIcon).setSrc(this.setIcon(oResult.PeriodIcon));
-				this.byId("limitTonnageIcon").setColor(oResult.TonnageIcon).setSrc(this.setIcon(oResult.TonnageIcon));
-				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : this.getResourceBundle().getText("worklistTableTitle"));
-				this.byId("limitPeriod").setText(oResult.Period + " " + oResult.PeriodUoM);
-				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " " + oResult.TonnageUoM);
+				var PaymentIcon = this.byId("limitPaymentConditionIcon");
+				var PeriodIcon = this.byId("limitPeriodIcon");
+				var TonnageIcon = this.byId("limitTonnageIcon");
+				var none = this.getResourceBundle().getText("none");
+				oResult.PaymentIcon ? PaymentIcon.setColor(oResult.PaymentIcon).setSrc(this.setIcon(oResult.PaymentIcon)).setVisible(true) : PaymentIcon.setVisible(false);
+				oResult.PeriodIcon ? PeriodIcon.setColor(oResult.PeriodIcon).setSrc(this.setIcon(oResult.PeriodIcon)).setVisible(true) : PeriodIcon.setVisible(false);
+				oResult.TonnageIcon ? TonnageIcon.setColor(oResult.TonnageIcon).setSrc(this.setIcon(oResult.TonnageIcon)).setVisible(true) : TonnageIcon.setVisible(false);
+				this.byId("limitPaymentCondition").setText(oResult.PaymentCondition ? oResult.PaymentCondition : none);
+				this.byId("limitPeriod").setText(parseFloat(oResult.Period) ? oResult.Period + " " + oResult.PeriodUoM : none);
+				this.byId("limitTonnage").setText(parseFloat(oResult.Tonnage) ? parseFloat(oResult.Tonnage).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " " 
+					+ oResult.TonnageUoM : none);
 				if(this.status && this.status === "7"){
 					this.byId("requestLimit").setEnabled(false);
 				}
@@ -1462,7 +1468,7 @@ sap.ui.define([
 			},
 			
 			// Checks the ports that are under sanctions
-			checkSanctionCountries: function(){
+			checkSanctionCountries: function(removedTokens){
 				var volumeData = this.getVolumeData().data.ToOfferVolume;
 				var ports = "";
 				for(var i = 0; i < volumeData.length; i++){
@@ -1471,7 +1477,7 @@ sap.ui.define([
 				if(ports){
 					ports = ports.slice(0,-1);
 				}
-				var partners = this.getPartnerList();
+				var partners = this.getPartnerList(null, removedTokens);
 				var oFuncParams = {
 					Partners: partners,
 					DeliveryPorts: ports

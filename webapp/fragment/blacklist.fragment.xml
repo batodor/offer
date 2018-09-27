@@ -43,7 +43,7 @@
 										<HBox width="100%">
 											<core:Icon 
 												src="{= ${Color} === 'red' ? 'sap-icon://alert' : '' }{= ${Color} === 'orange' ? 'sap-icon://message-warning' : '' }{= ${Color} === 'green' ? 'sap-icon://accept' : '' }" 
-												class="size1 marginRight" 
+												class="paddingRight" 
 												color="{Color}"
 												visible="{= ${Color} ? true : false }" />
 											<Text text="{RiskName}" />
@@ -61,21 +61,21 @@
 			<VBox id="limits">
 				<Label class="topLabel" text="{i18n>paymentCondition}" />
 				<HBox width="100%">
-					<core:Icon class="marginRight" id="limitPaymentConditionIcon" />
+					<core:Icon class="marginRight" id="limitPaymentConditionIcon" visible="false" />
 					<Text id="limitPaymentCondition" text="{i18n>none}" />
 				</HBox>
 				<HBox justifyContent="SpaceBetween">
 					<VBox class="leftVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>tonnage}" />
 						<HBox width="100%">
-							<core:Icon class="marginRight" id="limitTonnageIcon" />
+							<core:Icon class="marginRight" id="limitTonnageIcon" visible="false" />
 							<Text id="limitTonnage" text="{i18n>none}" />
 						</HBox>
 					</VBox>
 					<VBox class="rightVBoxStyle" width="50%">
 						<Label class="topLabel" text="{i18n>period}" />
 						<HBox width="100%">
-							<core:Icon class="marginRight" id="limitPeriodIcon" />
+							<core:Icon class="marginRight" id="limitPeriodIcon" visible="false" />
 							<Text id="limitPeriod" text="{i18n>none}" />
 						</HBox>
 					</VBox>
