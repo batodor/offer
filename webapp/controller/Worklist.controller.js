@@ -247,7 +247,9 @@ sap.ui.define([
 				}else{
 					var id = oEvent.getSource().data("id");
 					sap.ui.getCore().byId(id + "Upload").selectAll();
-					sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("YG" + (new Date().getTimezoneOffset() / 60));
+					var offset = new Date().getTimezoneOffset()/-60;
+					var sign = offset < 0 ? "-" : "+";
+					sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("YG" + sign + offset);
 					if(this.data && this.data.AgentIsApprover){
 						sap.ui.getCore().byId("approveTrader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 					}else{
