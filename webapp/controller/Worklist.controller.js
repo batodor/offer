@@ -103,7 +103,7 @@ sap.ui.define([
 						this.byId("navCon").to(this.byId("p2"));
 						this.data = oEvent.getParameter("data");
 						var status = this.data.Status;
-						if(status === "1" || status === "6" || status === "7"){
+						if((status === "1" || status === "6" || status === "7")){
 							this.setEnabled(["pageOfferDetails", "parameters"], false);
 							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
 								"uploadDelete", "uploadHbox"], false, "Visible");
@@ -119,7 +119,6 @@ sap.ui.define([
 					setTimeout(function(){
 						that.filterSelect();
 					});
-					
 				}else if(this.TCNumber && this.Type && this.Type === "Copy"){
 					this.byId("creationDate").setDateValue(new Date());
 					this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
