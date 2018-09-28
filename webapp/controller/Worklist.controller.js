@@ -44,7 +44,6 @@ sap.ui.define([
 				this.isBlacklist = false;
 				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
 				
-				sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("UTC" + (new Date().getTimezoneOffset() / 60));
 				//sap.ui.getCore().byId("approvalValidityDateTime").setInitialFocusedDateValue(new Date(new Date(new Date().setMinutes(0)).setSeconds(0)));
 			},
 			
@@ -245,6 +244,7 @@ sap.ui.define([
 				}else{
 					var id = oEvent.getSource().data("id");
 					sap.ui.getCore().byId(id + "Upload").selectAll();
+					sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("YG" + (new Date().getTimezoneOffset() / 60));
 					if(this.data && this.data.AgentIsApprover){
 						sap.ui.getCore().byId("approveTrader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 					}else{
