@@ -60,6 +60,9 @@ sap.ui.define([
 					        that.byId("openOfferButton").firePress();
 					    };
 					}else if(this.TCNumber){
+						if(this.getView().getBindingContext()){
+							this.getView().unbindElement();
+						}
 						this.getView().bindElement({ 
 							path: "/offerHeaderSet('" + this.TCNumber + "')",
 							events: { dataReceived: this.dataReceived.bind(this) }
@@ -121,8 +124,7 @@ sap.ui.define([
 					});
 				}else if(this.TCNumber && this.Type && this.Type === "Copy"){
 					this.byId("creationDate").setDateValue(new Date());
-					this.byId("trader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
-					this.byId("createdBy").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
+					this.byId("createdBy").setSelectedKey("");
 					this.byId("TCNumber").setValue("$$00000001");
 					this.byId("status").setSelectedKey("");
 					this.filterSelect();
@@ -192,7 +194,9 @@ sap.ui.define([
 									// Disable save buttons and enable approve after save
 									that.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 									that.byId("tableApprove").setEnabled(true);
-									that.getModel().refresh(true);
+									setTimeout(function(){
+										that.getModel().refresh();
+									});
 								} 
 							});
 							if(uploader.getValue()){
