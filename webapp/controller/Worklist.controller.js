@@ -116,11 +116,6 @@ sap.ui.define([
 						}
 						//Filter branch offices
 						this.filterByType(this.data.OfferType, true);
-						
-						// Set Chief Trader
-						if(this.data && this.datа.AgentIsApprover){
-							sap.ui.getCore().byId("approvalTrader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
-						}
 					}
 					setTimeout(function(){
 						that.filterSelect();
@@ -250,6 +245,11 @@ sap.ui.define([
 				}else{
 					var id = oEvent.getSource().data("id");
 					sap.ui.getCore().byId(id + "Upload").selectAll();
+					if(this.data && this.data.AgentIsApprover){
+						sap.ui.getCore().byId("approveTrader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
+					}else{
+						sap.ui.getCore().byId("approveTrader").setSelectedKey("");
+					}
 					this[id + "Dialog"].open();
 				}
 			},
@@ -783,6 +783,11 @@ sap.ui.define([
 					var volumeData = this.getData(volumes[i].getContent()[0].getContent()[0], isSave);
 					var allVolumeData = this.mergeObjects(volumeName, volumeData);
 					
+					if(allVolumeData.Incoterms){
+						if(!allVolumeData.DeliveryPoint){
+							oData.check = oData.check + this.getResourceBundle().getText("deliveryPoint") + "\n";
+						}
+					}
 					var periods = volumes[i].getContent()[0].getContent()[1].getItems();
 					allVolumeData.ToOfferPeriod = [];
 					for(var j = 0; j < periods.length; j++){
@@ -1181,14 +1186,14 @@ sap.ui.define([
 				var shipMax = vboxArr[4].getItems()[1].getItems()[1];
 				var tonMin = vboxArr[6].getItems()[0].getItems()[1];
 				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
-				if(shipMin.getValue() > shipMax.getValue()){
+				if(shipMin.getValue() > shipMax.getValue() && !(shipMax.getValue() === "" || shipMax.getValue() === "0")){
 					shipMin.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin")).setValue(shipMax.getValue());
 					shipMax.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
 				}else{
 					shipMin.setValueState("None");
 					shipMax.setValueState("None");
 				}
-				if(tonMin.getValue() > tonMax.getValue()){
+				if(tonMin.getValue() > tonMax.getValue() && !(tonMax.getValue() === "" || tonMax.getValue() === "0")){
 					tonMin.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin")).setValue(tonMax.getValue());
 					tonMax.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
 				}else{
