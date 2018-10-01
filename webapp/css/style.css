@@ -16,6 +16,9 @@
 .heightAuto .sapMLIB{
 	height: auto;
 }
+.sapMIBar .sapMBarChild:first-child{
+	margin-left: .5rem;
+}
 .alignCenter input{
 	text-align: center !important;
 }
