@@ -33,7 +33,7 @@ sap.ui.define([
 				this.typeArr = ["value", "dateValue", "selectedKey", "selected", "state", "tokens"];
 				
 				// Add fragments
-				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "volumes", "periodsPrices", "approveDialog",
+				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "approveDialog",
 					"offerPopupDialog"];
 				this.addFragments(fragmentsArr);
 				
@@ -455,9 +455,13 @@ sap.ui.define([
 				var button = oEvent.getSource();
 				var id = button.data("id");
 				var list = button.getParent().getParent();
-				var fragmentClone = this[id].clone();
-				this.getView().addDependent(fragmentClone);
+				if(!this[id]){
+					this[id] = sap.ui.xmlfragment("fragment." + id, this);
+					//id === "periodsPrices" ? this["volumes"].addDependent(this[id]) : this.getView().addDependent(this[id]);
+				}
+				var fragmentClone = this[id].clone("", [], null, true, true);
 				if(id === "volumes"){
+					this.getView().addDependent(fragmentClone);
 					var title = fragmentClone.getHeaderToolbar().getContent()[0];
 					var titleValue = fragmentClone.getHeaderToolbar().getContent()[2];
 					var length = list.getItems().length + 1 + this.deleteCounter;
@@ -484,7 +488,7 @@ sap.ui.define([
 				var selectedItem = list.getSelectedItem();
 				if(selectedItem){
 					var id = button.data("id");
-					var clone = selectedItem.clone();
+					var clone = selectedItem.clone("", [], null, true, true);
 					this.getView().addDependent(clone);
 					if(id === "volumes"){
 						var title = clone.getContent()[0].getHeaderToolbar().getContent()[0];
