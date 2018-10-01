@@ -2,11 +2,14 @@
 	<Panel expandable="true" expanded="true" width="auto">
 		<headerToolbar>
 			<Toolbar height="3rem">
-				<Title text="{i18n>complainceRisks}" />
+				<Title text="{i18n>risksVerification}" />
 				<ToolbarSpacer />
 			</Toolbar>
 		</headerToolbar>
 		<content>
+			<OverflowToolbar height="3rem" width="100%">
+				<Title text="{i18n>complainceRisks}" titleStyle="H4"/>
+			</OverflowToolbar>
 			<List noDataText="{i18n>none}" updateFinished="checkCounterparties" id="risks" class="listText" 
 				items="{ path: 'ToOfferCounterparty', templateShareable: false }">
 				<CustomListItem custom:country="{Country}">
@@ -56,7 +59,7 @@
 				</CustomListItem>
 			</List>
 			<OverflowToolbar class="topLabel" height="3rem" width="100%">
-				<Title text="{i18n>limits}" titleStyle="H3"/>
+				<Title text="{i18n>limits}" titleStyle="H4"/>
 			</OverflowToolbar>
 			<VBox id="limits">
 				<Label class="topLabel" text="{i18n>paymentCondition}" />
@@ -82,7 +85,7 @@
 				</HBox>
 			</VBox>
 			<OverflowToolbar class="topLabel" height="3rem" width="100%">
-				<Title text="{i18n>otherRisks}" titleStyle="H3"/>
+				<Title text="{i18n>otherRisks}" titleStyle="H4"/>
 			</OverflowToolbar>
 			<VBox>
 				<Label class="topLabel" text="{i18n>countriesSanction}" />
@@ -103,7 +106,7 @@
 				</List>
 			</VBox>
 			<OverflowToolbar class="topLabel" height="3rem" width="100%">
-				<Title text="{i18n>requestUpdates}" titleStyle="H3"/>
+				<Title text="{i18n>requestUpdates}" titleStyle="H4"/>
 			</OverflowToolbar>
 			<HBox alignContent="Center" justifyContent="SpaceBetween" width="100%">
 				<Button id="requestBlacklist" text="{i18n>blacklist}" enabled="false" custom:type="B" width="100px" press="callRequest" />
