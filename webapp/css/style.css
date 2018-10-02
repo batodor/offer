@@ -49,6 +49,9 @@
 .margin-top{
 	margin-top: 1rem;
 }
+.marginTop{
+	margin-top: .5rem;
+}
 .leftVBoxStyle {
   padding-right: .5rem;
 }
@@ -123,6 +126,9 @@
 }
 .smallMarginBottom{
 	margin-bottom: 7px;
+}
+.margin{
+	margin: .5rem .5rem 0 .5rem;
 }
 
 .sapMLabel,.sapMLIBActive .sapMLabel{

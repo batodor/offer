@@ -23,6 +23,7 @@
 							</Toolbar>
 						</headerToolbar>
 						<content>
+							<MessageStrip visible="{RatingToBeUpd}" enableFormattedText="true" text="{i18n>WarningRating}" type="Error" showIcon="true" class="marginTop" />
 							<VBox>
 								<HBox justifyContent="SpaceBetween">
 									<VBox class="leftVBoxStyle" width="50%">

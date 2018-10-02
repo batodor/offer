@@ -489,14 +489,14 @@ sap.ui.define([
 				if(selectedItem){
 					var id = button.data("id");
 					var clone = selectedItem.clone("", [], null, true, true);
-					this.getView().addDependent(clone);
+					//this.getView().addDependent(clone);
 					if(id === "volumes"){
 						var title = clone.getContent()[0].getHeaderToolbar().getContent()[0];
 						var titleValue = clone.getContent()[0].getHeaderToolbar().getContent()[2];
 						var length = list.getItems().length + 1;
 						if(length < 10){
-							title.setText('0' + length + " / " + this.getResourceBundle().getText("fixed"));
-							titleValue.setValue('0' + length);
+							title.setText("0" + length + " / " + this.getResourceBundle().getText("fixed"));
+							titleValue.setValue("0" + length);
 						}else{
 							title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
 							titleValue.setValue(length);
@@ -1369,7 +1369,7 @@ sap.ui.define([
 				var list = oEvent.getSource();
 				var counterparties = list.getItems();
 				for(var i = 0; i < counterparties.length; i++){
-					var blacklist = counterparties[i].getContent()[0].getContent()[0].getItems()[0].getItems()[1].getItems()[1].getText();
+					var blacklist = counterparties[i].getContent()[0].getContent()[1].getItems()[0].getItems()[1].getItems()[1].getText();
 					if(blacklist === "Blacklisted"){
 						this.isBlacklist = true;
 					}
