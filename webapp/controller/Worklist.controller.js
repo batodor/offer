@@ -52,14 +52,14 @@ sap.ui.define([
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
 				this.Type = oEvent.getParameter("arguments").Type;
 				this.getModel().metadataLoaded().then( function() {
-					if(this.Type && !this.TCNumber){
+					if(this.Type && !this.TCNumber){ // Edit offer first screen
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer2"));
 						this.byId("navCon").to(this.byId("p1"));
 						var that = this;
 						this.byId("offerId").onsapenter = function(e) {
 					        that.byId("openOfferButton").firePress();
 					    };
-					}else if(this.TCNumber){
+					}else if(this.TCNumber){ // View and Edit mode
 						if(this.getView().getBindingContext()){
 							this.getView().unbindElement();
 						}
@@ -74,12 +74,13 @@ sap.ui.define([
 						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 						this.byId("tableApprove").setEnabled(true);
 						
+						// Copy mode
 						if(this.Type === "Copy"){
 							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
 							this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
 							this.byId("tableApprove").setEnabled(false);
 						}
-					}else{
+					}else{ // Create mode
 						var user = sap.ushell.Container.getService("UserInfo").getUser();
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(user.getId());
@@ -489,8 +490,8 @@ sap.ui.define([
 				if(selectedItem){
 					var id = button.data("id");
 					var clone = selectedItem.clone("", [], null, true, true);
-					//this.getView().addDependent(clone);
 					if(id === "volumes"){
+						this.getView().addDependent(clone);
 						var title = clone.getContent()[0].getHeaderToolbar().getContent()[0];
 						var titleValue = clone.getContent()[0].getHeaderToolbar().getContent()[2];
 						var length = list.getItems().length + 1;
