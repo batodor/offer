@@ -16,7 +16,7 @@
 		<content>
 			<HBox justifyContent="SpaceBetween" id="uploadHbox">
 				<VBox class="leftVBoxStyle" justifyContent="Center" width="70%">
-					<u:FileUploader class="topLabel" multiple="true" name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
+					<u:FileUploader class="topLabel" name="upload" id="upload" useMultipart="false" uploadOnChange="false" custom:id="upload" sendXHR="true" 
 						uploadUrl="{upload>/uploadUrl}" tooltip="Upload your file to the local server" change="onFileChange" uploadComplete="onFileUploaded" 
 						style="Emphasized" width="100%">
 						<u:headerParameters>
