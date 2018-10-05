@@ -490,8 +490,8 @@ sap.ui.define([
 				if(selectedItem){
 					var id = button.data("id");
 					var clone = selectedItem.clone("", [], null, true, true);
+					this.getView().addDependent(clone);
 					if(id === "volumes"){
-						this.getView().addDependent(clone);
 						var title = clone.getContent()[0].getHeaderToolbar().getContent()[0];
 						var titleValue = clone.getContent()[0].getHeaderToolbar().getContent()[2];
 						var length = list.getItems().length + 1;
@@ -502,15 +502,6 @@ sap.ui.define([
 							title.setText(length + " / " + this.getResourceBundle().getText("fixed"));
 							titleValue.setValue(length);
 						}
-						// Nullifying TCPositions in copied volume
-						var periodList = clone.getContent()[0].getContent()[1];
-						periodList.attachEventOnce("updateFinished", function(e){
-							var periods = periodList.getItems();
-							for(var i = 0; i < periods.length; i++){
-								var TCPosition = periods[i].getContent()[0].getContent()[0].getItems()[0];
-								TCPosition.setValue("");
-							}
-						}, this);
 					}
 					if(id === "periodsPrices"){
 						var TCPosition = clone.getContent()[0].getContent()[0].getItems()[0];
