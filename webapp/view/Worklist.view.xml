@@ -75,7 +75,7 @@
 									<!--<core:Fragment fragmentName="fragment.routes" type="XML"></core:Fragment>-->
 								</l:BlockLayoutCell>
 								<l:BlockLayoutCell width="1">
-									<core:Fragment fragmentName="fragment.blacklist" type="XML"></core:Fragment>
+									<core:Fragment fragmentName="fragment.verification" type="XML"></core:Fragment>
 									<core:Fragment fragmentName="fragment.attachments" type="XML"></core:Fragment>
 								</l:BlockLayoutCell>
 							</l:BlockLayoutRow>

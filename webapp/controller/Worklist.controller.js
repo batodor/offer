@@ -28,45 +28,46 @@ sap.ui.define([
 				});
 				this.setModel(oViewModel, "worklistView");
 				
+				// Add fragments
+				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "approveDialog", "offerPopupDialog"];
+				this.addFragments(fragmentsArr);
+				
 				// Declare global filter
 			    this.search = {}; // for searchFields
 				this.typeArr = ["value", "dateValue", "selectedKey", "selected", "state", "tokens"];
-				
-				// Add fragments
-				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "approveDialog",
-					"offerPopupDialog"];
-				this.addFragments(fragmentsArr);
-				
 				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 				this.isRisk = {};
 				this.isChanged = false;
 				this.deleteCounter = 0;
 				this.isBlacklist = false;
-				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
 				
+				// Set monday in calendar as first day(not Sunday)
+				sap.ui.core.LocaleData.getInstance(sap.ui.getCore().getConfiguration().getFormatSettings().getFormatLocale()).mData["weekData-firstDay"] = 1;
+				// Set datetimepicker initial hours and minutes to 0 (disabled since doesnt work in minUI5Version: 1.42.0 on SERVER)
 				//sap.ui.getCore().byId("approvalValidityDateTime").setInitialFocusedDateValue(new Date(new Date(new Date().setMinutes(0)).setSeconds(0)));
 			},
 			
-			// After offer loaded, sets the mode Create/Edit
+			// After offer loaded, change the view as Create, Edit or Copy depending on parameters 
 			_onOfferMatched: function(oEvent) {
 				this.TCNumber = oEvent.getParameter("arguments").TCNumber;
 				this.Type = oEvent.getParameter("arguments").Type;
 				this.getModel().metadataLoaded().then( function() {
-					if(this.Type && !this.TCNumber){ // Edit offer first screen
+					if(this.Type && !this.TCNumber){ 
+						// --- Edit offer first screen
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer2"));
 						this.byId("navCon").to(this.byId("p1"));
 						var that = this;
 						this.byId("offerId").onsapenter = function(e) {
 					        that.byId("openOfferButton").firePress();
 					    };
-					}else if(this.TCNumber){ // View and Edit mode
-						if(this.getView().getBindingContext()){
-							this.getView().unbindElement();
-						}
+					}else if(this.TCNumber){ 
+						// --- View and Edit mode
+						// Main bind for a view
 						this.getView().bindElement({ 
 							path: "/offerHeaderSet('" + this.TCNumber + "')",
 							events: { dataReceived: this.dataReceived.bind(this) }
 						});
+						// Set upload buttons and title of application in Edit mode
 						this.setInput(["uploadDownload", "uploadDelete", "uploadHbox", "uploadButton"], true, "Visible");
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						
@@ -74,13 +75,14 @@ sap.ui.define([
 						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 						this.byId("tableApprove").setEnabled(true);
 						
-						// Copy mode
+						// --- If Copy mode
 						if(this.Type === "Copy"){
 							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
 							this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
 							this.byId("tableApprove").setEnabled(false);
 						}
-					}else{ // Create mode
+					}else{ 
+						// --- Create mode
 						var user = sap.ushell.Container.getService("UserInfo").getUser();
 						this.byId("creationDate").setDateValue(new Date());
 						this.byId("trader").setSelectedKey(user.getId());
@@ -90,40 +92,40 @@ sap.ui.define([
 				}.bind(this));
 			},
 			
-			onChangeData: function(){
-				if(!this.isChanged){
-					this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
-					this.setInput(["tableApprove"], false, "Enabled");
-					this.isChanged = true;
-				}
-			},
-			
-			// This function triggered after bind 
-			// Added in Select(Product Type)
+			// This function triggered after data received
+			// Also Added in Select(Product Type) in offer fragment
 			dataReceived: function(oEvent){
-				var that = this;
 				if(this.TCNumber && !this.Type){
+					// --- View and Edit mode
 					if(oEvent.getParameter("data") && oEvent.getParameter("data").TCNumber){
+						// --- If there is any data loaded
 						this.byId("navCon").to(this.byId("p2"));
 						this.data = oEvent.getParameter("data");
 						var status = this.data.Status;
+						
 						if((status === "1" || status === "6" || status === "7")){
+							// --- If statuses are 1 Sent for approval, 6 Done, 7 Not executed
 							this.setEnabled(["pageOfferDetails", "parameters"], false);
 							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
 								"uploadDelete", "uploadHbox"], false, "Visible");
 							this.status = status;
+							
 							if(status === "7"){
+								// If status is Not executed then set enabled some fields
 								this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
 								this.byId("comment").setEnabled(true);
 							}
 						}
-						//Filter branch offices
+						// Filter branch offices
 						this.filterByType(this.data.OfferType, true);
 					}
+					// Set Product after Product Type is binded
+					var that = this;
 					setTimeout(function(){
 						that.filterSelect();
 					});
-				}else if(this.TCNumber && this.Type && this.Type === "Copy"){
+				}else if(this.Type === "Copy"){
+					// --- If Copy mode (applied only after bind)
 					this.byId("creationDate").setDateValue(new Date());
 					this.byId("createdBy").setSelectedKey("");
 					this.byId("TCNumber").setValue("$$00000001");
@@ -135,6 +137,7 @@ sap.ui.define([
 			// Main save offer function, also runned for creating and saving existing offer
 			saveOffer: function(oEvent){
 				if(this.status && this.status === "7"){
+					// --- If status is defined and is "Not executed" then use model function ChangeOfferTexts
 					var oFuncParams = { 
 						TCNumber: this.TCNumber,
 						TextID: "ZCMD",
@@ -146,6 +149,7 @@ sap.ui.define([
 						success: this.onApproveSuccess.bind(this, "ChangeOfferTexts")
 					});
 				}else{
+					// --- Else start save function
 					var button = oEvent.getSource();
 					var objectsArr = button.data("blocks").split(',');
 					var offerData = this.getData(objectsArr, true);
@@ -162,11 +166,13 @@ sap.ui.define([
 						}
 					}
 					
-					volumeDataAndCheck.check = volumeDataAndCheck.check ? volumeDataAndCheck.check.slice(0,-4) : volumeDataAndCheck.check.slice(0,-4);
+					// Prepare check texts, slice if needed
+					volumeDataAndCheck.check = volumeDataAndCheck.check ? volumeDataAndCheck.check.slice(0,-4) : volumeDataAndCheck.check;
 					offerCheck = offerCheck ? offerCheck.slice(0, -1) : offerCheck;
 					var space = volumeDataAndCheck.check && offerCheck ? "\n\n" : "";
 					var check = offerCheck + space + volumeDataAndCheck.check;
 					
+					// If check is filled then alert message else run save
 					if(check){
 						var msg = this.getResourceBundle().getText("plsFillIn") + "\n\n" + check;
 						this.alert(msg);
@@ -176,14 +182,10 @@ sap.ui.define([
 						var allData = this.mergeObjects(offerData,volumeDataAndCheck.data);
 						var uploader = this.byId("upload");
 						var settings = {};
-						var msg = ''; 
+						var msg = allData.TCNumber === "$$00000001" ? this.getResourceBundle().getText("offerCreated") : this.getResourceBundle().getText("offerSaved"); 
 						var that = this;
-						if(allData.TCNumber === "$$00000001"){
-							msg = that.getResourceBundle().getText("offerCreated");
-						}else{
-							msg = this.getResourceBundle().getText("offerSaved");
-						}
-						console.log(allData);
+						
+						// Set settings after save success
 						settings.success = function(response){
 							that.alert(msg + " " + response.TCNumber, {
 								actions: [sap.m.MessageBox.Action.CLOSE],
@@ -205,13 +207,14 @@ sap.ui.define([
 								uploader.setUploadUrl(uploadUrl);
 								uploader.upload();
 							}
-							// Return flags to its positions
+							// Return flags to its origin positions
 							that.isChanged = false;
 							that.isBlacklist = false;
 							that.isLimitsChanged = false;
 							that.isRisksChanged = false;
 							that.isBlacklistChanged = false;
 						};
+						// Set settings after save error
 						settings.error = function(){
 							that.setInput(["saveOffer1","saveOffer2"], true, "Enabled");
 						};
@@ -257,19 +260,6 @@ sap.ui.define([
 						sap.ui.getCore().byId("approveTrader").setSelectedKey("");
 					}
 					this[id + "Dialog"].open();
-				}
-			},
-			
-			// Event on selection of table items
-			onTableSelect: function(oEvent) {
-				var table = oEvent.getSource();
-				var selectedCount = table.getSelectedItems().length;
-				var id = table.data("id");
-				var select = this.byId(id + "Select") || sap.ui.getCore().byId(id + "Select");
-				if (selectedCount > 0) {
-					select.setEnabled(true);
-				}else{
-					select.setEnabled(false);
 				}
 			},
 			
@@ -367,6 +357,28 @@ sap.ui.define([
 					this.approveDialog.close();
 				} else {
 					MessageBox.error(oResult.Message);
+				}
+			},
+			
+			// Triggered each time any change have been applied
+			onChangeData: function(){
+				if(!this.isChanged){
+					this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
+					this.setInput(["tableApprove"], false, "Enabled");
+					this.isChanged = true;
+				}
+			},
+			
+			// Event on selection of table items
+			onTableSelect: function(oEvent) {
+				var table = oEvent.getSource();
+				var selectedCount = table.getSelectedItems().length;
+				var id = table.data("id");
+				var select = this.byId(id + "Select") || sap.ui.getCore().byId(id + "Select");
+				if (selectedCount > 0) {
+					select.setEnabled(true);
+				}else{
+					select.setEnabled(false);
 				}
 			},
 			
