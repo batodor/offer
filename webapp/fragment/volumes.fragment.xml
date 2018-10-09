@@ -93,14 +93,14 @@
 					<Toolbar>
 						<Title text="{i18n>deliveryPeriods}" titleStyle="H3" />
 						<ToolbarSpacer />
-						<Button type="Accept" custom:id="periodsPrices" text="{i18n>add}" press="add" />
-						<Button type="Emphasized" custom:id="periodsPrices" text="{i18n>copy}" press="copy" enabled="false" />
-						<Button type="Reject" custom:id="periodsPrices" text="{i18n>delete}" press="delete" enabled="false" />
+						<Button type="Accept" custom:id="periods" text="{i18n>add}" press="add" />
+						<Button type="Emphasized" custom:id="periods" text="{i18n>copy}" press="copy" enabled="false" />
+						<Button type="Reject" custom:id="periods" text="{i18n>delete}" press="delete" enabled="false" />
 					</Toolbar>
 				</headerToolbar>
 				<items>
 					<CustomListItem>
-						<core:Fragment fragmentName="fragment.periodsPrices" type="XML"></core:Fragment>
+						<core:Fragment fragmentName="fragment.periods" type="XML"></core:Fragment>
 					</CustomListItem>
 				</items>
 			</List>

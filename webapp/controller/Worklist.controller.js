@@ -27,18 +27,17 @@ sap.ui.define([
 					tableBusyDelay : 0
 				});
 				this.setModel(oViewModel, "worklistView");
+				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
 				
 				// Add fragments
 				var fragmentsArr = [ "counterpartyPopupDialog", "portPopupDialog", "currencyPopupDialog", "volumeUomPopupDialog", "approveDialog", "offerPopupDialog"];
 				this.addFragments(fragmentsArr);
 				
-				// Declare global filter
+				// Declare global variables
 			    this.search = {}; // for searchFields
 				this.typeArr = ["value", "dateValue", "selectedKey", "selected", "state", "tokens"];
-				this.getRouter().getRoute("worklist").attachPatternMatched(this._onOfferMatched, this);
-				this.isRisk = {};
-				this.isChanged = false;
-				this.deleteCounter = 0;
+				this.isChanged = false; // for changes all over the offer
+				this.deleteCounter = 0; // for correct volume number
 				this.isBlacklist = false;
 				
 				// Set monday in calendar as first day(not Sunday)
@@ -152,8 +151,8 @@ sap.ui.define([
 					// --- Else start save function
 					var button = oEvent.getSource();
 					var objectsArr = button.data("blocks").split(',');
-					var offerData = this.getData(objectsArr, true);
-					var volumeDataAndCheck = this.getVolumeData(true);
+					var offerData = this.getData(objectsArr, true); // Calls getData with true parameter for save
+					var volumeDataAndCheck = this.getVolumeData(true); // Calls getVolumeData with true parameter for save
 					var offerCheck = this.checkKeys(["pageOfferDetails"]);
 					
 					// if Mode is copy then clear TCPositions
@@ -223,7 +222,7 @@ sap.ui.define([
 				}
 			},
 			
-			// Actually opens the approve dialog
+			// Opens the approve dialog and checks if all needed fields are filled
 			tableApprove: function(oEvent){
 				var checkArr = ["tradingPurpose", "product", "paymentMethod", "paymentTerm", "meansOfTransport"];
 				var check = "";
@@ -235,8 +234,10 @@ sap.ui.define([
 					check = check + this.getModel('i18n').getResourceBundle().getText("volume") + "\n";
 				}
 				var volumeCheck = this.checkVolumeData();
-				var space = volumeCheck ? "\n" : "";
+				var space = check && volumeCheck ? "\n" : "";
 				check = check + space + volumeCheck;
+				
+				// Check if all the fields are filled or one of counterparty is blacklisted
 				if(check || this.isBlacklist){
 					if(check){
 						check = this.getResourceBundle().getText("plsFillIn") + " \n\n " + check.slice(0,-2);
@@ -247,13 +248,17 @@ sap.ui.define([
 						check = this.getResourceBundle().getText("counterpartyBlacklisted");
 					}
 					this.alert(check);
-					return true;
 				}else{
+					// Selects all files for approval
 					var id = oEvent.getSource().data("id");
 					sap.ui.getCore().byId(id + "Upload").selectAll();
+					
+					// Sets auto time zone according to browser
 					var offset = new Date().getTimezoneOffset()/-60;
 					var sign = offset < 0 ? "-" : "+";
 					sap.ui.getCore().byId("approvalValidityTimeZone").setSelectedKey("YG" + sign + offset);
+					
+					// If user is approver then auto fills trader
 					if(this.data && this.data.AgentIsApprover){
 						sap.ui.getCore().byId("approveTrader").setSelectedKey(sap.ushell.Container.getService("UserInfo").getUser().getId());
 					}else{
@@ -263,11 +268,14 @@ sap.ui.define([
 				}
 			},
 			
-			// Dialog functions
+			// --- Dialog functions
+			// Dialog cancel function used in every dialog to close it
 			dialogCancel: function(oEvent) {
 				var id = oEvent.getSource().data("id");
 				this[id + "Dialog"].close();
 			},
+			
+			// Dialog select used in every dialog with items selection
 			dialogSelect: function(oEvent){
 				var button = oEvent.getSource();
 				var id = button.data("id");
@@ -275,32 +283,32 @@ sap.ui.define([
 				var dynamicId = button.data("dynamicId");
 				var valueHelp = dynamicId ? sap.ui.getCore().byId(dynamicId) : this.byId(id + "ValueHelp") || sap.ui.getCore().byId(id + "ValueHelp");
 				var items = sap.ui.getCore().byId(id).getSelectedItems();
+				
+				// if counterparty dialog then get token keys
 				if(id === "counterpartyPopup"){
 					var tokens = valueHelp.getTokens();
 					var tokenKeys = [];
 					var newTokens = tokens.slice();
 					for(var i = 0; i < newTokens.length; i++){
 						tokenKeys.push(newTokens[i].getKey());
-					}	
+					}
 				}
-				for(var i = 0; i < items.length; i++){
-					var item = items[i];
+				for(var j = 0; j < items.length; j++){
+					var item = items[j];
 					var path = item.getBindingContextPath();
 					var data = item.getModel().getData(path);
-					if(id === "counterpartyPopup"){
-						if(tokenKeys.indexOf(data.Code) === -1){
-							var token = new sap.m.Token({
-								key: data.Code,
-								text: data.Name
-							});
-							token.data("blacklist", data.BlackList);
-							newTokens.push(token);
-						}
+					// If token is not in list then add it
+					if(id === "counterpartyPopup" && tokenKeys.indexOf(data.Code) === -1){
+						var token = new sap.m.Token({
+							key: data.Code,
+							text: data.Name
+						});
+						token.data("blacklist", data.BlackList); // Set token as blacklisted to check in getPartnerList
+						newTokens.push(token);
 					}else{
 						var value = data.hasOwnProperty("Name") && !(id === "currencyPopup" || id === "volumeUomPopup" ) ? data.Name : data[key];
 						valueHelp.data("data", data[key]);
 						valueHelp.setValue(value);
-						this.onChangeData();
 						if(id === "portPopup"){
 							this.checkSanctionCountries();
 						}
@@ -308,20 +316,22 @@ sap.ui.define([
 				}
 				if(id === "counterpartyPopup"){
 					valueHelp.setTokens(newTokens);
-					this.byId("counterpartyOne").setValue(newTokens[0].Code);
+					this.byId("counterpartyOne").setValue(newTokens[0].Code); // Set first from list as main counterparty
+					// Check if there not more than 3 counterparties
 					if(newTokens.length > 3){
 						this.alert(this.getResourceBundle().getText("plsSelect3"));
 						return true;
-					}else{
-						if(tokens.length !== newTokens.length){
-							this.getRisks(valueHelp);
-							this.checkLimits();
-							this.onChangeData();
-						}
+					}else if(tokens.length !== newTokens.length){
+						// Else if there are some changes then check risks and limits and set offer as changed
+						this.getRisks(valueHelp);
+						this.checkLimits();
+						this.onChangeData();
 					}
 				}
 				this[id + "Dialog"].close();
 			},
+			
+			// Dialog approve function, only used in dialogApprove fragment
 			dialogApprove: function(oEvent){
 				var validityDate = sap.ui.getCore().byId("approvalValidityDateTime").getDateValue();
 				if(validityDate && validityDate instanceof Date){
@@ -349,6 +359,8 @@ sap.ui.define([
 					this.alert(this.getResourceBundle().getText("plsEnter") + " " + this.getResourceBundle().getText("validityDate"));
 				}
 			},
+			
+			// After dialogApprove
 			onApproveSuccess: function(link, oData) {
 				var oResult = oData[link];
 				if (oResult.ActionSuccessful) {
@@ -360,7 +372,8 @@ sap.ui.define([
 				}
 			},
 			
-			// Triggered each time any change have been applied
+			// Triggered each time any change have been applied in Offer
+			// Attached for every editable object through function getDataInner
 			onChangeData: function(){
 				if(!this.isChanged){
 					this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
@@ -369,7 +382,7 @@ sap.ui.define([
 				}
 			},
 			
-			// Event on selection of table items
+			// Event on select of table items with select button
 			onTableSelect: function(oEvent) {
 				var table = oEvent.getSource();
 				var selectedCount = table.getSelectedItems().length;
@@ -379,6 +392,17 @@ sap.ui.define([
 					select.setEnabled(true);
 				}else{
 					select.setEnabled(false);
+				}
+			},
+			
+			// Event on selectionChange of list items with header buttons
+			onListSelect: function(oEvent){
+				var list = oEvent.getSource();
+				var toolbar = list.getHeaderToolbar().getContent();
+				if(list.getSelectedItems().length > 0){
+					this.setInput([toolbar[3], toolbar[4]], true, "Enabled");
+				}else{
+					this.setInput([toolbar[3], toolbar[4]], false, "Enabled");
 				}
 			},
 			
@@ -453,16 +477,6 @@ sap.ui.define([
 				}
 			},
 			
-			onListSelect: function(oEvent){
-				var list = oEvent.getSource();
-				var toolbar = list.getHeaderToolbar().getContent();
-				if(list.getSelectedItems().length > 0){
-					this.setInput([toolbar[3], toolbar[4]], true, "Enabled");
-				}else{
-					this.setInput([toolbar[3], toolbar[4]], false, "Enabled");
-				}
-			},
-			
 			// Panel functions
 			add: function(oEvent){
 				var button = oEvent.getSource();
@@ -470,7 +484,7 @@ sap.ui.define([
 				var list = button.getParent().getParent();
 				if(!this[id]){
 					this[id] = sap.ui.xmlfragment("fragment." + id, this);
-					//id === "periodsPrices" ? this["volumes"].addDependent(this[id]) : this.getView().addDependent(this[id]);
+					//id === "periods" ? this["volumes"].addDependent(this[id]) : this.getView().addDependent(this[id]);
 				}
 				var fragmentClone = this[id].clone("", [], null, true, true);
 				if(id === "volumes"){
@@ -515,7 +529,7 @@ sap.ui.define([
 							titleValue.setValue(length);
 						}
 					}
-					if(id === "periodsPrices"){
+					if(id === "periods"){
 						var TCPosition = clone.getContent()[0].getContent()[0].getItems()[0];
 						TCPosition.setValue("");
 					}
@@ -1337,29 +1351,11 @@ sap.ui.define([
 			
 			// On Compliance Risks list update finished
 			checkRisks: function(oEvent){
-				var list = oEvent.getSource();
-				var risks = list.getItems();
-				if(risks.length > 0){
-					var type = list.data("type");
-					this.isRisk[type] = false;
-					if(type === "other"){
-						if(risks.length > 0){
-							this.isRisk[type] = true;
-						}
-					}else if(type === "main"){
-						for(var i = 0; i < risks.length; i++){
-							var color = risks[i].getContent()[0].getItems()[0].getColor();
-							if(color === "red" || color === "yellow"){
-								this.isRisk[type] = true;
-							}
-						}
-					}
-					if(this.status && this.status === "7"){
-						this.byId("requestRisk").setEnabled(false);
-					}
-					if(this.isChanged){
-						this.isRisksChanged = true;  
-					}
+				if(this.status && this.status === "7"){
+					this.byId("requestRisk").setEnabled(false);
+				}
+				if(this.isChanged){
+					this.isRisksChanged = true;  
 				}
 			},
 			
@@ -1413,6 +1409,7 @@ sap.ui.define([
 				}
 			},
 			
+			// Is reused inside setEnabled function
 			setEnabledInner: function(input, flag){
 				for(var i = 0; i < this.typeArr.length; i++){
 					if(input["mBindingInfos"].hasOwnProperty(this.typeArr[i]) || input.hasOwnProperty("_tokenizer")){
@@ -1421,6 +1418,8 @@ sap.ui.define([
 				}
 			},
 			
+			// Is triggered after volumes and periods are loaded 
+			// On updateFinished event for lists of Volumes and Periods fragments
 			onVolumesPeriodsLoaded: function(oEvent){
 				var flag = this.status ? false : true; // Set Disabled volumes and periods if status is defined (as 1, 6 or 7)
 				var mode = this.status ? "None" : "SingleSelectMaster";
@@ -1439,6 +1438,7 @@ sap.ui.define([
 				}
 				
 				// Call get data functions to bind each input the onChangeData event function
+				// And check limits after periods render
 				if(oEvent.getParameter("reason") === "Refresh" && oEvent.getSource().data("id") === "period"){
 					this.getData(["pageOfferDetails", "parameters"]);
 					this.getVolumeData();
@@ -1446,6 +1446,7 @@ sap.ui.define([
 				}
 			},
 			
+			// Function attached for change event of Offer Type in Offer fragment
 			onChangeType: function(oEvent){
 				var offerType = oEvent.getSource().getSelectedKey();
 				if(offerType === "ZPO1"){
@@ -1462,6 +1463,8 @@ sap.ui.define([
 				this.checkLimits();
 			},
 			
+			// Is used to filter by custom parameters the counterparties(popup and suggestions) and company branches
+			// Inside onChangeType and onInit
 			filterByType: function(offerType, isCompany){
 				var companyBranch = this.byId("companyBranch");
 				companyBranch.bindItems({
