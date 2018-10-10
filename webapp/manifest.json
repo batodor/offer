@@ -6,6 +6,7 @@
 		"i18n": "i18n/i18n.properties",
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
+		"author": "Bato Dorzhiev",
 		"applicationVersion": {
 			"version": "1.0.0"
 		},
