@@ -409,8 +409,6 @@ sap.ui.define([
 			// Get Risks on select of Counterparties
 			getRisks: function(valueHelp, removedKeys){
 				var tokens = valueHelp.getTokens();
-				var risks = this.byId("risks");
-				risks.removeAllItems();
 				var filters = [];
 				for(var i = 0; i < tokens.length; i++){
 					var key = tokens[i].getKey();
@@ -422,16 +420,15 @@ sap.ui.define([
 						filters.push(new Filter({path: "Code", operator: FilterOperator.EQ, value1: key }));
 					}
 				}
-				if(filters.length > 0){
-					var partnersFilter = new Filter({ filters: filters, and: false });
-					var tcnumberFilter = new Filter({path: "TCNumber", operator: FilterOperator.EQ, value1: this.byId("TCNumber").getValue() });
-					var allFilters = new Filter({ filters: [ partnersFilter, tcnumberFilter ], and: true });
-					risks.bindItems({
-						path: "/offerCounterpartySet", 
-						filters: allFilters, 
-						template: risks['mBindingInfos'].items.template.clone()
-					});
-				}
+				var risks = this.byId("risks");
+				var partnersFilter = filters.length > 0 ? new Filter({ filters: filters, and: false }) : new Filter({path: "Code", operator: FilterOperator.EQ, value1: "" });
+				var tcnumberFilter = new Filter({path: "TCNumber", operator: FilterOperator.EQ, value1: this.byId("TCNumber").getValue() });
+				var allFilters = new Filter({ filters: [ partnersFilter, tcnumberFilter ], and: true });
+				risks.bindItems({
+					path: "/offerCounterpartySet", 
+					filters: allFilters, 
+					template: risks['mBindingInfos'].items.template.clone()
+				});
 			},
 			
 			// On multi input (Counterparty) tokens remove
@@ -440,7 +437,8 @@ sap.ui.define([
 				var input = oEvent.getSource();
 				var removedTokens = oEvent.getParameter("removedTokens");
 				var removedTokensKeys = [];
-				for(var i = 0; i < removedTokens.length; i++){
+				var len = removedTokens ? removedTokens.length : 0;
+				for(var i = 0; i < len; i++){
 					removedTokensKeys.push(removedTokens[i].getKey());
 				}
 				this.getRisks(input, removedTokensKeys);
@@ -1459,12 +1457,11 @@ sap.ui.define([
 				}else{
 					this.setInput(["purchaseGroup", "purchaseGroupLabel"], false, "Visible");
 				}
-				this.byId("counterpartyPopupValueHelp").removeAllTokens();
-				if(this.byId("risks").getItems().length > 0){
-					this.byId("risks").removeAllItems();
-				}
+				
 				this.filterByType(offerType);
 				this.checkLimits();
+				this.byId("counterpartyPopupValueHelp").removeAllTokens();
+				this.byId("counterpartyPopupValueHelp").fireTokenUpdate();
 			},
 			
 			// Is used to filter by custom parameters the counterparties(popup and suggestions) and company branches
