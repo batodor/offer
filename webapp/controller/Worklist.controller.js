@@ -434,7 +434,8 @@ sap.ui.define([
 				}
 			},
 			
-			// On multi input tokens remove
+			// On multi input (Counterparty) tokens remove
+			// Removed tokens are formed since there are 
 			onMultiUpdate: function(oEvent){
 				var input = oEvent.getSource();
 				var removedTokens = oEvent.getParameter("removedTokens");
@@ -452,9 +453,9 @@ sap.ui.define([
 			nextPage: function(oEvent){
 				var button = oEvent.getSource();
 				var navCon = this.byId("navCon");
-				var next = button.data("next");
+				var next = button.data("next"); // this is id of page to go to
 				if(button.data("check")){
-					var page = this.byId(button.data("id"));
+					var page = this.byId(button.data("id")); // this is id of the block to check its values
 					var check = this.checkKeys(page);
 					if(check){
 						var msg = this.getModel('i18n').getResourceBundle().getText("plsFillIn") + "\n\n" + check.slice(0, -1);
@@ -463,6 +464,7 @@ sap.ui.define([
 					}
 				}
 				if(next){
+					// If the offer mode is edit but tcnumber is not entered yet
 					if(button.data("edit")){
 						var input = this.byId("offerId");
 						var TCNumber = input.data("data") ? input.data("data") : input.getValue();
@@ -477,18 +479,20 @@ sap.ui.define([
 				}
 			},
 			
-			// Panel functions
+			// Volumes and Periods add/copy/delete functions
 			add: function(oEvent){
 				var button = oEvent.getSource();
-				var id = button.data("id");
+				var id = button.data("id"); // id is to detect if its volume or period
 				var list = button.getParent().getParent();
 				if(!this[id]){
 					this[id] = sap.ui.xmlfragment("fragment." + id, this);
-					//id === "periods" ? this["volumes"].addDependent(this[id]) : this.getView().addDependent(this[id]);
 				}
-				var fragmentClone = this[id].clone("", [], null, true, true);
+				// Clone volume fragment
+				var fragmentClone = this[id].clone();
 				if(id === "volumes"){
-					this.getView().addDependent(fragmentClone);
+					// Edit volume title before adding
+					// Also count length using global variable this.deleteCounter
+					this.getView().addDependent(fragmentClone); // This line code is needed so that changes of its title would be applied
 					var title = fragmentClone.getHeaderToolbar().getContent()[0];
 					var titleValue = fragmentClone.getHeaderToolbar().getContent()[2];
 					var length = list.getItems().length + 1 + this.deleteCounter;
@@ -514,9 +518,9 @@ sap.ui.define([
 				var list = button.getParent().getParent();
 				var selectedItem = list.getSelectedItem();
 				if(selectedItem){
-					var id = button.data("id");
-					var clone = selectedItem.clone("", [], null, true, true);
-					this.getView().addDependent(clone);
+					var id = button.data("id"); // id is to detect if its volume or period
+					var clone = selectedItem.clone();
+					this.getView().addDependent(clone); // This line code is needed so that changes of its title would be applied
 					if(id === "volumes"){
 						var title = clone.getContent()[0].getHeaderToolbar().getContent()[0];
 						var titleValue = clone.getContent()[0].getHeaderToolbar().getContent()[2];
@@ -541,7 +545,7 @@ sap.ui.define([
 			},
 			delete: function(oEvent){
 				var button = oEvent.getSource();
-				var id = button.data("id");
+				var id = button.data("id"); // id is to detect if its volume or period
 				var list = button.getParent().getParent();
 				var selectedItems = list.getSelectedItems();
 				if(selectedItems.length > 0){
@@ -553,10 +557,10 @@ sap.ui.define([
 								for(var i=0; i<selectedItems.length; i++){
 									list.removeItem(selectedItems[i]);
 								}
-								that.deleteCounter++;
+								that.deleteCounter++; // Add delete counter for correct counting when adding and copying
 								that.onChangeData();
 								if(id === "volumes"){
-									that.checkSanctionCountries();
+									that.checkSanctionCountries(); // After volume removed update countries of ports of volume
 								}
 							} else {
 								MessageToast.show("Delete canceled!");
