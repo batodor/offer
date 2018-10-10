@@ -767,12 +767,14 @@ sap.ui.define([
 							parameters: parameters,
 							filters: filter
 						});
+					}else{
+						input.getBinding("suggestionItems").filter(filter);
 					}
 				}else{
 					input.getBinding("suggestionItems").filter(filter);
 				}
-				
 			},
+			
 			suggestionItemSelected: function(oEvent){
 				var valueHelp = oEvent.getSource();
 				var item = oEvent.getParameters("selectedItem");
@@ -1215,14 +1217,14 @@ sap.ui.define([
 				var shipMax = vboxArr[4].getItems()[1].getItems()[1];
 				var tonMin = vboxArr[6].getItems()[0].getItems()[1];
 				var tonMax = vboxArr[6].getItems()[1].getItems()[1];
-				if(shipMin.getValue() > shipMax.getValue() && !(shipMax.getValue() === "" || shipMax.getValue() === "0")){
+				if(parseFloat(shipMin.getValue()) > parseFloat(shipMax.getValue()) && !(shipMax.getValue() === "" || shipMax.getValue() === "0")){
 					shipMin.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin")).setValue(shipMax.getValue());
 					shipMax.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
 				}else{
 					shipMin.setValueState("None");
 					shipMax.setValueState("None");
 				}
-				if(tonMin.getValue() > tonMax.getValue() && !(tonMax.getValue() === "" || tonMax.getValue() === "0")){
+				if(parseFloat(tonMin.getValue()) > parseFloat(tonMax.getValue()) && !(tonMax.getValue() === "" || tonMax.getValue() === "0")){
 					tonMin.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin")).setValue(tonMax.getValue());
 					tonMax.setValueState("Warning").setValueStateText(this.getResourceBundle().getText("maxCannotBeLessMin"));
 				}else{
