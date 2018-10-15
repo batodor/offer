@@ -1533,7 +1533,7 @@ sap.ui.define([
 					success: this.onCheckPortsSuccess.bind(this, "GetSanctionCountries")
 				});
 			},
-			
+			// On checkSanctionCountries succes function
 			onCheckPortsSuccess: function(link, oData) {
 				var oResult = oData[link];
 				var text = this.byId("countriesSanction");
