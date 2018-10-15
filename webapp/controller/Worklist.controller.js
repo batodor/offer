@@ -71,13 +71,13 @@ sap.ui.define([
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						
 						// Disable save buttons and enable approve if no changes(on init)
-						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
+						this.setInput(["saveOffer2", "saveOffer1", "productType"], false, "Enabled");
 						this.byId("tableApprove").setEnabled(true);
 						
 						// --- If Copy mode
 						if(this.Type === "Copy"){
 							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
-							this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
+							this.setInput(["saveOffer2", "saveOffer1", "productType"], true, "Enabled");
 							this.byId("tableApprove").setEnabled(false);
 						}
 					}else{ 
@@ -126,7 +126,7 @@ sap.ui.define([
 				}else if(this.Type === "Copy"){
 					// --- If Copy mode (applied only after bind)
 					this.byId("creationDate").setDateValue(new Date());
-					this.byId("createdBy").setSelectedKey("");
+					//this.byId("createdBy").setSelectedKey("");
 					this.byId("TCNumber").setValue("$$00000001");
 					this.byId("status").setSelectedKey("");
 					this.filterSelect();
@@ -695,6 +695,8 @@ sap.ui.define([
 				return oData;
 			},
 			
+			// Check value if it bigger then max or less then min(used for percentage in periods)
+			// If bigger then auto sets max value, if less then auto sets min value
 			checkValue: function(oEvent){
 				var input = oEvent.getSource();
 				var maxValue = input.data("max") ? parseInt(input.data("max")) : input["mProperties"].hasOwnProperty("max") ? input.getMax() : 100;
@@ -715,6 +717,7 @@ sap.ui.define([
 				}
 			},
 			
+			// Switch function is for switches to change select visibility and title of volume
 			onSwitch: function(oEvent){
 				var Switch = oEvent.getSource();
 				var type = Switch.data("type");
@@ -730,51 +733,52 @@ sap.ui.define([
 					title.setText(newText);
 				}
 			},
-
+			
+			// Triggers suggest search of input with suggestions
 			handleSuggest: function(oEvent) {
 				var input = oEvent.getSource();
 				var sTerm = oEvent.getParameter("suggestValue");
-				var filterName = input.data("select") ? input.data("select") : "Name";
-				var customParameter = input.data("customParameter");
-				var customSet = input.data("set");
+				var filterName = input.data("select") ? input.data("select") : "Name"; // Use select parameter for certain property name
+				var customParameter = input.data("customParameter"); // For custom parater to filter bind
+				var customSet = input.data("set"); // for custom set to bind when suggesting
+				var operator = input.data("operator") ? FilterOperator[input.data("operator")] : FilterOperator.Contains; // custom operator for filtration by default is Contains
 				
+				// Check select parameter if it multiple filter or one
 				if(filterName.indexOf(';') > -1){
 					var filtersArr = filterName.split(';');
 				}
-				var isAnd = false;
+				// Generate filters
 				var aFilters = [];
 				if (sTerm) {
 					if(filtersArr){
 						for(var i = 0; i < filtersArr.length; i++){
-							aFilters.push(new Filter(filtersArr[i], sap.ui.model.FilterOperator.Contains, sTerm));
+							aFilters.push(new Filter(filtersArr[i], operator, sTerm));
 						}
 					}else{
-						aFilters.push(new Filter(filterName, sap.ui.model.FilterOperator.Contains, sTerm));
+						aFilters.push(new Filter(filterName, operator, sTerm));
 					}
 				}
-				var filter = new Filter({filters: aFilters, and: isAnd});
+				var filter = new Filter({filters: aFilters});
 				
-				if(customParameter){
-					var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
-					var customValue = customInput.getSelectedKey();
-					if(input.getBinding("suggestionItems").sCustomParams !== customParameter + "=" + customValue){
-						var parameters = {};
-						parameters.custom = {};
-						parameters.custom[customParameter] = customValue;
-						input.bindAggregation("suggestionItems", {
-							path: "/" + customSet + "Set",
-							template: input['mBindingInfos'].suggestionItems.template.clone(),
-							parameters: parameters,
-							filters: filter
-						});
-					}else{
-						input.getBinding("suggestionItems").filter(filter);
-					}
+				// Check if custom parameter is applied to bind
+				var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
+				var customValue = customParameter ? customInput.getSelectedKey() : "";
+				if(customParameter && input.getBinding("suggestionItems").sCustomParams !== customParameter + "=" + customValue){
+					var parameters = {};
+					parameters.custom = {};
+					parameters.custom[customParameter] = customValue;
+					input.bindAggregation("suggestionItems", {
+						path: "/" + customSet + "Set",
+						template: input['mBindingInfos'].suggestionItems.template.clone(),
+						parameters: parameters,
+						filters: filter
+					});
 				}else{
 					input.getBinding("suggestionItems").filter(filter);
 				}
 			},
 			
+			// This funciton is triggered after 
 			suggestionItemSelected: function(oEvent){
 				var valueHelp = oEvent.getSource();
 				var item = oEvent.getParameters("selectedItem");
@@ -787,14 +791,18 @@ sap.ui.define([
 				}
 			},
 			
-			// Gete inputs from array of ids or directly from object
+			// Get inputs from array of ids or directly from object
 			getInputs: function(object){
 				var inputs = [];
 				if(Array.isArray(object)){
 					for(var i = 0; i < object.length; i++){
 						var obj = this.byId(object[i]) || sap.ui.getCore().byId(object[i]);
 						var objInputs = obj.getAggregation("content") || obj.getAggregation("items");
-						inputs = inputs.concat(objInputs);
+						if(objInputs){
+							inputs = inputs.concat(objInputs);
+						}else{
+							inputs.push(obj);
+						}
 					}
 				}else{
 					inputs = object.getAggregation("content") || object.getAggregation("items");
@@ -802,10 +810,12 @@ sap.ui.define([
 				return inputs;
 			},
 			
+			// Custom function to collect data and check keys that is adapted for Volumes and Periods xml structure for Offer save/create
+			// isSave argument is for gettings date moved by timezone, only used on offer save or create
 			getVolumeData: function(isSave){
 				var oData = {};
-				oData.data = {};
-				oData.check = "";
+				oData.data = {}; // object for data
+				oData.check = ""; // string value for keys check
 				var list = this.byId("volumesList");
 				var volumes = list.getItems();
 				oData.data.ToOfferVolume = [];
@@ -855,6 +865,7 @@ sap.ui.define([
 				return oData;
 			},
 			
+			// Custom check of volumes and periods xml structure for approval
 			checkVolumeData: function(){
 				var check = "";
 				var list = this.byId("volumesList");
@@ -909,6 +920,7 @@ sap.ui.define([
 				return check;
 			},
 			
+			// Triggered after choosing dates for periods, changes volume title
 			onDateChange: function(oEvent){
 				var dp = oEvent.getSource();
 				var type = dp.data("key");
@@ -935,7 +947,7 @@ sap.ui.define([
 				}
 				this.checkLimits();
 			},
-			
+			// Used to format dates while choosing period dates
 			formatDate: function(date){
 				var newDate = date ? date.toLocaleDateString("ru-RU") : "";
 				return newDate;
@@ -943,11 +955,9 @@ sap.ui.define([
 			
 			// On select item in Attachments table
 			onAttachmentSelect: function(e){
-				var listItems = e.getParameters("listItem");
-				if (listItems) {
-					var id = e.getSource().data("id");
-					this.setInput([id + "Delete", id + "Download"], true, "Enabled");
-				}
+				var listItem = e.getParameter("listItem");
+				var id = e.getSource().data("id");
+				listItem ? this.setInput([id + "Delete", id + "Download"], true, "Enabled") : this.setInput([id + "Delete", id + "Download"], false, "Enabled");
 			},
 			
 			// -------------------- Attachments functions --------------------
@@ -991,17 +1001,18 @@ sap.ui.define([
 				}
 				
 				var model = table.getModel();
-				MessageBox.confirm("Are you sure you want to delete?", {
-					actions: ["Delete", sap.m.MessageBox.Action.CLOSE],
+				var that = this;
+				MessageBox.confirm(that.getResourceBundle().getText("askDelete"), {
+					actions: [that.getResourceBundle().getText("delete"), sap.m.MessageBox.Action.CLOSE],
 					onClose: function(sAction) {
-						if (sAction === "Delete") {
+						if (sAction === that.getResourceBundle().getText("delete")) {
 							model.remove(url,{
 								success: function(){
-									
+									MessageToast.show(that.getResourceBundle().getText("successfullyDeleted"));
 								}
 							});
 						} else {
-							MessageToast.show("Delete canceled!");
+							MessageToast.show(that.getResourceBundle().getText("deleteCanceled"));
 						}
 					}
 				});
@@ -1024,7 +1035,6 @@ sap.ui.define([
 					button.setEnabled(false);
 				}
 			},
-			
 			
 			// oData = object with data, keyArr is array of keys to check
 			checkDataInner: function(oData, keyArr){
@@ -1053,6 +1063,8 @@ sap.ui.define([
 					this.setSelectDefaultValue(newValue, filterSelect);
 				}
 			},
+			// Called from filterSelect to filter Product, value argument is id of Product Type
+			// Select argument is Product select object
 			setSelectDefaultValue: function(value, select){
 				var url = this.getModel().sServiceUrl;
 				$.get(url + "/defaultProductByTypeSet('" + value + "')/?$format=json", function( data ) {
@@ -1140,6 +1152,7 @@ sap.ui.define([
 				var select = sap.ui.getCore().byId(id + "Select");
 				var customParameter = button.data("customParameter");
 				var customSet = button.data("set");
+				// If custom parameter is defined then bind table with parameters
 				if(customParameter){
 					var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
 					for(var k = 0; k < this.typeArr.length; k++){
@@ -1160,6 +1173,7 @@ sap.ui.define([
 					}
 				}
 				this.search = {}; // nullify search object
+				// Clear filters inputs if passed in filters parameter, multiple version divided by comma ","
 				if(filters){
 					var filtersArr = filters.split(',');
 					for(var i = 0; i < filtersArr.length; i++){
@@ -1172,16 +1186,20 @@ sap.ui.define([
 						}
 					}
 				}
+				// Pass the dynamic id in parameter for next button(select) dialogSelect
 				select.data("dynamicId", dynamicId);
+				// Set disabled select if no selection in table
 				if(table.getSelectedItems().length === 0){
 					select.setEnabled(false);
 				}
 				this[id + "Dialog"].open();
 			},
 			
+			// Request function for Blacklist, Limits and Risks
 			callRequest: function(oEvent){
 				var button = oEvent.getSource();
 				var type = button.data("type");
+				// If no changes regarded limits blacklist or risks then call request
 				if((type === "L" && this.isLimitsChanged) || (type === "R" && this.isRisksChanged) || (type === "B" && this.isBlacklistChanged)){
 					this.alert(this.getResourceBundle().getText("plsSaveOffer"));
 				}else{
@@ -1207,6 +1225,8 @@ sap.ui.define([
 				}
 			},
 			
+			// Counts and checks the delivery lots and tonnages 
+			// Also controls that min value cannot be bigger then max
 			count: function(oEvent){
 				var input = oEvent.getSource();
 				var size = input.data("size");
@@ -1242,6 +1262,7 @@ sap.ui.define([
 				this.checkLimits();
 			},
 			
+			// Sets the tolerance as percentage max 100 or infinite tonnage for periods tolerances
 			setTolerance: function(oEvent){
 				var input = oEvent.getSource();
 				var key = input.getSelectedKey();
@@ -1256,6 +1277,7 @@ sap.ui.define([
 				}
 			},
 			
+			// Collects the data for service function CheckValidityLimits
 			collectLimitsData: function(removedTokens){
 				var oData = {};
 				var offerData = this.getData(["pageOfferDetails","parameters"]);
@@ -1292,18 +1314,17 @@ sap.ui.define([
 				return oData;
 			},
 			
+			// Generate string with partners with ; sign as separator
+			// argument blacklist is used for generating list of blacklisted partners only
+			// argument removedTokens is needed is to detect which partner was removed
 			getPartnerList: function(blacklist, removedTokens){
 				var partnersList = '';
 				var tokens = this.byId("counterpartyPopupValueHelp").getTokens();
 				for(var i = 0; i < tokens.length; i++){
-					if(blacklist){
-						if(tokens[i].data("blacklist")){
-							partnersList = partnersList + tokens[i].getKey() + ";";
-						}
-					}else{
-						if((removedTokens && removedTokens.indexOf(tokens[i].getKey()) === -1) || !removedTokens){
-							partnersList = partnersList + tokens[i].getKey() + ";";
-						}
+					if(blacklist && tokens[i].data("blacklist")){
+						partnersList = partnersList + tokens[i].getKey() + ";";
+					}else if((removedTokens && removedTokens.indexOf(tokens[i].getKey()) === -1) || !removedTokens){
+						partnersList = partnersList + tokens[i].getKey() + ";";
 					}
 				}
 				if(partnersList){
@@ -1312,6 +1333,7 @@ sap.ui.define([
 				return partnersList;
 			},
 			
+			// Check the limits with using collectLimitsData function and service function CheckValidityLimits
 			checkLimits: function(removedTokens){
 				var args = Array.isArray(removedTokens) ? removedTokens : null;
 				var oFuncParams = this.collectLimitsData(args);
@@ -1321,6 +1343,7 @@ sap.ui.define([
 					success: this.onCheckLimitsSuccess.bind(this, "CheckValidityLimits")
 				});
 			},
+			// If check limit was successful then changes the icons and limits values
 			onCheckLimitsSuccess: function(link, oData) {
 				var oResult = oData[link];
 				var PaymentIcon = this.byId("limitPaymentConditionIcon");
@@ -1354,6 +1377,7 @@ sap.ui.define([
 			},
 			
 			// On Compliance Risks list update finished
+			// Binded for updateFinished event on risks table in verification fragment
 			checkRisks: function(oEvent){
 				if(this.status && this.status === "7"){
 					this.byId("requestRisk").setEnabled(false);
@@ -1364,11 +1388,13 @@ sap.ui.define([
 			},
 			
 			// On Compliance Risks list update finished
+			// Binded for updateFinished event on counterparties table in verification fragment
 			checkCounterparties: function(oEvent){
 				this.checkBlacklist(oEvent);
 				this.checkSanctionCountries();
 			},
 			
+			// Check the counterparties if any of them is blacklisted also changes the request button status
 			checkBlacklist: function(oEvent){
 				var list = oEvent.getSource();
 				var counterparties = list.getItems();
@@ -1389,11 +1415,6 @@ sap.ui.define([
 				if(this.isChanged){
 					this.isBlacklistChanged = true;  
 				}
-			},
-			
-			gotoLink: function(oEvent){
-				var id = oEvent.getSource().data("id");
-				window.open("/sap/bc/ui2/flp#ZTS_BUSINESS_PARTNER-display&/CounterpartyHeaderSet/" + id);
 			},
 			
 			// Sets disabled/enabled object/array inside inputs
