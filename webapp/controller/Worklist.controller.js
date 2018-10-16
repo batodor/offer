@@ -55,10 +55,6 @@ sap.ui.define([
 						// --- Edit offer first screen
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer2"));
 						this.byId("navCon").to(this.byId("p1"));
-						var that = this;
-						this.byId("offerId").onsapenter = function(e) {
-					        that.byId("openOfferButton").firePress();
-					    };
 					}else if(this.TCNumber){ 
 						// --- View and Edit mode
 						// Main bind for a view
@@ -126,7 +122,6 @@ sap.ui.define([
 				}else if(this.Type === "Copy"){
 					// --- If Copy mode (applied only after bind)
 					this.byId("creationDate").setDateValue(new Date());
-					//this.byId("createdBy").setSelectedKey("");
 					this.byId("TCNumber").setValue("$$00000001");
 					this.byId("status").setSelectedKey("");
 					this.filterSelect();
@@ -734,7 +729,7 @@ sap.ui.define([
 				}
 			},
 			
-			// Triggers suggest search of input with suggestions
+			// Triggers suggest or liveChange event, search of input with suggestions
 			handleSuggest: function(oEvent) {
 				var input = oEvent.getSource();
 				var sTerm = oEvent.getParameter("suggestValue") || oEvent.getParameter("newValue"); // in case if liveChange event is used
@@ -749,6 +744,7 @@ sap.ui.define([
 				}
 				// Generate filters
 				var aFilters = [];
+				var filter = new Filter({filters: aFilters, and: false});
 				if (sTerm) {
 					if(filtersArr){
 						for(var i = 0; i < filtersArr.length; i++){
@@ -757,8 +753,10 @@ sap.ui.define([
 					}else{
 						aFilters.push(new Filter(filterName, operator, sTerm));
 					}
+				}else{
+					filter = [];
 				}
-				var filter = new Filter({filters: aFilters, and: false});
+				
 				
 				// Check if custom parameter is applied to bind
 				var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
@@ -776,10 +774,8 @@ sap.ui.define([
 				}else{
 					input.getBinding("suggestionItems").filter(filter);
 					// Contains filter cant find if the value ending is matching so instead suggest event liveChange is used
-					if(input.data("live")){
-						input.setShowSuggestion(true);
-				        input.setFilterSuggests(false);
-				        input.removeAllSuggestionItems();
+					if(input.data("live") && sTerm){
+				        input.setShowSuggestion(true).setFilterSuggests(false).removeAllSuggestionItems();
 					}
 				}
 			},
@@ -787,13 +783,17 @@ sap.ui.define([
 			// This funciton is triggered after 
 			suggestionItemSelected: function(oEvent){
 				var valueHelp = oEvent.getSource();
-				var item = oEvent.getParameters("selectedItem");
-				if(item && item.selectedItem){
-					valueHelp.setValue(item.selectedItem.getText()).data("data", item.selectedItem.getKey());
+				var item = oEvent.getParameter("selectedItem");
+				if(item){
+					valueHelp.setValue(item.getText()).data("data", item.getKey());
 				}
 				valueHelp.fireChange();
-				if(oEvent.getSource().data("key") === "counterparty"){
+				if(valueHelp.data("key") === "counterparty"){
 					this.checkLimits();
+				}
+				// if custom parameter enter defined then inside should be id of button to press
+				if(valueHelp.data("enter")){
+					this.byId(valueHelp.data("enter")).firePress();
 				}
 			},
 			

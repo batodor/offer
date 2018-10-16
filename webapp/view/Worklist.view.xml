@@ -39,6 +39,7 @@
 								custom:select="PartnerName;TCNumber"
 								custom:name="PartnerName"
 								custom:live="true"
+								custom:enter="openOfferButton"
 								showValueHelp="true"
 								valueHelpRequest="handleValueHelp"
 								liveChange="handleSuggest"
