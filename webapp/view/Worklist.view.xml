@@ -38,9 +38,10 @@
 								custom:filters="Code,Name"
 								custom:select="PartnerName;TCNumber"
 								custom:name="PartnerName"
+								custom:live="true"
 								showValueHelp="true"
 								valueHelpRequest="handleValueHelp"
-								suggest="handleSuggest"
+								liveChange="handleSuggest"
 								showSuggestion="true"
 								suggestionItemSelected="suggestionItemSelected"
 								suggestionItems="{ path: '/dictionarySearchOfferSet', templateShareable:false }">

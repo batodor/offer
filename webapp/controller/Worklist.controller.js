@@ -737,11 +737,11 @@ sap.ui.define([
 			// Triggers suggest search of input with suggestions
 			handleSuggest: function(oEvent) {
 				var input = oEvent.getSource();
-				var sTerm = oEvent.getParameter("suggestValue");
+				var sTerm = oEvent.getParameter("suggestValue") || oEvent.getParameter("newValue"); // in case if liveChange event is used
 				var filterName = input.data("select") ? input.data("select") : "Name"; // Use select parameter for certain property name
 				var customParameter = input.data("customParameter"); // For custom parater to filter bind
 				var customSet = input.data("set"); // for custom set to bind when suggesting
-				var operator = input.data("operator") ? FilterOperator[input.data("operator")] : FilterOperator.Contains; // custom operator for filtration by default is Contains
+				var operator = input.data("operator") ? FilterOperator[input.data("operator")] : FilterOperator.Contains; // custom operator for filtration by default is Containsz
 				
 				// Check select parameter if it multiple filter or one
 				if(filterName.indexOf(';') > -1){
@@ -758,7 +758,7 @@ sap.ui.define([
 						aFilters.push(new Filter(filterName, operator, sTerm));
 					}
 				}
-				var filter = new Filter({filters: aFilters});
+				var filter = new Filter({filters: aFilters, and: false});
 				
 				// Check if custom parameter is applied to bind
 				var customInput = this.byId(customParameter) || sap.ui.getCore(customParameter);
@@ -775,6 +775,12 @@ sap.ui.define([
 					});
 				}else{
 					input.getBinding("suggestionItems").filter(filter);
+					// Contains filter cant find if the value ending is matching so instead suggest event liveChange is used
+					if(input.data("live")){
+						input.setShowSuggestion(true);
+				        input.setFilterSuggests(false);
+				        input.removeAllSuggestionItems();
+					}
 				}
 			},
 			
