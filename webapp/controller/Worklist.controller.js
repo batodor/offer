@@ -67,13 +67,13 @@ sap.ui.define([
 						this.byId("offerTitle").setText(this.getResourceBundle().getText("editOffer", [this.TCNumber]));
 						
 						// Disable save buttons and enable approve if no changes(on init)
-						this.setInput(["saveOffer2", "saveOffer1", "productType"], false, "Enabled");
+						this.setInput(["saveOffer2", "saveOffer1"], false, "Enabled");
 						this.byId("tableApprove").setEnabled(true);
 						
 						// --- If Copy mode
 						if(this.Type === "Copy"){
 							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
-							this.setInput(["saveOffer2", "saveOffer1", "productType"], true, "Enabled");
+							this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
 							this.byId("tableApprove").setEnabled(false);
 						}
 					}else{ 
@@ -110,9 +110,14 @@ sap.ui.define([
 								this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
 								this.byId("comment").setEnabled(true);
 							}
+						}else{
+							this.setEnabled(["pageOfferDetails", "parameters"], true);
+							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
+								"uploadDelete", "uploadHbox"], true, "Visible");
 						}
-						// Filter branch offices
-						this.filterByType(this.data.OfferType, true);
+						
+						this.setInput(["status", "productType"], false, "Enabled");  // Set disabled product Type and status
+						this.filterByType(this.data.OfferType, true); // Filter branch offices
 					}
 					// Set Product after Product Type is binded
 					var that = this;
@@ -121,6 +126,7 @@ sap.ui.define([
 					});
 				}else if(this.Type === "Copy"){
 					// --- If Copy mode (applied only after bind)
+					this.byId("productType").setEnabled(true);
 					this.byId("creationDate").setDateValue(new Date());
 					this.byId("TCNumber").setValue("$$00000001");
 					this.byId("status").setSelectedKey("");
@@ -785,15 +791,20 @@ sap.ui.define([
 				var valueHelp = oEvent.getSource();
 				var item = oEvent.getParameter("selectedItem");
 				if(item){
-					valueHelp.setValue(item.getText()).data("data", item.getKey());
+					var text = valueHelp.data("enter") ? item.getKey() : item.getText(); // Set only key as text if enter parameter
+					valueHelp.setValue(text).data("data", item.getKey());
+					valueHelp.fireChange();
+					if(valueHelp.data("key") === "counterparty"){
+						this.checkLimits();
+					}
 				}
-				valueHelp.fireChange();
-				if(valueHelp.data("key") === "counterparty"){
-					this.checkLimits();
-				}
+				
 				// if custom parameter enter defined then inside should be id of button to press
 				if(valueHelp.data("enter")){
-					this.byId(valueHelp.data("enter")).firePress();
+					var that = this;
+					setTimeout(function(){
+						that.byId(valueHelp.data("enter")).firePress();
+					});
 				}
 			},
 			
@@ -1470,11 +1481,9 @@ sap.ui.define([
 				
 				// Call get data functions to bind each input the onChangeData event function
 				// And check limits after periods render
-				if(oEvent.getParameter("reason") === "Refresh" && oEvent.getSource().data("id") === "period"){
-					this.getData(["pageOfferDetails", "parameters"]);
-					this.getVolumeData();
-					this.checkLimits();
-				}
+				this.getData(["pageOfferDetails", "parameters"]);
+				this.getVolumeData();
+				this.checkLimits();
 			},
 			
 			// Function attached for change event of Offer Type in Offer fragment
