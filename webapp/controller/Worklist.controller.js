@@ -98,15 +98,14 @@ sap.ui.define([
 						this.data = oEvent.getParameter("data");
 						var status = this.data.Status;
 						
+						// --- If statuses are 1 Sent for approval, 6 Done, 7 Not executed
 						if((status === "1" || status === "6" || status === "7")){
-							// --- If statuses are 1 Sent for approval, 6 Done, 7 Not executed
 							this.setEnabled(["pageOfferDetails", "parameters"], false);
 							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
 								"uploadDelete", "uploadHbox"], false, "Visible");
 							this.status = status;
-							
+							// If status is Not executed then set enabled some fields
 							if(status === "7"){
-								// If status is Not executed then set enabled some fields
 								this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
 								this.byId("comment").setEnabled(true);
 							}
@@ -114,9 +113,12 @@ sap.ui.define([
 							this.setEnabled(["pageOfferDetails", "parameters"], true);
 							this.setInput(["saveOffer2","saveOffer1","tableApprove","volumeAddButton","volumeCopyButton","volumeDeleteButton", "uploadDownload",
 								"uploadDelete", "uploadHbox"], true, "Visible");
+								
+							// Set some inputs disabled that should not be edited
+							this.setInput(["status", "productType", "creationDate", "createdBy"], false, "Enabled");  
 						}
 						
-						this.setInput(["status", "productType", "creationDate", "createdBy"], false, "Enabled");  // Set disabled product Type and status
+						
 						this.filterByType(this.data.OfferType, true); // Filter branch offices
 					}
 					// Set Product after Product Type is binded
