@@ -116,7 +116,7 @@ sap.ui.define([
 								"uploadDelete", "uploadHbox"], true, "Visible");
 						}
 						
-						this.setInput(["status", "productType"], false, "Enabled");  // Set disabled product Type and status
+						this.setInput(["status", "productType", "creationDate", "createdBy"], false, "Enabled");  // Set disabled product Type and status
 						this.filterByType(this.data.OfferType, true); // Filter branch offices
 					}
 					// Set Product after Product Type is binded
