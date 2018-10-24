@@ -109,7 +109,7 @@ sap.ui.define([
 								this.setInput(["saveOffer2","saveOffer1","uploadDownload","uploadDelete","uploadHbox"], true, "Visible");
 								this.byId("comment").setEnabled(true);
 							}
-						}if(status === "2"){ // if status is approved then disabled approve button
+						}else if(status === "2"){ // if status is approved then disabled approve button
 							this.byId("tableApprove").setEnabled(false);
 						}else{
 							this.setEnabled(["pageOfferDetails", "parameters"], true);
