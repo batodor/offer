@@ -540,7 +540,7 @@ sap.ui.define([
 						var TCPosition = clone.getContent()[0].getContent()[0].getItems()[0];
 						TCPosition.setValue("");
 					}
-					list.addItem(clone);
+					list.addItem(clone.data("copy", "true"));
 					list.fireUpdateFinished();
 				}
 				this.onChangeData();
@@ -855,6 +855,12 @@ sap.ui.define([
 					for(var j = 0; j < periods.length; j++){
 						var period = periods[j].getContent()[0].getContent()[0];
 						var periodData = this.getData(period, isSave);
+						
+						// Check volume if it is copy, then remove TCPosition values
+						if(volumes[i].data("copy")){
+							periodData.TCPosition = "";
+						}
+						
 						allVolumeData.ToOfferPeriod.push(periodData);
 						var checkPeriods = this.checkDataInner(periodData, ["DateFrom", "DateTo"]);
 						if(checkPeriods && oData.check){
