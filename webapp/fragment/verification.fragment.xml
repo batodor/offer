@@ -92,7 +92,7 @@
 				<Label class="topLabel" text="{i18n>countriesSanction}" />
 				<Text id="countriesSanction" text="{i18n>none}" />
 				<Label class="topLabel" text="{i18n>risks}" />
-				<List noDataText="{i18n>none}" updateFinished="checkRisks" custom:type="other" class="listText heightAuto" 
+				<List noDataText="{i18n>none}" updateFinished="checkRisks" id="otherRisks" custom:type="other" class="listText heightAuto" 
 					items="{ path: 'ToRisksByOffer', templateShareable: false }">
 					<CustomListItem>
 						<HBox width="100%">

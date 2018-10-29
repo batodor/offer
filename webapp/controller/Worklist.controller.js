@@ -75,6 +75,7 @@ sap.ui.define([
 							this.byId("offerTitle").setText(this.getResourceBundle().getText("copyOffer", [this.TCNumber]));
 							this.setInput(["saveOffer2", "saveOffer1"], true, "Enabled");
 							this.byId("tableApprove").setEnabled(false);
+							this.recheckCopy = true;
 						}
 					}else{ 
 						// --- Create mode
@@ -1419,6 +1420,11 @@ sap.ui.define([
 			checkCounterparties: function(oEvent){
 				this.checkBlacklist(oEvent);
 				this.checkSanctionCountries();
+				if(this.Type && this.Type === "Copy" && this.recheckCopy){
+					this.byId("counterpartyPopupValueHelp").fireTokenUpdate();
+					this.byId("otherRisks").removeAllItems();
+					this.recheckCopy = false;
+				}
 			},
 			
 			// Check the counterparties if any of them is blacklisted also changes the request button status
