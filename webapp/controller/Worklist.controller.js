@@ -1420,6 +1420,7 @@ sap.ui.define([
 			checkCounterparties: function(oEvent){
 				this.checkBlacklist(oEvent);
 				this.checkSanctionCountries();
+				// To check risks in copy mode from $$00000001 (dummy TC number)
 				if(this.Type && this.Type === "Copy" && this.recheckCopy){
 					this.byId("counterpartyPopupValueHelp").fireTokenUpdate();
 					this.byId("otherRisks").removeAllItems();
