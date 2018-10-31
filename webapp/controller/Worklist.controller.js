@@ -156,7 +156,7 @@ sap.ui.define([
 				}else{
 					// --- Else start save function
 					var button = oEvent.getSource();
-					var objectsArr = button.data("blocks").split(',');
+					var objectsArr = button.data("blocks").split(',');	// Objects to get data from
 					var offerData = this.getData(objectsArr, true); // Calls getData with true parameter for save
 					var volumeDataAndCheck = this.getVolumeData(true); // Calls getVolumeData with true parameter for save
 					var offerCheck = this.checkKeys(["pageOfferDetails"]);
@@ -321,7 +321,6 @@ sap.ui.define([
 					}
 				}
 				if(id === "counterpartyPopup"){
-					valueHelp.setTokens(newTokens);
 					this.byId("counterpartyOne").setValue(newTokens[0].Code); // Set first from list as main counterparty
 					// Check if there not more than 3 counterparties
 					if(newTokens.length > 3){
@@ -329,6 +328,7 @@ sap.ui.define([
 						return true;
 					}else if(tokens.length !== newTokens.length){
 						// Else if there are some changes then check risks and limits and set offer as changed
+						valueHelp.setTokens(newTokens);
 						this.getRisks(valueHelp);
 						this.checkLimits();
 						this.onChangeData();
@@ -371,7 +371,7 @@ sap.ui.define([
 				var oResult = oData[link];
 				if (oResult.ActionSuccessful) {
 					MessageToast.show(oResult.Message);
-					this.getModel().refresh(true);
+					this.getModel().refresh(true); // Force update
 					this.approveDialog.close();
 				} else {
 					MessageBox.error(oResult.Message);
@@ -614,6 +614,7 @@ sap.ui.define([
 				return check;
 			},
 			// Created to check hboxes too
+			// Check whether the "key" field is not empty
 			checkKeysInner: function(input, id){
 				var check = "";
 				if((input["mProperties"].hasOwnProperty("value") && !input.getValue() && !input.hasOwnProperty("_tokenizer")) || 
@@ -635,6 +636,7 @@ sap.ui.define([
 					if(input["sId"].indexOf('hbox') > -1){
 						var vboxes = input.getItems();
 						for(var j = 0; j < vboxes.length; j++){
+							// Assumption. Only 2 objects in VBOX
 							oData = this.mergeObjects(oData, this.getDataInner(vboxes[j].getItems()[1], isSave));
 						}
 					}else{
@@ -661,10 +663,12 @@ sap.ui.define([
 						}else{
 							value = input.getProperty(type);
 						}
+						// Some inputs have the required value in custom parameter "data"
 						if(input.data("data") && type !== "tokens"){
 							value = input.data("data");
 						}
 						
+						// Key, eg {TCNumber}
 						var name = input.getBindingInfo(type).binding.sPath;
 						
 						// Set default value(placeholder) if value is not defined
@@ -672,17 +676,19 @@ sap.ui.define([
 							value = input["mProperties"].placeholder;
 						}
 						
+						// In case OData expects string value
 						if(input.data("string")){
 							value = value.toString();
 						}
 						
 						// If inputs name is not defined
+						// or in case key binding differs from binding.sPath
 						if(input.data("name")){
 							name = input.data("name");
 						}
 						
 						// Remove offset for dates
-						if(input.hasOwnProperty("_oMaxDate")){
+						if(input.hasOwnProperty("_oMaxDate")){	// Check for Datepickers
 							value = input.getDateValue();
 							if(value) {
 								if(isSave){
@@ -1083,6 +1089,7 @@ sap.ui.define([
 				var select = oEvent ? oEvent.getSource() : this.byId("productType");
 				var selectedItem = select.getSelectedItem();
 				if(selectedItem){
+					// Filter values in other dependent fields (custom attr "filter")
 					var newValue = selectedItem.getKey();
 					var filterName = select.data("filterName");
 					var filterSelect = this.byId(select.data("filter"));
@@ -1177,7 +1184,7 @@ sap.ui.define([
 				var dynamicId = button.getId();
 				var filters = button.data("filters");
 				var table = sap.ui.getCore().byId(id);
-				var select = sap.ui.getCore().byId(id + "Select");
+				var select = sap.ui.getCore().byId(id + "Select");	// Button inside the dialog
 				var customParameter = button.data("customParameter");
 				var customSet = button.data("set");
 				// If custom parameter is defined then bind table with parameters

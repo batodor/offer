@@ -10,7 +10,7 @@
 						<SearchField placeholder="{i18n>code}" custom:id="volumeUomPopup" custom:key="Code" showSearchButton="true" 
 							search="triggerSearch" width="100%" id="volumeUomPopupCodeFilter" />
 						<ToolbarSpacer/>
-						<SearchField placeholder="{i18n>name}" custom:id="volumeUomPopup" custom:key="Name" showSearchButton="true" 
+						<SearchField placeholder="{i18n>name}" custom:id="volumeUomPopup" custom:operator="Contains" custom:key="Name" showSearchButton="true" 
 							search="triggerSearch" width="100%" id="volumeUomPopupNameFilter" />
 					</Toolbar>
 				</headerToolbar>
